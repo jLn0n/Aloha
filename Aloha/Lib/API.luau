@@ -8,6 +8,8 @@ local Endpoints = require("./Endpoints")
 API.DISCORD_API_VERSION = "10"
 API.ALOHA_VERSION = "0.0.1"
 
+API.PROCESS_ID = 0
+
 API.TOKEN = ""
 
 API.INTENTS = 53608447

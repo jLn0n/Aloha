@@ -10,9 +10,13 @@ local Commands = require("./Lib/Commands")
 local User = Objects.User
 local net = require("@lune/net")
 local lfs = require("@lune/fs")
+local process = require("@lune/process")
 
 function Aloha.Run(token: string, intents: number?)
 	API.INTENTS = intents or Intents.DEFAULT
+
+	local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
+	API.PROCESS_ID = pid_process.stdout:match("%d+")
 
 	local response = net.request({
 		url =  `{Endpoints.BASE_URL}{Endpoints.GET_GATEWAY_BOT}`,
