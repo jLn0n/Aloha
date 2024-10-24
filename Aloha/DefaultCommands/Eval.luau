@@ -29,10 +29,28 @@ return {
 		end
 		local code = options[1].value
 
+		local output = Evaluator.Evaluate(code)
+
+		local input = code:sub(1, 100) .. (#code > 100 and "..." or "")
+
 		return {
 			type = Enum.INTERACTION_CALLBACK_TYPE.CHANNEL_MESSAGE_WITH_SOURCE,
 			data = {
-				content = Evaluator.Evaluate(code)
+				embeds = {
+					{
+						title = "Luau Evaluator",
+						fields = {
+							{
+								name = "Input",
+								value = "```lua\n" .. input .. "\n```"
+							},
+							{
+								name = "Output",
+								value = "```\n" .. output .. "\n```"
+							}
+						}
+					}
+				}
 			}
 		}
 	

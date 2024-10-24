@@ -113,11 +113,9 @@ function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData)
 	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
 
 	local command = Commands.Cache[applicationData.id]
-	print(Commands.Cache, applicationData.id)
 	if not command then return end
 	command.Executed:Fire(applicationData.options)
 
-	print(command.Response)
 	if not command.Response then return end
 
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
