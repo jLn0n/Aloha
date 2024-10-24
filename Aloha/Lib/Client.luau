@@ -92,4 +92,6 @@ function Client.Fire(event: string, payload: Payload)
 	callbackInfo.event:Fire(callbackInfo.callback(payload))
 end
 
+
+
 return Client

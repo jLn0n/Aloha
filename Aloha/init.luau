@@ -12,6 +12,13 @@ local net = require("@lune/net")
 local lfs = require("@lune/fs")
 local process = require("@lune/process")
 
+function Aloha.ClearTemp()
+	if lfs.isDir("./Aloha/temp") then
+		lfs.removeDir("./Aloha/temp")
+	end
+	lfs.writeDir("./Aloha/temp")
+end
+
 function Aloha.Run(token: string, intents: number?)
 	API.INTENTS = intents or Intents.DEFAULT
 
@@ -26,6 +33,8 @@ function Aloha.Run(token: string, intents: number?)
 			["Content-Type"] = "application/json",
 		}
 	})
+
+	Aloha.ClearTemp()
 
 	local base = net.jsonDecode(response.body).url
 

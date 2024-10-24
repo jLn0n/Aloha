@@ -1,6 +1,10 @@
 local Enum = require("../Lib/Enum")
 local DiscordTypes = require("../Lib/DiscordTypes")
 local Evaluator = require("../Util/Evaluator")
+local Misc = require("../Util/Misc")
+local API = require("../Lib/API")
+local fs = require("@lune/fs")
+local process = require("@lune/process")
 
 return {
 	Data = {
@@ -33,6 +37,11 @@ return {
 
 		local input = code:sub(1, 100) .. (#code > 100 and "..." or "")
 
+		local temp_file = Misc.CreateTempFile(input)
+		process.spawn("stylua", {temp_file.Path}, {cwd = "."})
+		local beautified_code = fs.readFile(temp_file.Path)
+		temp_file:Delete()
+
 		return {
 			type = Enum.INTERACTION_CALLBACK_TYPE.CHANNEL_MESSAGE_WITH_SOURCE,
 			data = {
@@ -42,11 +51,11 @@ return {
 						fields = {
 							{
 								name = "Input",
-								value = "```lua\n" .. input .. "\n```"
+								value = "```lua\n" .. Misc.AddLineNumbers(beautified_code) .. "\n```"
 							},
 							{
 								name = "Output",
-								value = "```\n" .. output .. "\n```"
+								value = "```\n" .. Misc.AddLineNumbers(output) .. "\n```"
 							}
 						}
 					}

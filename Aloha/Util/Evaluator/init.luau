@@ -3,7 +3,7 @@ local fs = require("@lune/fs")
 local process = require("@lune/process")
 local task = require("@lune/task")
 local API = require("../../Lib/API")
-
+local Misc = require("../Misc")
 function Evaluator.Evaluate(code: string): string
 	local ret = ""
 	local finished = false
@@ -15,14 +15,13 @@ function Evaluator.Evaluate(code: string): string
 	]]):format(code)
 
 	task.spawn(function()
-		local tag = API.GenerateGUID(false)
-		fs.writeFile(`./Aloha/temp/{tag}.luau`, code)  
-		ret = process.spawn("lune", {"run", `./Aloha/temp/{tag}.luau`}, {
+		local temp_file = Misc.CreateTempFile(code)
+		ret = process.spawn("lune", {"run", temp_file.Path}, {
 			cwd = ".",
 		})
 
 		ret = #ret.stderr > 0 and ret.stderr or ret.stdout
-		fs.removeFile(`./Aloha/temp/{tag}.luau`)
+		temp_file:Delete()
 
 		finished = true
 		coroutine.resume(currentThread)
