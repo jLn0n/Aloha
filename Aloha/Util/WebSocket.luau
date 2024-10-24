@@ -42,10 +42,12 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 				if payload.op == 10 then					
 					task.spawn(function()
 						task.wait((payload.d.heartbeat_interval * math.random()) / 1000)
+						if self._socket.closeCode then return end
 						self:Send(API.OP.HEARTBEAT(self._last_payload.s))
 
 						while not self._socket.closeCode do
 							task.wait(payload.d.heartbeat_interval / 1000)
+							if self._socket.closeCode then break end
 							self:Send(API.OP.HEARTBEAT(self._last_payload.s))
 						end
 					end)
@@ -55,23 +57,13 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 					continue
 				end
 
-				if payload.op == 7 then
-					self._socket.close()
-
-					print("Socket disconnected, reconnecting...")
-
-					print("Creating new socket...")
-					self._socket = net.socket(self._url)
-					self:HandleMessage()
-
-					return
-				end
-
 				if payload.op == 9 then
 					print("Socket resumed.")
 				end
 
-				Client.Fire(payload.t, payload)
+				if payload.t then
+					Client.Fire(payload.t, payload)
+				end
 			end
 		end
 

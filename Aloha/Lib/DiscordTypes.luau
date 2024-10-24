@@ -1,4 +1,3 @@
-
 export type snowflake = string & { __newtype: "snowflake" }
 
 export type UserData = {
@@ -323,6 +322,29 @@ export type ApplicationData = {
 	custom_install_url: string?
 }
 
+export type CommandOptionChoiceData = {
+	name: string,
+	name_localizations: { [string]: string }?,
+	value: (string | number)
+}
+
+export type CommandOptionData = {
+	type: number,
+	name: string,
+	name_localizations: { [string]: string }?,
+	description: string,
+	description_localizations: { [string]: string }?,
+	required: boolean?,
+	choices: {CommandOptionChoiceData}?,
+	options: {CommandOptionData}?,
+	channel_types: {number}?,
+	min_value: number?,
+	max_value: number?,
+	min_length: number?,
+	max_length: number?,
+	autocomplete: boolean?
+}
+
 export type MessageReferenceData = {
 	type: number?,
 	message_id: snowflake?,
@@ -335,19 +357,98 @@ export type MessageSnapshotData = {
 	message: MessageData
 }
 
-export type InteractionData = {
+export type ApplicationCommandData = {
 	id: snowflake,
 	type: number,
+	application_id: snowflake,
+	guild_id: snowflake?,
 	name: string,
-	user: UserData,
+	name_localizations: { [string]: string }?,
+	description: string,
+	description_localizations: { [string]: string }?,
+	options: {CommandOptionData}?,
+	default_member_permissions: string?,
+	dm_permission: boolean?,
+	default_permission: boolean?,
+	nsfw: boolean?,
+	integration_type: number?,
+	contexts: {number}?,
+	version: snowflake,
+	handler: number
+}
+
+export type MessageComponentInteractionData = {
+	custom_id: string,
+	component_type: number,
+	values: {(string | number | boolean)}?,
+	resolved: ResolvedData?
+}
+
+export type EntitlementData = {
+	id: snowflake,
+	sku_id: snowflake,
+	plan: {
+		id: snowflake,
+		price: number
+	}
+}
+
+export type InteractionData = {
+	id: snowflake,
+	application_id: snowflake,
+	type: number,
+	data: (ApplicationCommandInteractionData | MessageComponentInteractionData)?,
+	guild: GuildData?,
+	guild_id: snowflake?,
+	channel: ChannelData?,
+	channel_id: snowflake?,
 	member: MemberData?,
+	user: UserData?,
+	token: string,
+	version: number,
+	message: MessageData,
+	app_permissions: string,
+	locale: string,
+	guild_locale: string,
+	entitlements: {EntitlementData}?,
+	authorizing_integration_owners: {[number]: snowflake},
+	context: number,
+}
+
+export type InteractionCallbackData = {
+	tts: boolean?,
+	content: string?,
+	embeds: {EmbedData}?,
+	allowed_mentions: {string}?,
+	flags: number?,
+	components: {ComponentData}?,
+	attachments: {AttachmentData}?,
+	poll: PollData?
+}
+
+export type ApplicationCommandInteractionDataOptionData = {
+	name: string,
+	type: number,
+	value: (string | number | boolean)?,
+	options: {ApplicationCommandInteractionDataOptionData}?,
+	focused: boolean?
+}
+
+export type ApplicationCommandInteractionData = {
+	id: snowflake,
+	name: string,
+	type: number,
+	resolved: ResolvedData?,
+	options: {ApplicationCommandInteractionDataOptionData}?,
+	guild_id: snowflake?,
+	target_id: snowflake?
 }
 
 export type InteractionMetadataData = {
 	id: snowflake,
 	type: number,
 	user: UserData,
-	authorizing_integration_owners: {GUILD_INSTALL: number, USER_INSTALL: number},
+	authorizing_integration_owners: {[number]: snowflake},
 	original_response_message_id: snowflake?,
 	interacted_message_id: snowflake?,
 	triggering_interaction_metadata: {}
@@ -457,6 +558,9 @@ export type ResolvedData = {
 	message: MessageData?,
 	attachments: {AttachmentData}?
 }
+
+export type Payload = {op: number?, d: {[string]:any}, s: number?, t: string?}
+
 
 export type MessageData = {
 	id: snowflake,

@@ -67,16 +67,38 @@ local function GetUser(data: DiscordTypes.UserData) : User
 	return Cache.Users[data.id]
 end
 
-local function GetMessage(data: DiscordTypes.MessageData) : Message?
+local function GetMessage(data: DiscordTypes.MessageData, noCreate: boolean?) : Message?
 	if Cache.Messages[data.id] then
 		return Cache.Messages[data.id]
 	end
 
 	if not data then return end
+	if noCreate then return end
 
 	Cache.Messages[data.id] = Message.new(data)
 
 	return Cache.Messages[data.id]
+end
+
+local function GetGuild(id: string) : Guild
+	if Cache.Guilds[id] then
+		return Cache.Guilds[id]
+	end
+
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD:format(id)}`
+	local response = net.request({
+		url = url,
+		method = "GET",
+		headers = {
+			['Authorization'] = `Bot {API.TOKEN}`
+		}
+	})
+
+	response = net.jsonDecode(response.body)
+
+	Cache.Guilds[id] = Guild.new(response)
+
+	return Cache.Guilds[id]
 end
 ------------------------------ Message
 function Message.new(data: DiscordTypes.MessageData) : Message
@@ -161,6 +183,8 @@ function Guild.new(data: DiscordTypes.GuildData) : Guild
 
 	return self
 end
+
+------------------------------
 return {
 	Message = Message,
 	User = User,
@@ -169,5 +193,6 @@ return {
 
 	GetChannel = GetChannel,
 	GetUser = GetUser,
-	GetMessage = GetMessage
+	GetMessage = GetMessage,
+	GetGuild = GetGuild
 }

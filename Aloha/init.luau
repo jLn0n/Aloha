@@ -7,17 +7,11 @@ local Intents = require("./Lib/Intents")
 local API = require("./Lib/API")
 local Objects = require("./Classes/Objects")
 local User = Objects.User
-
 local net = require("@lune/net")
 
-function Aloha.Run(token: string, data: {intents: number?,os: string?,browser: string?,device: string?}?)
 
-	if data then
-		API.INTENTS = data.intents or Intents.DEFAULT
-		API.OS = data.os or API.OS
-		API.BROWSER = data.browser or API.BROWSER
-		API.DEVICE = data.device or API.DEVICE
-	end
+function Aloha.Run(token: string, intents: number?)
+	API.INTENTS = intents or Intents.DEFAULT
 
 	local response = net.request({
 		url =  `{Endpoints.BASE_URL}{Endpoints.GET_GATEWAY_BOT}`,

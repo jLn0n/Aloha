@@ -2,14 +2,11 @@ local API = {}
 
 local Cache = require("./Cache")
 local net = require("@lune/net")
+local process = require("@lune/process")
 local Endpoints = require("./Endpoints")
 
 API.DISCORD_API_VERSION = "10"
 API.ALOHA_VERSION = "0.0.1"
-
-API.OS = "linux"
-API.BROWSER = "lune"
-API.DEVICE = "lune"
 
 API.TOKEN = ""
 
@@ -23,9 +20,9 @@ API.OP = {
 			d = {
 				token = token,
 				properties = {
-					os = API.OS,
-					browser = API.BROWSER,
-					device = API.DEVICE
+					os = process.os,
+					browser = "aloha",
+					device = "aloha"
 				}, 
 				intents = API.INTENTS
 			}
