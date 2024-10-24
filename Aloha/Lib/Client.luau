@@ -1,5 +1,4 @@
 local Event = require("../Util/Event")
-local WebsocketEvents = require("./WebsocketEvents")
 
 local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")
@@ -10,34 +9,42 @@ local DiscordTypes = require("./DiscordTypes")
 type Payload = DiscordTypes.Payload
 
 local eventCallbacks = {
-	["MessageCreate"] = {
+	["MESSAGE_CREATE"] = {
 		callback = function(payload: Payload)
 			return Objects.GetMessage(payload.d)
 		end,
 
+		aliases = {"message_create", "MessageCreate"},
+
 		event = Event.new()
 	},
 
-	["MessageUpdate"] = {
+	["MESSAGE_UPDATE"] = {
 		callback = function(payload: Payload)
 			return Objects.GetMessage(payload.d)
 		end,
 
+		aliases = {"message_update", "MessageUpdate"},
+
 		event = Event.new()
 	},
 
-	["MessageDelete"] = {
+	["MESSAGE_DELETE"] = {
 		callback = function(payload: Payload)
 			return Objects.GetMessage(payload.d, true)
 		end,
 
+		aliases = {"message_delete", "MessageDelete"},
+
 		event = Event.new()
 	},
 
-	["Ready"] = {
+	["READY"] = {
 		callback = function(_payload: Payload)
 			print("Bot is ready.")
 		end,
+
+		aliases = {"ready", "Ready"},
 
 		event = Event.new()
 	}
@@ -56,20 +63,25 @@ function Client.Fire(event: string, payload: Payload)
 
 		return
 	end
-	
-	if not WebsocketEvents[event] then
-		print(`Event {event} not found.`)
-		return
-	end
 
-	local callbackInfo = eventCallbacks[WebsocketEvents[event]]
+	local callbackInfo = eventCallbacks[event]
 
 	if not callbackInfo then
-		print(`Callback for {WebsocketEvents[event]} not found.`)
-		return
+		for _, info in eventCallbacks do
+			if table.find(info.aliases, event) then
+				callbackInfo = info
+
+				break
+			end
+		end
+
+		if not callbackInfo then
+			print(`Callback for {event} not found.`)
+			return
+		end
 	end
 
-	print(`Firing {WebsocketEvents[event]} event.`)
+	print(`Firing {event} event.`)
 	callbackInfo.event:Fire(callbackInfo.callback(payload))
 end
 

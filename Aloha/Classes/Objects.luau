@@ -135,6 +135,18 @@ function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
 		guild_id = self.channel.guild_id
 	})
 end
+
+function Message:AddReaction(emoji: string)
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, net.urlEncode(emoji))}`
+
+	return net.request({
+		url = url,
+		method = "PUT",
+		headers = {
+			['Authorization'] = `Bot {API.TOKEN}`
+		}
+	})
+end
 ------------------------------ Channel
 function Channel.new(data: DiscordTypes.ChannelData) : Channel
 	local self = setmetatable({}, Channel)
