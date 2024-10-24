@@ -1,0 +1,26 @@
+{
+    "Aloha Command": {
+        "prefix": ["command"],
+        "body": [
+            "local Enum = require(\"../Lib/Enum\")",
+            "local Cache = require(\"../Lib/Cache\")",
+            "", 
+            "return {",
+            "    Data = {",
+            "        name = \"command\",",
+            "        description = \"A test command.\",",
+            "        type = Enum.APPLICATION_COMMAND_TYPE.,",
+            "    },",
+            "",
+            "    Response = {",
+            "        type = Enum.INTERACTION_CALLBACK_TYPE.CHANNEL_MESSAGE_WITH_SOURCE,",
+            "        data = {",
+            "            content = \"Test response.\"",
+            "        }",
+            "    }",
+            "}",
+        ],
+        "description": "Aloha command template"
+    },
+    
+}

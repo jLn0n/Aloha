@@ -175,6 +175,18 @@ function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, refere
 		}
 	})
 end
+
+function Channel:Delete(message_id: string)
+	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
+
+	return net.request({
+		url = url,
+		method = "DELETE",
+		headers = {
+			['Authorization'] = `Bot {API.TOKEN}`
+		}
+	})
+end
 ------------------------------  User
 function User.new(data: DiscordTypes.UserData) : User
 	local self = setmetatable({}, User)

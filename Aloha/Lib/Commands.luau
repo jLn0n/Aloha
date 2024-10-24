@@ -37,7 +37,7 @@ Commands.Cache = {}
 local Command = {}
 Command.__index = Command
 
-type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {Executed: Event.Event, Response: {type: number, data: DiscordTypes.InteractionCallbackData}?}
+export type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {Executed: Event.Event, Response: {type: number, data: DiscordTypes.InteractionCallbackData}?}
 
 function Command.new(data: DiscordTypes.ApplicationCommandData) : Command
 	local self = setmetatable({}, Command)
@@ -53,8 +53,8 @@ function Command.new(data: DiscordTypes.ApplicationCommandData) : Command
 	return self
 end
 
-function Command:SetResponse(type: number, data: DiscordTypes.InteractionCallbackData)
-	self.Response = {type = type, data = data}
+function Command:SetResponse(callback: (DiscordTypes.ApplicationCommandInteractionData) -> {type: number, data: DiscordTypes.InteractionCallbackData})
+	self.Response = callback
 end
 
 
@@ -125,10 +125,7 @@ function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData)
 	net.request({
 		url = url,
 		method = "POST",
-		body = net.jsonEncode({
-			type = command.Response.type,
-			data = command.Response.data
-		}),
+		body = net.jsonEncode(command.Response(applicationData)),
 		headers = {
 			["Authorization"] = `BOT {API.TOKEN}`,
 			["Content-Type"] = "application/json"

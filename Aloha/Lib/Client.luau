@@ -50,20 +50,7 @@ local eventCallbacks = {
 	}
 }
 
-function Client.On(event: string, callback: (...any) -> ()) : Event.Connection
-	return eventCallbacks[event].event:Connect(callback)
-end
-
-function Client.Fire(event: string, payload: Payload)
-	if payload.t == "INTERACTION_CREATE" then
-		
-		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND then
-			Commands.HandleInteraction(payload.d)
-		end
-
-		return
-	end
-
+function Client.On(event: string, callback: (...any) -> ()) : Event.Connection?
 	local callbackInfo = eventCallbacks[event]
 
 	if not callbackInfo then
@@ -75,11 +62,31 @@ function Client.Fire(event: string, payload: Payload)
 			end
 		end
 
-		if not callbackInfo then
+		if not callbackInfo then 
 			print(`Callback for {event} not found.`)
 			return
 		end
 	end
+
+
+	return callbackInfo.event:Connect(callback)
+end
+
+function Client.Fire(event: string, payload: Payload)
+	if payload.t == "INTERACTION_CREATE" then
+		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND then
+			Commands.HandleInteraction(payload.d)
+		end
+
+		return
+	end
+
+	if not eventCallbacks[event] then
+		print(`Callback for {event} not found.`)
+		return
+	end
+
+	local callbackInfo = eventCallbacks[event]
 
 	print(`Firing {event} event.`)
 	callbackInfo.event:Fire(callbackInfo.callback(payload))
