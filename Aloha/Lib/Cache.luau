@@ -1,8 +1,7 @@
-local Cache = {
+return {
 	Guilds = {},
 	Channels = {},
 	Users = {},
-	Messages = {}
+	Messages = {},
+	Client = nil
 }
-
-return Cache

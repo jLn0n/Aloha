@@ -1,7 +1,7 @@
 local Event = require("../Util/Event")
 local WebsocketEvents = require("./WebsocketEvents")
 
-local Message = require("../Classes/Message")
+local Objects = require("../Classes/Objects")
 
 local Client = {}
 
@@ -10,7 +10,7 @@ type Payload = {op: number?, d: {[string]:any}, s: number?, t: string?}
 local eventCallbacks = {
 	["messageCreate"] = {
 		callback = function(payload: Payload)
-			return Message.new(payload.d)
+			return Objects.GetMessage(payload.d)
 		end,
 
 		event = Event.new()
@@ -18,7 +18,7 @@ local eventCallbacks = {
 
 	["messageUpdate"] = {
 		callback = function(payload: Payload)
-			return Message.new(payload.d)
+			return Objects.GetMessage(payload.d)
 		end,
 
 		event = Event.new()
@@ -26,7 +26,6 @@ local eventCallbacks = {
 
 	["messageDelete"] = {
 		callback = function(payload: Payload)
-			return Message.new(payload.d)
 		end,
 
 		event = Event.new()
@@ -62,4 +61,4 @@ function Client.Fire(event: string, payload: Payload)
 	callbackInfo.event:Fire(callbackInfo.callback(payload))
 end
 
- return Client
+return Client

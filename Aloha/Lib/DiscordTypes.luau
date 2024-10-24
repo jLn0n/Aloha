@@ -1,6 +1,8 @@
 
+export type snowflake = string & { __newtype: "snowflake" }
+
 export type UserData = {
-	id: string,
+	id: snowflake,
 	username: string,
 	discriminator: string,
 	global_name: string?,
@@ -25,7 +27,7 @@ export type AvatarDecorationData = {
 }
 
 export type PermissionOverwriteData = {
-	id: string,
+	id: snowflake,
 	type: number,
 	allow: string,
 	deny: string
@@ -41,32 +43,32 @@ export type ThreadMetadataData = {
 }
 
 export type ForumTagData = {
-	id: string,
+	id: snowflake,
 	name: string,
 	moderated: boolean,
-	emoji_id: number?,
+	emoji_id: snowflake?,
 	emoji_name: string?
 }
 
 export type ChannelData = {
-	id: string,
+	id: snowflake,
 	type: number,
-	guild_id: number?,
+	guild_id: snowflake?,
 	position: number?,
 	permission_overwrites: {PermissionOverwriteData}?,
 	name: string?,
 	topic: string?,
 	nsfw: boolean?,
-	last_message_id: number?,
+	last_message_id: snowflake?,
 	bitrate: number?,
 	user_limit: number?,
 	rate_limit_per_user: number?,
 	recipients: {UserData}?,
 	icon: string?,
-	owner_id: number?,
-	application_id: number?,
+	owner_id: snowflake?,
+	application_id: snowflake?,
 	managed: boolean?,
-	parent_id: number?,
+	parent_id: snowflake?,
 	last_pin_timestamp: string?,
 	rtc_region: string?,
 	video_quality_mode: number?,
@@ -86,14 +88,14 @@ export type ChannelData = {
 }
 
 export type ChannelMentionData = {
-	id: string,
-	guild_id: number,
+	id: snowflake,
+	guild_id: snowflake,
 	type: number,
 	name: string
 }
 
 export type AttachmentData = {
-	id: string,
+	id: snowflake,
 	filename: string,
 	title: string?,
 	description: string?,
@@ -158,16 +160,16 @@ export type EmbedData = {
 }
 
 export type RoleTagsData = {
-	bot_id: number?,
-	integration_id: number?,
+	bot_id: snowflake?,
+	integration_id: snowflake?,
 	premium_subscriber: boolean?,
-	subscription_listing_id: number?,
+	subscription_listing_id: snowflake?,
 	available_for_purchase: boolean?,
 	guild_connections: boolean?
 }
 
 export type RoleData = {
-	id: string,
+	id: snowflake,
 	name: string,
 	color: number,
 	hoist: boolean,
@@ -187,7 +189,7 @@ export type ReactionCountDetailsData = {
 }
 
 export type EmojiData = {
-	id: string,
+	id: snowflake,
 	name: string,
 	roles: {number}?,
 	user: UserData?,
@@ -209,28 +211,28 @@ export type ReactionData = {
 
 export type ActivityData = {
 	type: number,
-	party_id: string?
+	party_id: snowflake?
 }
 
 export type TeamMemberData = {
 	user: UserData,
 	membership_state: number,
 	role: string,
-	team_id: number
+	team_id: snowflake
 }
 
 export type TeamData = {
 	icon: string?,
-	id: string,
+	id: snowflake,
 	members: {TeamMemberData},
 	name: string,
-	owner_user_id: number
+	owner_user_id: snowflake
 }
 
 export type WelcomeScreenChannelData = {
-	channel_id: number,
+	channel_id: snowflake,
 	description: string,
-	emoji_id: number?,
+	emoji_id: snowflake?,
 	emoji_name: string?
 }
 
@@ -240,20 +242,20 @@ export type WelcomeScreenData = {
 }
 
 export type GuildData = {
-	id: string,
+	id: snowflake,
 	name: string,
 	icon: string?,
 	icon_hash: string?,
 	splash: string?,
 	discovery_splash: string?,
 	owner: boolean,
-	owner_id: number,
+	owner_id: snowflake,
 	permissions: string?,
 	region: string?,
-	afk_channel_id: number?,
+	afk_channel_id: snowflake?,
 	afk_timeout: number,
 	widget_enabled: boolean?,
-	widget_channel_id: number?,
+	widget_channel_id: snowflake?,
 	verification_level: number,
 	default_message_notifications: number,
 	explicit_content_filter: number,
@@ -261,10 +263,10 @@ export type GuildData = {
 	emojis: {EmojiData}?,
 	features: {string},
 	mfa_level: number,
-	application_id: number?,
-	system_channel_id: number?,
+	application_id: snowflake?,
+	system_channel_id: snowflake?,
 	system_channel_flags: number,
-	rules_channel_id: number?,
+	rules_channel_id: snowflake?,
 	max_presences: number?,
 	max_members: number?,
 	vanity_url_code: string?,
@@ -273,7 +275,7 @@ export type GuildData = {
 	premium_tier: number,
 	premium_subscription_count: number?,
 	preferred_locale: string,
-	public_updates_channel_id: number?,
+	public_updates_channel_id: snowflake?,
 	max_video_channel_users: number?,
 	max_stage_video_channel_users: number?,
 	approximate_member_count: number?,
@@ -282,7 +284,7 @@ export type GuildData = {
 	nsfw_level: number,
 	stickers: {StickerData}?,
 	premium_progress_bar_enabled: boolean,
-	safety_alerts_channel_id: number?
+	safety_alerts_channel_id: snowflake?
 }
 
 export type InstallParamsData = {
@@ -291,7 +293,7 @@ export type InstallParamsData = {
 }
 
 export type ApplicationData = {
-	id: string,
+	id: snowflake,
 	name: string,
 	icon: string?,
 	description: string,
@@ -304,7 +306,7 @@ export type ApplicationData = {
 	owner: UserData?,
 	verify_key: string?,
 	team: TeamData?,
-	guild_id: number?,
+	guild_id: snowflake?,
 	guild: GuildData?,
 	primary_sku_id: number?,
 	slug: string?,
@@ -323,9 +325,9 @@ export type ApplicationData = {
 
 export type MessageReferenceData = {
 	type: number?,
-	message_id: number?,
-	guild_id: number?,
-	channel_id: number?,
+	message_id: snowflake?,
+	guild_id: snowflake?,
+	channel_id: snowflake?,
 	fail_if_not_exists: boolean?
 }
 
@@ -334,7 +336,7 @@ export type MessageSnapshotData = {
 }
 
 export type InteractionData = {
-	id: string,
+	id: snowflake,
 	type: number,
 	name: string,
 	user: UserData,
@@ -342,50 +344,50 @@ export type InteractionData = {
 }
 
 export type InteractionMetadataData = {
-	id: string,
+	id: snowflake,
 	type: number,
 	user: UserData,
 	authorizing_integration_owners: {GUILD_INSTALL: number, USER_INSTALL: number},
-	original_response_message_id: number?,
-	interacted_message_id: number?,
+	original_response_message_id: snowflake?,
+	interacted_message_id: snowflake?,
 	triggering_interaction_metadata: {}
 }
 
-export type ComponentData = {[number]: {type: number, components: {[number]: {type: number, label: string, style: number, custom_id: string}}}}
+export type ComponentData = {[number]: {type: number, components: {[number]: {type: number, label: string, style: number, custom_id: snowflake}}}}
 
 export type StickerItemData = {
-	id: string,
+	id: snowflake,
 	name: string,
 	format_type: number
 }
 
 export type StickerData = {
-	id: string,
-	pack_id: number?,
+	id: snowflake,
+	pack_id: snowflake?,
 	name: string,
 	description: string?,
 	tags: string,
 	type: number,
 	format_type: number,
 	available: boolean?,
-	guild_id: number?,
+	guild_id: snowflake?,
 	user: UserData?,
 	sort_value: number?
 }
 
 export type StickerPackData = {
-	id: string,
+	id: snowflake,
 	stickers: {StickerData},
 	name: string,
 	sku_id: number,
-	cover_sticker_id: number?,
+	cover_sticker_id: snowflake?,
 	description: string,
-	banner_asset_id: number?
+	banner_asset_id: snowflake?
 }
 
 export type ThreadMemberData = {
-	id: string?,
-	user_id: number?,
+	id: snowflake?,
+	user_id: snowflake?,
 	join_timestamp: string,
 	flags: number,
 	member: MemberData?
@@ -408,7 +410,7 @@ export type MemberData = {
 }
 
 export type RoleSubscriptionData = {
-	role_subscription_listing_id: number,
+	role_subscription_listing_id: snowflake,
 	tier_name: string,
 	total_months_subscribed: number,
 	is_renewing: boolean
@@ -417,12 +419,12 @@ export type RoleSubscriptionData = {
 export type PollMediaData = {text: string?, emoji: EmojiData?}
 
 export type PollAnswerData = {
-	answer_id: number,
+	answer_id: snowflake,
 	poll_media: PollMediaData
 }
 
 export type PollAnswerCountData = {
-	id: string,
+	id: snowflake,
 	count: number,
 	me_voted: boolean
 }
@@ -457,8 +459,8 @@ export type ResolvedData = {
 }
 
 export type MessageData = {
-	id: string,
-	channel_id: number,
+	id: snowflake,
+	channel_id: snowflake,
 	author: UserData,
 	content: string,
 	timestamp: string,
@@ -473,11 +475,11 @@ export type MessageData = {
 	reactions: {ReactionData}?,
 	nonce: (number | string)?,
 	pinned: boolean,
-	webhook_id: number?,
+	webhook_id: snowflake?,
 	type: number,
 	activity: ActivityData?,
 	application: ApplicationData?,
-	application_id: number?,
+	application_id: snowflake?,
 	flags: number?,
 	message_reference: MessageReferenceData?,
 	message_snapshots: {MessageSnapshotData}?,

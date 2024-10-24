@@ -16,6 +16,7 @@ API.TOKEN = ""
 API.INTENTS = 53608447
 
 API.OP = {
+	-- Aloha!!
 	["HELLO"] = function(token: string)
 		return {
 			op = 2,
@@ -39,34 +40,16 @@ API.OP = {
 	end
 }
 
-function API.GetChannel(id: string)
-	if Cache.Channels[id] then
-		return Cache.Channels[id]
+function API.GenerateGUID(wrapInBraces: boolean?) : string
+	local template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+	local function randomHex(char)
+		local v = (char == 'x') and math.random(0, 15) or math.random(8, 11)
+		return string.format("%x", v)
 	end
 
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL:format(id)}`
-	local response = net.request({
-		url = url,
-		method = "GET",
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`
-		}
-	})
+	local s = string.gsub(template, "[xy]", randomHex)
 
-	response = net.jsonDecode(response.body)
-
-	local Channel = require("../Classes/Channel")
-	Cache.Channels[id] = Channel.new(response)
-
-	return Cache.Channels[id]
-end
-
-function API.GetUser(id: string)
-	if Cache.Users[id] then
-		return Cache.Users[id]
-	end
-
-	return
+	return wrapInBraces and `\{{s}\}` or s
 end
 
 return API
