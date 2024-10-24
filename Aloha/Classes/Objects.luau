@@ -1,14 +1,14 @@
 --------------------
-Message = {}
+local Message = {}
 Message.__index = Message
 
-User = {}
+local User = {}
 User.__index = User
 
-Channel = {}
+local Channel = {}
 Channel.__index = Channel
 
-Guild = {}
+local Guild = {}
 Guild.__index = Guild
 -----------------------------
 
