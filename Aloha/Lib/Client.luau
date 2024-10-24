@@ -50,7 +50,6 @@ end
 function Client.Fire(event: string, payload: Payload)
 	if payload.t == "INTERACTION_CREATE" then
 		
-		print(payload.d.type, Enum.INTERACTION_TYPE.APPLICATION_COMMAND)
 		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND then
 			Commands.HandleInteraction(payload.d)
 		end
