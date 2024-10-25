@@ -3,6 +3,7 @@ local Event = require("../Util/Event")
 local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")
 local Enum = require("./Enum")
+local API = require("./API")
 local Client = {}
 
 local DiscordTypes = require("./DiscordTypes")
@@ -40,8 +41,9 @@ local eventCallbacks = {
 	},
 
 	["READY"] = {
-		callback = function(_payload: Payload)
-			print("Bot is ready.")
+		callback = function(payload: Payload)
+			API.RESUME_URL = payload.d.resume_gateway_url
+			API.SESSION_ID = payload.d.session_id
 		end,
 
 		aliases = {"ready", "Ready"},

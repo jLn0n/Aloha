@@ -30,10 +30,23 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 	self.OnMessage = Event.new()
 	self.OnClose = Event.new()
 
-	task.spawn(function()
-		while not self._socket.closeCode do
-			local message = self._socket.next()
-	
+	local connect 
+	connect = function()
+		local retry = false
+		while (not self._socket.closeCode) or retry do
+			retry = false
+
+			local success, message = xpcall(function()
+				return self._socket.next()
+			end, function(err)
+				print("[WebSocket] Error retrieving next message: " .. err)
+			end)
+
+			if not success then
+				retry = true
+				continue
+			end
+			
 			if message then
 				self.OnMessage:Fire(message)
 				local payload = net.jsonDecode(message)
@@ -57,10 +70,23 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 					continue
 				end
 
-				if payload.op == 9 then
-					print("Socket resumed.")
+				if payload.op == 7 then
+					retry = true
+					self._socket.close()
+					self._socket = net.socket(API.RESUME_URL)
+					self._socket.send(API.OP.RESUME(self.token, self._last_payload.s))
+
+					continue
 				end
 
+				if payload.op == 9 then
+					retry = true
+					self._socket.close()
+					self._socket = net.socket(self._url)
+					
+					continue
+				end
+				
 				if payload.t then
 					Client.Fire(payload.t, payload)
 				end
@@ -69,7 +95,13 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 
 		self.Closed = true
 		self.OnClose:Fire(self._socket.closeCode)
-	end)
+
+		self._socket = net.socket(self._url)
+
+		connect()
+	end
+
+	task.spawn(connect)
 
 	return setmetatable({}, {	
 		__newindex = function(_, index, value)

@@ -12,6 +12,9 @@ API.PROCESS_ID = 0
 
 API.TOKEN = ""
 
+API.RESUME_URL = ""
+API.SESSION_ID = ""
+
 API.INTENTS = 53608447
 
 API.OP = {
@@ -29,6 +32,17 @@ API.OP = {
 				intents = API.INTENTS
 			}
 		}	
+	end,
+
+	["RESUME"] = function(token: string, sequence: number)
+		return {
+			op = 6,
+			d = {
+				token = token,
+				session_id = API.SESSION_ID,
+				seq = sequence
+			}
+		}
 	end,
 
 	["HEARTBEAT"] = function(sequence: number)

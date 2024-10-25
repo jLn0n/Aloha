@@ -38,8 +38,6 @@ function Evaluator.Evaluate(code: string): string
 		coroutine.resume(currentThread)
 	end)
 
-
-
 	task.delay(1, function()
 		local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
 		for pid in pid_process.stdout:gmatch("%d+") do
@@ -55,8 +53,6 @@ function Evaluator.Evaluate(code: string): string
 		coroutine.resume(currentThread)
 	end)
 	coroutine.yield(currentThread)
-
-	print(success)
 
 	return ret, success
 end
