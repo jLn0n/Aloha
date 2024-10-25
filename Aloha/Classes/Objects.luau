@@ -42,13 +42,15 @@ local function GetChannel(id: string) : Channel
 	end
 
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL:format(id)}`
-	local response = net.request({
-		url = url,
-		method = "GET",
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`
-		}
-	})
+	local _, response = pcall(function() 
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
 
 	response = net.jsonDecode(response.body)
 
@@ -86,13 +88,15 @@ local function GetGuild(id: string) : Guild
 	end
 
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD:format(id)}`
-	local response = net.request({
-		url = url,
-		method = "GET",
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`
-		}
-	})
+	local _, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
 
 	response = net.jsonDecode(response.body)
 
@@ -118,13 +122,17 @@ end
 function Message:Delete()
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.channel_id, self.id)}`
 
-	return net.request({
-		url = url,
-		method = "DELETE",
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`
-		}
-	})
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "DELETE",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
 end
 
 function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
@@ -139,13 +147,14 @@ end
 function Message:AddReaction(emoji: string)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, net.urlEncode(emoji))}`
 
-	return net.request({
-		url = url,
-		method = "PUT",
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`
-		}
-	})
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "PUT",
+		})
+	end)
+
+	return success, response
 end
 ------------------------------ Channel
 function Channel.new(data: DiscordTypes.ChannelData) : Channel
@@ -155,37 +164,47 @@ function Channel.new(data: DiscordTypes.ChannelData) : Channel
 		self[key] = value
 	end
 
+	self.guild = GetGuild(self.guild_id)
+
 	return self
 end
 
 function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_MESSAGE:format(self.id)}`
 
-	return net.request({
-		url = url,
-		method = "POST",
-		body = net.jsonEncode({
-			content = content,
-			embeds = embeds,
-			message_reference = reference 
-		}),
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`,
-			['Content-Type'] = "application/json"
-		}
-	})
+	local success, response = pcall(function()  
+		return net.request({
+			url = url,
+			method = "POST",
+			body = net.jsonEncode({
+				content = content,
+				embeds = embeds,
+				message_reference = reference 
+			}),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`,
+				['Content-Type'] = "application/json"
+			}
+		})
+	end)
+
+	return success, response
 end
 
 function Channel:Delete(message_id: string)
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
 
-	return net.request({
-		url = url,
-		method = "DELETE",
-		headers = {
-			['Authorization'] = `Bot {API.TOKEN}`
-		}
-	})
+	local success, response = pcall(function() 
+		return net.request({
+			url = url,
+			method = "DELETE",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
 end
 ------------------------------  User
 function User.new(data: DiscordTypes.UserData) : User
@@ -206,6 +225,10 @@ function Guild.new(data: DiscordTypes.GuildData) : Guild
 	end
 
 	return self
+end
+
+function Guild:GetChannel(id: string) : Channel
+	return GetChannel(id)
 end
 
 ------------------------------

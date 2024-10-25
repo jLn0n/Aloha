@@ -7,20 +7,29 @@ local Misc = require("../Misc")
 function Evaluator.Evaluate(code: string): string
 	local ret = ""
 	local finished = false
+	local success = false
 	local currentThread = coroutine.running()
 
 	code = ([[ 
 	require = function(req) error("require is disabled.") end
+	getfenv = function() error("getfenv is disabled.") end
+	setfenv = function() error("setfenv is disabled.") end
+
 	%s
 	]]):format(code)
 
 	task.spawn(function()
-		local temp_file = Misc.CreateTempFile(code)
+		local temp_file, tag = Misc.CreateTempFile(code)
+		process.spawn("stylua", {temp_file.Path}, {cwd = "."})
 		ret = process.spawn("lune", {"run", temp_file.Path}, {
 			cwd = ".",
 		})
-
-		ret = #ret.stderr > 0 and ret.stderr or ret.stdout
+		success = #ret.stderr == 0
+		ret = success and ret.stdout or ret.stderr:gsub('%[string ".-/.-"%]:(%d+):', function(number)
+			n = tonumber(number)
+			local new_number = n-5
+			return '[eval]:' .. new_number .. ':'
+		end)
 		temp_file:Delete()
 
 		finished = true
@@ -46,7 +55,7 @@ function Evaluator.Evaluate(code: string): string
 		coroutine.yield(currentThread)
 	end
 
-	return ret
+	return ret, success
 end
 
 return Evaluator

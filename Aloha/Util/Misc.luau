@@ -24,7 +24,7 @@ function Misc.CreateTempFile(content: string): {Path: string, Delete: () -> () }
 		Delete = function(_)
 			fs.removeFile(path)
 		end
-	}
+	}, tag
 end
 
 function Misc.Beautify(code: string): string
