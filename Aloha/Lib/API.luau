@@ -55,6 +55,23 @@ API.OP = {
 	end
 }
 
+API.CLOSE_REASONS = {
+	[4000] = "UNKNOWN_ERROR",
+	[4001] = "UNKNOWN_OPCODE",
+	[4002] = "DECODE_ERROR",
+	[4003] = "NOT_AUTHENTICATED",
+	[4004] = "AUTHENTICATION_FAILED",
+	[4005] = "ALREADY_AUTHENTICATED",
+	[4007] = "INVALID_SEQUENCE",
+	[4008] = "RATE_LIMITED",
+	[4009] = "SESSION_TIMEOUT",
+	[4010] = "INVALID_SHARD",
+	[4011] = "SHARDING_REQUIRED",
+	[4012] = "INVALID_API_VERSION",
+	[4013] = "INVALID_INTENTS",
+	[4014] = "DISALLOWED_INTENTS"
+}
+
 function API.GenerateGUID(wrapInBraces: boolean?) : string
 	local template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 	local function randomHex(char)

@@ -54,7 +54,13 @@ function Aloha.Run(token: string, intents: number?)
 
 	API.STARTED_AT = os.time()
 
-	return WebSocket.new(gateway_url, token)
+	local ws = WebSocket.new(gateway_url, `Bot {token}`)
+
+	ws.OnClose:Connect(function(closeCode: number, reason: string)
+		print(`[WebSocket] Closed with code {closeCode}: {reason}`)
+	end)
+
+	return ws
 end
 
 function Aloha.RegisterDefaultCommands() : {Commands.Command}

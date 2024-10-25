@@ -18,7 +18,7 @@ export type WebSocket = {
 	Closed: boolean
 } & typeof(WebSocket)
 
-function WebSocket.new(url: string, token: string) : WebSocket | any
+function WebSocket.new(url: string, token: string) : WebSocket
 	local self = setmetatable({}, WebSocket)
 
 	self._url = url
@@ -52,14 +52,13 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 			if message then
 				self.Closed = false
 				self.OnMessage:Fire(message)
-				local payload = net.jsonDecode(message)
-				self._last_payload = payload
+				local payload = net.jsonDecode(message)				
 				
 				if payload.op == 10 then					
 					task.spawn(function()
 						task.wait((payload.d.heartbeat_interval * math.random()) / 1000)
 						if self._socket.closeCode then return end
-						self:Send(API.OP.HEARTBEAT(self._last_payload.s))
+						self:Send(API.OP.HEARTBEAT(payload.s))
 
 						while not self._socket.closeCode and not self.Closed do
 							task.wait(payload.d.heartbeat_interval / 1000)
@@ -113,11 +112,13 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 				if payload.op == 0 and payload.t then
 					Client.Fire(payload.t, payload)
 				end
+
+				self._last_payload = payload
 			end
 		end
 
 		self.Closed = true
-		self.OnClose:Fire(self._socket.closeCode)
+		self.OnClose:Fire(self._socket.closeCode, API.CLOSE_REASONS[self._socket.closeCode] or "Unknown")
 
 		self._socket = net.socket(self._url)
 
@@ -126,7 +127,7 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 
 	task.spawn(connect)
 
-	return setmetatable({}, {	
+	local proxy = setmetatable({}, {	
 		__newindex = function(_, index, value)
 			if index:sub(1,1):lower() == index:sub(1,1) then
 				return
@@ -144,6 +145,8 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 			return self[index]
 		end
 	})
+
+	return proxy
 end
 
 
