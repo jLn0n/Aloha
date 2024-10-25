@@ -19,18 +19,20 @@ function Evaluator.Evaluate(code: string): string
 	]]):format(code)
 
 	task.spawn(function()
-		local temp_file, tag = Misc.CreateTempFile(code)
-		process.spawn("stylua", {temp_file.Path}, {cwd = "."})
-		ret = process.spawn("lune", {"run", temp_file.Path}, {
+		local temp = Misc.CreateTempFile(code)
+
+		process.spawn("stylua", {temp.Path}, {cwd = "."})
+		
+		ret = process.spawn("lune", {"run", temp.Path}, {
 			cwd = ".",
 		})
+
 		success = #ret.stderr == 0
-		ret = success and ret.stdout or ret.stderr:gsub('%[string ".-/.-"%]:(%d+):', function(number)
-			n = tonumber(number)
-			local new_number = n-5
-			return '[eval]:' .. new_number .. ':'
+		ret = success and ret.stdout or ret.stderr:gsub('%[string ".-/.-"%]:(%d+):', function(n)
+			return `[eval]:{n-5}:`
 		end)
-		temp_file:Delete()
+
+		temp:Delete()
 
 		finished = true
 		coroutine.resume(currentThread)
