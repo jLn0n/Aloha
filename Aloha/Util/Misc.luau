@@ -7,7 +7,7 @@ Misc.AddLineNumbers = function(input: string): string
 
 	for line in input:gmatch("([^\n]*)\n?") do
 		if line ~= "" then
-			output_string = output_string .. string.format("%d    %s\n", line_number, line)
+			output_string = output_string .. string.format("%d  %s\n", line_number, line)
 			line_number = line_number + 1
 		end
 	end

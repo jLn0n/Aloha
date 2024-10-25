@@ -37,6 +37,7 @@ function Evaluator.Evaluate(code: string): string
 	end)
 
 
+
 	task.delay(1, function()
 		local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
 		for pid in pid_process.stdout:gmatch("%d+") do
@@ -44,16 +45,16 @@ function Evaluator.Evaluate(code: string): string
 				continue
 			end
 
+			print("killing", pid)
+
 			process.spawn("taskkill", {"/F", "/T", "/PID", pid}, { shell = true })
 		end
-	end)
 
-	if not finished then
-		task.delay(2, function()
-			coroutine.resume(currentThread)
-		end)
-		coroutine.yield(currentThread)
-	end
+		coroutine.resume(currentThread)
+	end)
+	coroutine.yield(currentThread)
+
+	print(success)
 
 	return ret, success
 end

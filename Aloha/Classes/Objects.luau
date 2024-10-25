@@ -82,7 +82,8 @@ local function GetMessage(data: DiscordTypes.MessageData, noCreate: boolean?) : 
 	return Cache.Messages[data.id]
 end
 
-local function GetGuild(id: string) : Guild
+local function GetGuild(id: string) : Guild?
+	if not id then return end
 	if Cache.Guilds[id] then
 		return Cache.Guilds[id]
 	end

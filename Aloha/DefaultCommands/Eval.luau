@@ -6,6 +6,7 @@ local API = require("../Lib/API")
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 local Embed = require("../Classes/Embed")
+local task = require("@lune/task")
 local Color3 = require("../Classes/Color3")
 
 return {
@@ -35,11 +36,35 @@ return {
 		end
 		local code = options[1].value
 
+		local start = os.clock()
 		local output, success = Evaluator.Evaluate(code)
+		local timeTaken = (os.clock() - start) * 1000
+		timeTaken = math.floor(timeTaken * 10 + 0.5) / 10
 
 		local embedColor = success and Color3.new(107/255, 245/255, 76/255) or Color3.new(230/255, 32/255, 32/255)
 
 		local input = code:sub(1, 100) .. (#code > 100 and "..." or "")
+		
+		local lines = {}
+		local isLong = false
+		local extraCount = 0
+		output = output:sub(1, 100)
+		for line in output:gmatch("[^\r\n]+") do
+			if isLong then 
+				extraCount += 1 
+				continue 
+			end
+
+			table.insert(lines, line)
+			if #lines >= 20 then
+				isLong = true
+				extraCount = 1
+			end
+		end
+		output = table.concat(lines, "\n")
+		if isLong then 
+			output ..= "...(" .. extraCount .." lines)" 
+		end
 
 		local temp_file = Misc.CreateTempFile(input)
 		process.spawn("stylua", {temp_file.Path}, {cwd = "."})
@@ -59,7 +84,7 @@ return {
 							name = "Output",
 							value = "```\n" .. output .. "\n```"
 						}
-					}).finish()
+					}).setFooter(`Evaluated in: {timeTaken}ms`).finish()
 				}
 			}
 		}
