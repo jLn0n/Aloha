@@ -6,6 +6,7 @@ local Event = require("./Event")
 local API = require("../Lib/API")
 local task = require("@lune/task")
 local Client = require("../Lib/Client")
+local Misc = require("./Misc")
 
 type NetSocket = net.WebSocket
 type Event = Event.Event
@@ -33,6 +34,7 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 	local connect 
 	connect = function()
 		local retry = false
+		local heartbeat_ack = true
 		while (not self._socket.closeCode) or retry do
 			retry = false
 
@@ -48,6 +50,7 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 			end
 			
 			if message then
+				self.Closed = false
 				self.OnMessage:Fire(message)
 				local payload = net.jsonDecode(message)
 				self._last_payload = payload
@@ -58,9 +61,19 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 						if self._socket.closeCode then return end
 						self:Send(API.OP.HEARTBEAT(self._last_payload.s))
 
-						while not self._socket.closeCode do
+						while not self._socket.closeCode and not self.Closed do
 							task.wait(payload.d.heartbeat_interval / 1000)
 							if self._socket.closeCode then break end
+							if not heartbeat_ack then
+								print("[WebSocket] 💔 The dead walk among us. Reconnecting...", payload)
+
+								self._socket.close()
+								self._socket = net.socket(self._url)
+
+								continue
+							end
+
+							heartbeat_ack = true
 							self:Send(API.OP.HEARTBEAT(self._last_payload.s))
 						end
 					end)
@@ -71,6 +84,7 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 				end
 
 				if payload.op == 7 then
+					print("[WebSocket] 🔄 Reconnect signal received. Attempting to resume.", payload)
 					retry = true
 					self._socket.close()
 					self._socket = net.socket(API.RESUME_URL)
@@ -80,14 +94,23 @@ function WebSocket.new(url: string, token: string) : WebSocket | any
 				end
 
 				if payload.op == 9 then
-					retry = true
+					print("[WebSocket] 🚫 Invalid session. Reconnecting.", payload)
 					self._socket.close()
 					self._socket = net.socket(self._url)
 					
-					continue
+					break
+				end
+
+				if payload.op ~= 0 and payload.op ~= 11 then
+					print("[WebSocket] ❓ Unknown opcode received.", payload)
 				end
 				
-				if payload.t then
+				if payload.op == 11 then
+					print("[WebSocket] ❤️ Heartbeat received. Uptime: " .. Misc.FormatTime(os.time() - API.STARTED_AT))
+					heartbeat_ack = true
+				end
+				
+				if payload.op == 0 and payload.t then
 					Client.Fire(payload.t, payload)
 				end
 			end

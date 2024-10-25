@@ -52,6 +52,8 @@ function Aloha.Run(token: string, intents: number?)
 
 	Cache.Client = User.new(net.jsonDecode(clientUserData.body))
 
+	API.STARTED_AT = os.time()
+
 	return WebSocket.new(gateway_url, token)
 end
 

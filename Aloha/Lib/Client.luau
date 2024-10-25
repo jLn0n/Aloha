@@ -65,7 +65,6 @@ function Client.On(event: string, callback: (...any) -> ()) : Event.Connection?
 		end
 
 		if not callbackInfo then 
-			print(`Callback for {event} not found.`)
 			return
 		end
 	end
@@ -84,13 +83,12 @@ function Client.Fire(event: string, payload: Payload)
 	end
 
 	if not eventCallbacks[event] then
-		print(`Callback for {event} not found.`)
 		return
 	end
 
 	local callbackInfo = eventCallbacks[event]
 
-	print(`Firing {event} event.`)
+	print(`[Client] 🔥 Firing {event} event.`)
 	callbackInfo.event:Fire(callbackInfo.callback(payload))
 end
 

@@ -15,6 +15,32 @@ Misc.AddLineNumbers = function(input: string): string
 	return output_string
 end
 
+Misc.FormatTime = function(seconds: number): string
+    local days = math.floor(seconds / 86400)
+    seconds %= 86400
+    local hours = math.floor(seconds / 3600)
+    seconds %= 3600
+    local minutes = math.floor(seconds / 60)
+    seconds %= 60
+
+    local result = ""
+    if days > 0 then 
+        result ..= days .. "d" 
+    end
+    if hours > 0 then 
+        result ..= hours .. "h" 
+    end
+    if minutes > 0 then 
+        result ..= minutes .. "m" 
+    end
+    if seconds > 0 or #result == 0 then
+        result ..= seconds .. "s"
+    end
+
+    return result
+
+end
+
 function Misc.CreateTempFile(content: string): {Path: string, Delete: () -> () }
 	local tag = API.GenerateGUID(false)
 	local path = `./Aloha/temp/{tag}.lua`

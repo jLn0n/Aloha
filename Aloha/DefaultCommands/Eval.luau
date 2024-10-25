@@ -67,7 +67,7 @@ return {
 		end
 
 		local temp_file = Misc.CreateTempFile(input)
-		process.spawn("stylua", {temp_file.Path}, {cwd = "."})
+		process.spawn("./stylua", {temp_file.Path}, {cwd = "."})
 		local beautified_code = fs.readFile(temp_file.Path)
 		temp_file:Delete()
 			

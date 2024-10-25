@@ -21,9 +21,9 @@ function Evaluator.Evaluate(code: string): string
 	task.spawn(function()
 		local temp = Misc.CreateTempFile(code)
 
-		process.spawn("stylua", {temp.Path}, {cwd = "."})
+		process.spawn("./stylua", {temp.Path}, {cwd = "."})
 		
-		ret = process.spawn("lune", {"run", temp.Path}, {
+		ret = process.spawn("./lune", {"run", temp.Path}, {
 			cwd = ".",
 		})
 
