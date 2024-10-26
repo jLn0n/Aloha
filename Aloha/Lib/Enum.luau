@@ -84,5 +84,11 @@ return {
 		FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = bit32.lshift(1, 8),
 		SUPPRESS_NOTIFICATIONS = bit32.lshift(1, 12),
 		IS_VOICE_MESSAGE = bit32.lshift(1, 13)
+	},
+
+	INTENTS = {
+		DEFAULT = 53575421,
+		NONE = 0,
+		ALL = 53608447
 	}
 }

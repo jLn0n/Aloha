@@ -3,13 +3,13 @@ local Aloha = {}
 local Endpoints = require("./Lib/Endpoints")
 local Cache = require("./Lib/Cache")
 local WebSocket = require("./Util/WebSocket")
-local Intents = require("./Lib/Intents")
 local API = require("./Lib/API")
 local Objects = require("./Classes/Objects")
 local Commands = require("./Lib/Commands")
 local User = Objects.User
 local net = require("@lune/net")
 local lfs = require("@lune/fs")
+local Enum = require("./Lib/Enum")
 local process = require("@lune/process")
 
 function Aloha.ClearTemp()
@@ -20,7 +20,7 @@ function Aloha.ClearTemp()
 end
 
 function Aloha.Run(token: string, intents: number?)
-	API.INTENTS = intents or Intents.DEFAULT
+	API.INTENTS = intents or Enum.INTENTS.DEFAULT
 
 	local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
 	API.PROCESS_ID = pid_process.stdout:match("%d+")

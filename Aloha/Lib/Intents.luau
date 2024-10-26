@@ -1,5 +1,0 @@
-return {
-	DEFAULT = 53575421,
-	NONE = 0,
-	ALL = 53608447
-}
