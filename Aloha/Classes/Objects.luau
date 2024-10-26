@@ -34,11 +34,45 @@ export type Channel = DiscordTypes.ChannelData & {
 	guild: Guild
 } & typeof(Channel)
 
-export type Message = DiscordTypes.MessageData & {
+export type Message = typeof(Message) & {
 	channel: Channel,
 	author: User,
-	mentions: {User}
-} & typeof(Message)
+	mentions: {User},
+	id: DiscordTypes.snowflake,
+	channel_id: DiscordTypes.snowflake,
+	content: string,
+	timestamp: string,
+	edited_timestamp: string?,
+	tts: boolean,
+	mention_everyone: boolean,
+	mention_roles: {number},
+	mention_channels: {DiscordTypes.ChannelMentionData},
+	attachments: {DiscordTypes.AttachmentData},
+	embeds: {DiscordTypes.EmbedData},
+	reactions: {DiscordTypes.ReactionData}?,
+	nonce: (number | string)?,
+	pinned: boolean,
+	webhook_id: DiscordTypes.snowflake?,
+	type: number,
+	activity: DiscordTypes.ActivityData?,
+	application: DiscordTypes.ApplicationData?,
+	application_id: DiscordTypes.snowflake?,
+	flags: number?,
+	message_reference: DiscordTypes.MessageReferenceData?,
+	message_snapshots: {DiscordTypes.MessageSnapshotData}?,
+	referenced_message: Message?,
+	interaction_metadata: DiscordTypes.InteractionMetadataData?,
+	interaction: DiscordTypes.InteractionData?,
+	thread: DiscordTypes.ChannelData?,
+	components: {DiscordTypes.ComponentData}?,
+	sticker_items: {DiscordTypes.StickerItemData}?,
+	stickers: {DiscordTypes.StickerData}?,
+	position: number?,
+	role_subscription_data: DiscordTypes.RoleSubscriptionData?,
+	resolved: DiscordTypes.ResolvedData?,
+	poll: DiscordTypes.PollData?,
+	call: DiscordTypes.CallData?
+}
 
 export type Member = DiscordTypes.MemberData & {
 	user: User,
@@ -138,6 +172,10 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 	end
 
 	self.mentions = mentions
+
+	if data.referenced_message then
+		self.referenced_message = GetMessageInChannel(data.referenced_message.channel_id, data.referenced_message.id)
+	end
 	
 	return self
 end
@@ -585,5 +623,6 @@ return {
 	GetChannel = GetChannel,
 	GetUser = GetUser,
 	GetMessage = GetMessage,
-	GetGuild = GetGuild
+	GetGuild = GetGuild,
+	GetMember = GetMember
 }
