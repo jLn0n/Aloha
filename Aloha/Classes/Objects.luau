@@ -17,7 +17,7 @@ Member.__index = Member
 
 local Cache = require("../Lib/Cache")
 local DiscordTypes = require("../Lib/DiscordTypes")
-local API = require("../Lib/API")
+local Bot = require("../Lib/Bot")
 local Endpoints = require("../Lib/Endpoints")
 local net = require("@lune/net")
 
@@ -51,7 +51,7 @@ local function GetChannel(id: string) : Channel
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -76,7 +76,7 @@ local function GetMessageInChannel(channelId: string, messageId: string) : Messa
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -93,7 +93,7 @@ local function GetGuild(id: string) : Guild?
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -110,7 +110,7 @@ local function GetMember(userId: string, guildId: string) : (Member? | boolean, 
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -149,7 +149,7 @@ function Message:Delete()
 			url = url,
 			method = "DELETE",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -174,7 +174,7 @@ function Message:AddReaction(emoji: string)
 			url = url,
 			method = "PUT",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -190,7 +190,7 @@ function Message:RemoveReaction(emoji: string, userId: string?)
 			url = url,
 			method = "DELETE",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -206,7 +206,7 @@ function Message:RemoveAllReactions()
 			url = url,
 			method = "DELETE",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -239,7 +239,7 @@ function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, refere
 				message_reference = reference 
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`,
+				['Authorization'] = `Bot {Bot.TOKEN}`,
 				['Content-Type'] = "application/json"
 			}
 		})
@@ -256,7 +256,7 @@ function Channel:Delete(message_id: string)
 			url = url,
 			method = "DELETE",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -279,7 +279,7 @@ function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boo
 			method = "PATCH",
 			body = net.jsonEncode(data),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`,
+				['Authorization'] = `Bot {Bot.TOKEN}`,
 			}
 		})
 	end)
@@ -308,7 +308,7 @@ function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
 				recipient_id = self.id
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`,
+				['Authorization'] = `Bot {Bot.TOKEN}`,
 				['Content-Type'] = "application/json"
 			}
 		})
@@ -344,7 +344,7 @@ function Member:Kick()
 			url = url,
 			method = "DELETE",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -363,7 +363,7 @@ function Member:Ban(delete_message_seconds: number?)
 				delete_message_seconds = delete_message_seconds
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -393,7 +393,7 @@ function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -415,7 +415,7 @@ function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
 				delete_message_seconds = delete_message_seconds
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -440,7 +440,7 @@ function Guild:CreateRole(name: string, permissions: string, color: number, hois
 				mentionable = mentionable
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -456,7 +456,7 @@ function Guild:GetRoles() : ({DiscordTypes.RoleData} | boolean, {any}?)
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -474,7 +474,7 @@ function Guild:GetRole(id: string) : (DiscordTypes.RoleData? | boolean, {any}?)
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -492,7 +492,7 @@ function Guild:DeleteRole(id: string) : (boolean, {any}?)
 			url = url,
 			method = "DELETE",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -509,7 +509,7 @@ function Guild:ModifyRole(id: string, data: {name: string?, permissions: string?
 			method = "PATCH",
 			body = net.jsonEncode(data),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -529,7 +529,7 @@ function Guild:MoveRole(id: string, position: number) : (boolean, {any}?)
 				position = position
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -545,7 +545,7 @@ function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?
 			url = url,
 			method = "GET",
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {Bot.TOKEN}`
 			}
 		})
 	end)
@@ -553,6 +553,25 @@ function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?
 	if not success then return false, response end
 
 	return net.jsonDecode(response.body)
+end
+
+function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Channel? | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "POST",
+			body = net.jsonEncode(data),
+			headers = {
+				['Authorization'] = `Bot {Bot.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end
+
+	return Channel.new(net.jsonDecode(response.body))
 end
 ------------------------------
 return {

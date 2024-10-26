@@ -1,5 +1,5 @@
 -- Janitor fork to work with my library. Thank you to howmanysmall for the original Janitor.
-local API = require("../Lib/API")
+local Bot = require("../Lib/Bot")
 local task = require("@lune/task")
 
 local Sweeper = {}
@@ -38,7 +38,7 @@ function Sweeper.new() : Sweeper
 end
 
 function Sweeper:Add<T>(object: T, methodName: (boolean | string)?, index: any?) : T
-	self.Cache[index or API.GenerateGUID()] = {
+	self.Cache[index or Bot.GenerateGUID()] = {
 		method = methodName,
 		object = object
 	}

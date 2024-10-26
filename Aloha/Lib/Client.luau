@@ -3,7 +3,7 @@ local Event = require("../Util/Event")
 local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")
 local Enum = require("./Enum")
-local API = require("./API")
+local Bot = require("./Bot")
 local Client = {}
 
 Client.User = nil
@@ -34,7 +34,7 @@ local eventCallbacks = {
 
 	["MESSAGE_DELETE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetMessage(payload.d, true)
+			return Objects.GetMessage(payload.d)
 		end,
 
 		aliases = {"message_delete", "MessageDelete"},
@@ -44,8 +44,8 @@ local eventCallbacks = {
 
 	["READY"] = {
 		callback = function(payload: Payload)
-			API.RESUME_URL = payload.d.resume_gateway_url
-			API.SESSION_ID = payload.d.session_id
+			Bot.RESUME_URL = payload.d.resume_gateway_url
+			Bot.SESSION_ID = payload.d.session_id
 		end,
 
 		aliases = {"ready", "Ready"},

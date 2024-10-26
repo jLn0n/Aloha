@@ -1,25 +1,25 @@
-local API = {}
+local Bot = {}
 
 local Cache = require("./Cache")
 local net = require("@lune/net")
 local process = require("@lune/process")
 local Endpoints = require("./Endpoints")
 
-API.DISCORD_API_VERSION = "10"
-API.ALOHA_VERSION = "0.3.1"
+Bot.DISCORD_Bot_VERSION = "10"
+Bot.ALOHA_VERSION = "0.3.1"
 
-API.PROCESS_ID = 0
+Bot.PROCESS_ID = 0
 
-API.TOKEN = ""
+Bot.TOKEN = ""
 
-API.RESUME_URL = ""
-API.SESSION_ID = ""
+Bot.RESUME_URL = ""
+Bot.SESSION_ID = ""
 
-API.STARTED_AT = 0
+Bot.STARTED_AT = 0
 
-API.INTENTS = 53608447
+Bot.INTENTS = 53608447
 
-API.OP = {
+Bot.OP = {
 	-- Aloha!!
 	["HELLO"] = function(token: string)
 		return {
@@ -31,8 +31,8 @@ API.OP = {
 					browser = "aloha",
 					device = "aloha"
 				}, 
-				intents = API.INTENTS,
-				compress = true
+				intents = Bot.INTENTS,
+				--compress = true
 			}
 		}	
 	end,
@@ -42,7 +42,7 @@ API.OP = {
 			op = 6,
 			d = {
 				token = token,
-				session_id = API.SESSION_ID,
+				session_id = Bot.SESSION_ID,
 				seq = sequence
 			}
 		}
@@ -56,7 +56,7 @@ API.OP = {
 	end
 }
 
-API.CLOSE_REASONS = {
+Bot.CLOSE_REASONS = {
 	[4000] = "UNKNOWN_ERROR",
 	[4001] = "UNKNOWN_OPCODE",
 	[4002] = "DECODE_ERROR",
@@ -68,12 +68,12 @@ API.CLOSE_REASONS = {
 	[4009] = "SESSION_TIMEOUT",
 	[4010] = "INVALID_SHARD",
 	[4011] = "SHARDING_REQUIRED",
-	[4012] = "INVALID_API_VERSION",
+	[4012] = "INVALID_Bot_VERSION",
 	[4013] = "INVALID_INTENTS",
 	[4014] = "DISALLOWED_INTENTS"
 }
 
-function API.GenerateGUID(wrapInBraces: boolean?) : string
+function Bot.GenerateGUID(wrapInBraces: boolean?) : string
 	local template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 	local function randomHex(char)
 		local v = (char == 'x') and math.random(0, 15) or math.random(8, 11)
@@ -85,4 +85,4 @@ function API.GenerateGUID(wrapInBraces: boolean?) : string
 	return wrapInBraces and `\{{s}\}` or s
 end
 
-return API
+return Bot

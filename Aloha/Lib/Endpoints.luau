@@ -1,5 +1,5 @@
 return {
-	-- Base API URL
+	-- Base Bot URL
 	BASE_URL = "https://discord.com/api/v10",
 
 	-- Authentication

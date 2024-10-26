@@ -2,7 +2,7 @@ local Evaluator = {}
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 local task = require("@lune/task")
-local API = require("../../Lib/API")
+local Bot = require("../../Lib/Bot")
 local Misc = require("../Misc")
 function Evaluator.Evaluate(code: string): string
 	local ret = ""
@@ -42,7 +42,7 @@ function Evaluator.Evaluate(code: string): string
 	task.delay(1, function()
 		local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
 		for pid in pid_process.stdout:gmatch("%d+") do
-			if pid == API.PROCESS_ID then
+			if pid == Bot.PROCESS_ID then
 				continue
 			end
 

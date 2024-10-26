@@ -3,7 +3,7 @@ local Aloha = {}
 local Endpoints = require("./Lib/Endpoints")
 local Cache = require("./Lib/Cache")
 local WebSocket = require("./Util/WebSocket")
-local API = require("./Lib/API")
+local Bot = require("./Lib/Bot")
 local Objects = require("./Classes/Objects")
 local Commands = require("./Lib/Commands")
 local User = Objects.User
@@ -21,10 +21,10 @@ function Aloha.ClearTemp()
 end
 
 function Aloha.Run(token: string, intents: number?)
-	API.INTENTS = intents or Enum.INTENTS.DEFAULT
+	Bot.INTENTS = intents or Enum.INTENTS.DEFAULT
 
 	local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
-	API.PROCESS_ID = pid_process.stdout:match("%d+")
+	Bot.PROCESS_ID = pid_process.stdout:match("%d+")
 
 	local response = net.request({
 		url =  `{Endpoints.BASE_URL}{Endpoints.GET_GATEWAY_BOT}`,
@@ -39,9 +39,9 @@ function Aloha.Run(token: string, intents: number?)
 
 	local base = net.jsonDecode(response.body).url
 
-	local gateway_url = `{base}/?v={API.DISCORD_API_VERSION}&encoding=json`
+	local gateway_url = `{base}/?v={Bot.DISCORD_Bot_VERSION}&encoding=json`
 
-	API.TOKEN = token
+	Bot.TOKEN = token
 
 	local clientUserData = net.request({
 		url = `{Endpoints.BASE_URL}{Endpoints.GET_CURRENT_USER}`,
@@ -55,7 +55,7 @@ function Aloha.Run(token: string, intents: number?)
 
 	Client.User = Cache.Client
 
-	API.STARTED_AT = os.time()
+	Bot.STARTED_AT = os.time()
 
 	local ws = WebSocket.new(gateway_url, `Bot {token}`)
 

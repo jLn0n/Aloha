@@ -1,5 +1,5 @@
 local Misc = {}
-local API = require("../Lib/API")
+local Bot = require("../Lib/Bot")
 local fs = require("@lune/fs")
 local DiscordTypes = require("../Lib/DiscordTypes")
 Misc.AddLineNumbers = function(input: string): string
@@ -49,7 +49,7 @@ Misc.FormatTime = function(seconds: number): string
 end
 
 function Misc.CreateTempFile(content: string): {Path: string, Delete: () -> () }
-	local tag = API.GenerateGUID(false)
+	local tag = Bot.GenerateGUID(false)
 	local path = `./Aloha/temp/{tag}.lua`
 	fs.writeFile(path, content)
 	return {

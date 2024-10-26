@@ -5,7 +5,7 @@ local Cache = require("./Cache")
 local Enum = require("./Enum")
 local DiscordTypes = require("./DiscordTypes")
 local Event = require("../Util/Event")
-local API = require("./API")
+local Bot = require("./Bot")
 
 export type GlobalCommand = {
 	name: string,
@@ -72,7 +72,7 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 		method = "POST",
 		body = net.jsonEncode(data),
 		headers = {
-			["Authorization"] = `Bot {API.TOKEN}`,
+			["Authorization"] = `Bot {Bot.TOKEN}`,
 			["Content-Type"] = "application/json"
 		}
 	})
@@ -97,7 +97,7 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 		method = "POST",
 		body = net.jsonEncode(data),
 		headers = {
-			["Authorization"] = `Bot {API.TOKEN}`,
+			["Authorization"] = `Bot {Bot.TOKEN}`,
 			["Content-Type"] = "application/json"
 		}
 	})
@@ -125,7 +125,7 @@ function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData)
 		method = "POST",
 		body = net.jsonEncode(command.Response(applicationData)),
 		headers = {
-			["Authorization"] = `BOT {API.TOKEN}`,
+			["Authorization"] = `BOT {Bot.TOKEN}`,
 			["Content-Type"] = "application/json"
 		}
 	})

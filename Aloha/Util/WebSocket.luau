@@ -3,7 +3,7 @@ local WebSocket = {}
 WebSocket.__index = WebSocket
 local net = require("@lune/net")
 local Event = require("./Event")
-local API = require("../Lib/API")
+local Bot = require("../Lib/Bot")
 local task = require("@lune/task")
 local Client = require("../Lib/Client")
 local Misc = require("./Misc")
@@ -36,8 +36,8 @@ function WebSocket.new(url: string, token: string) : WebSocket
 	connect = function()
 		local retry = false
 		local heartbeat_ack = true
-		local ZLIB_SUFFIX = "\0\0\255\255"
-		local buffer = ""
+		--local ZLIB_SUFFIX = "\0\0\255\255"
+		--local buffer = ""
 		while (not self._socket.closeCode) or retry do
 			retry = false
 
@@ -55,7 +55,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 			if message then
 				self.Closed = false
 				self.OnMessage:Fire(message)
-				local payload
+				--[[local payload
 				
 				buffer ..= message
 
@@ -76,13 +76,15 @@ function WebSocket.new(url: string, token: string) : WebSocket
 					payload = net.jsonDecode(decompressed)
 				end
 
-				buffer = ""
+				buffer = ""]]
+
+				local payload = net.jsonDecode(message)
 				
 				if payload.op == 10 then					
 					task.spawn(function()
 						task.wait((payload.d.heartbeat_interval * math.random()) / 1000)
 						if self._socket.closeCode then return end
-						local heartbeat_payload = API.OP.HEARTBEAT(payload.s)
+						local heartbeat_payload = Bot.OP.HEARTBEAT(payload.s)
 						self:Send(heartbeat_payload)
 						print("[WebSocket] 💖 Initial heartbeat sent.", heartbeat_payload)
 						while not self._socket.closeCode and not self.Closed do
@@ -98,13 +100,13 @@ function WebSocket.new(url: string, token: string) : WebSocket
 							end
 
 							heartbeat_ack = true
-							heartbeat_payload = API.OP.HEARTBEAT(self._last_payload.s)
+							heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
 							print("[WebSocket] 💖 Heartbeat sent.", heartbeat_payload)
 							self:Send(heartbeat_payload)
 						end
 					end)
 
-					self:Send(API.OP.HELLO(self.token))
+					self:Send(Bot.OP.HELLO(self.token))
 
 					continue
 				end
@@ -113,8 +115,8 @@ function WebSocket.new(url: string, token: string) : WebSocket
 					print("[WebSocket] 🔄 Reconnect signal received. Attempting to resume.", payload)
 					retry = true
 					self._socket.close()
-					self._socket = net.socket(API.RESUME_URL)
-					self._socket.send(API.OP.RESUME(self.token, self._last_payload.s))
+					self._socket = net.socket(Bot.RESUME_URL)
+					self._socket.send(Bot.OP.RESUME(self.token, self._last_payload.s))
 
 					continue
 				end
@@ -132,7 +134,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 				end
 				
 				if payload.op == 11 then
-					print("[WebSocket] ❤️ Heartbeat received. Uptime: " .. Misc.FormatTime(os.time() - API.STARTED_AT))
+					print("[WebSocket] ❤️ Heartbeat received. Uptime: " .. Misc.FormatTime(os.time() - Bot.STARTED_AT))
 					heartbeat_ack = true
 				end
 				
@@ -145,7 +147,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 		end
 
 		self.Closed = true
-		self.OnClose:Fire(self._socket.closeCode, API.CLOSE_REASONS[self._socket.closeCode] or "Unknown")
+		self.OnClose:Fire(self._socket.closeCode, Bot.CLOSE_REASONS[self._socket.closeCode] or "Unknown")
 
 		self._socket = net.socket(self._url)
 

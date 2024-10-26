@@ -1,7 +1,7 @@
 local Enum = require("../Lib/Enum")
 local DiscordTypes = require("../Lib/DiscordTypes")
 local Misc = require("../Util/Misc")
-local API = require("../Lib/API")
+local Bot = require("../Lib/Bot")
 local Embed = require("../Classes/Embed")
 local Color3 = require("../Classes/Color3")
 
@@ -18,7 +18,7 @@ return {
 			data = {
 				embeds = {
 					Embed.new().setColor(Color3.new(252/255, 152/255, 3/255))
-					.setDescription(`Aloha has been online for {Misc.FormatTime(os.time() - API.STARTED_AT)}`).finish()
+					.setDescription(`Aloha has been online for {Misc.FormatTime(os.time() - Bot.STARTED_AT)}`).finish()
 				},
 				flags = Enum.MESSAGE_FLAGS.EPHEMERAL
 			}

@@ -20,6 +20,26 @@ export type UserData = {
 	avatar_decoration_data: AvatarDecorationData?
 }
 
+export type CreateGuildChannelData = {
+	name: string,
+	type: number,
+	topic: string?,
+	bitrate: number?,
+	user_limit: number?,
+	rate_limit_per_user: number?,
+	permission_overwrites: {PermissionOverwriteData}?,
+	parent_id: snowflake?,
+	nsfw: boolean?,
+	rtc_region: string?,
+	video_quality_mode: number?,
+	default_auto_archive_duration: number?,
+	default_reaction_emoji: {ReactionData}?,
+	available_tags: {ForumTagData}?,
+	default_sort_order: number?,
+	default_forum_layout: number?,
+	default_thread_rate_limit_per_user: number?
+}
+
 export type AvatarDecorationData = {
 	asset: string,
 	sku_id: number
