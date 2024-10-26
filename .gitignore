@@ -2,7 +2,9 @@
 # The bot file with my token in it.
 bot.luau
 
-/temp/
+Aloha/temp/
+
+api/
 
 lune
 lune.exe

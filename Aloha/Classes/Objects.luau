@@ -152,6 +152,9 @@ function Message:AddReaction(emoji: string)
 		return net.request({
 			url = url,
 			method = "PUT",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
 		})
 	end)
 
