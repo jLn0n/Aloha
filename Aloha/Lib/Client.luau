@@ -90,7 +90,6 @@ function Client.Fire(event: string, payload: Payload)
 
 	local callbackInfo = eventCallbacks[event]
 
-	print(`[Client] 🔥 Firing {event} event.`)
 	callbackInfo.event:Fire(callbackInfo.callback(payload))
 end
 
