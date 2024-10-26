@@ -2,8 +2,8 @@ local Evaluator = {}
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 local task = require("@lune/task")
-local Bot = require("../../Lib/Bot")
-local Misc = require("../Misc")
+local Bot = require("../Lib/Bot")
+local Misc = require("./Misc")
 function Evaluator.Evaluate(code: string): string
 	local ret = ""
 	local finished = false

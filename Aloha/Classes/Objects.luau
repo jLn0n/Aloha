@@ -133,7 +133,7 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 	local mentions = {}
 
 	for _, user in data.mentions do
-		mentions[user] = GetUser(user)
+		table.insert(mentions, GetUser(user))
 	end
 
 	self.mentions = mentions

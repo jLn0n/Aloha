@@ -1,4 +1,4 @@
-export type snowflake = string & { __newtype: "snowflake" }
+export type snowflake = string
 
 export type UserData = {
 	id: snowflake,
