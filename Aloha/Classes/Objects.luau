@@ -19,8 +19,7 @@ local Cache = require("../Lib/Cache")
 local DiscordTypes = require("../Lib/DiscordTypes")
 local Bot = require("../Lib/Bot")
 local Endpoints = require("../Lib/Endpoints")
-local net = require("@lune/net")
-
+local Network = require("../Lib/Network")
 
 export type Guild = DiscordTypes.GuildData & {
 
@@ -81,17 +80,11 @@ export type Member = DiscordTypes.MemberData & {
 -- Functions -----------------
 local function GetChannel(id: string) : Channel
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL:format(id)}`
-	local _, response = pcall(function() 
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	response = net.jsonDecode(response.body)
+	response = Network.JsonDecode(response.body)
 
 	return Channel.new(response)
 end
@@ -106,15 +99,9 @@ end
 
 local function GetMessageInChannel(channelId: string, messageId: string) : Message?
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL_MESSAGE:format(channelId, messageId)}`
-	local _, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
 	return Message.new(response)
 end
@@ -123,36 +110,22 @@ local function GetGuild(id: string) : Guild?
 	if not id then return end
 
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD:format(id)}`
-	local _, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	response = net.jsonDecode(response.body)
+	response = Network.JsonDecode(response.body)
 
 	return Guild.new(response)
 end
 local function GetMember(userId: string, guildId: string) : (Member? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(guildId, userId)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	if not success then return false, response end
-
-	return Member.new(net.jsonDecode(response.body), guildId)
+	return Member.new(Network.JsonDecode(response.body), guildId)
 end
 ------------------------------ Message
 function Message.new(data: DiscordTypes.MessageData) : Message
@@ -183,17 +156,9 @@ end
 function Message:Delete()
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.channel_id, self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "DELETE",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Delete(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
@@ -206,51 +171,27 @@ function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
 end
 
 function Message:AddReaction(emoji: string)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, net.urlEncode(emoji))}`
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji))}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "PUT",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Put(url, "", {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Message:RemoveReaction(emoji: string, userId: string?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, net.urlEncode(emoji), userId or "@me")}`
+	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji), userId or "@me")}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "DELETE",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Delete(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Message:RemoveAllReactions()
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_ALL_REACTIONS:format(self.channel_id, self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "DELETE",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Delete(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 ------------------------------ Channel
 function Channel.new(data: DiscordTypes.ChannelData) : Channel
@@ -268,39 +209,22 @@ end
 function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_MESSAGE:format(self.id)}`
 
-	local success, response = pcall(function()  
-		return net.request({
-			url = url,
-			method = "POST",
-			body = net.jsonEncode({
-				content = content,
-				embeds = embeds,
-				message_reference = reference 
-			}),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`,
-				['Content-Type'] = "application/json"
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Post(url, Network.JsonEncode({
+		content = content,
+		embeds = embeds,
+		message_reference = reference 
+	}), {
+		['Authorization'] = `Bot {Bot.TOKEN}`,
+		['Content-Type'] = "application/json"
+	})
 end
 
 function Channel:Delete(message_id: string)
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
 
-	local success, response = pcall(function() 
-		return net.request({
-			url = url,
-			method = "DELETE",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Delete(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Channel:GetMessage(id: string) : Message
@@ -312,16 +236,10 @@ end
 function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_CHANNEL:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "PATCH",
-			body = net.jsonEncode(data),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`,
-			}
-		})
-	end)
+	local success, response = Network.Patch(url, Network.JsonEncode(data), {
+		['Authorization'] = `Bot {Bot.TOKEN}`,
+		['Content-Type'] = "application/json"
+	})
 
 	return success, response
 end
@@ -339,23 +257,14 @@ end
 function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_DM}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "POST",
-			body = net.jsonEncode({
-				recipient_id = self.id
-			}),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`,
-				['Content-Type'] = "application/json"
-			}
-		})
-	end)
+	local response = Network.Post(url, Network.JsonEncode({
+		recipient_id = self.id
+	}), {
+		['Authorization'] = `Bot {Bot.TOKEN}`,
+		['Content-Type'] = "application/json"
+	})
 
-	if not success then return false, response end		
-
-	return Channel.new(net.jsonDecode(response.body))
+	return Channel.new(Network.JsonDecode(response.body))
 end
 
 function Member.new(data: DiscordTypes.MemberData, guild: Guild? | string?) : Member
@@ -378,36 +287,19 @@ end
 function Member:Kick()
 	local url = `{Endpoints.BASE_URL}{Endpoints.REMOVE_GUILD_MEMBER:format(self.guild.id, self.user.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "DELETE",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Delete(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Member:Ban(delete_message_seconds: number?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_BAN:format(self.guild.id, self.user.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "PUT",
-			body = net.jsonEncode({
-				delete_message_seconds = delete_message_seconds
-			}),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Put(url, Network.JsonEncode({
+		delete_message_seconds = delete_message_seconds
+	}), {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 ------------------------------ Guild
 function Guild.new(data: DiscordTypes.GuildData) : Guild
@@ -427,114 +319,66 @@ end
 function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	if not success then return false, response end
-
-	return Member.new(net.jsonDecode(response.body), self)
+	return Member.new(Network.JsonDecode(response.body), self)
 end
 
 function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.BULK_GUILD_BAN:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "POST",
-			body = net.jsonEncode({
-				user_ids = userIds,
-				delete_message_seconds = delete_message_seconds
-			}),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Post(url, Network.JsonEncode({
+		user_ids = userIds,
+		delete_message_seconds = delete_message_seconds
+	}), {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "POST",
-			body = net.jsonEncode({
-				name = name,
-				permissions = permissions,
-				color = color,
-				hoist = hoist,
-				icon = icon,
-				unicode_emoji = unicode_emoji,
-				mentionable = mentionable
-			}),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
-
-	return success, response
+	return Network.Post(url, Network.JsonEncode({
+		name = name,
+		permissions = permissions,
+		color = color,
+		hoist = hoist,
+		icon = icon,
+		unicode_emoji = unicode_emoji,
+		mentionable = mentionable
+	}), {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 end
 
 function Guild:GetRoles() : ({DiscordTypes.RoleData} | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	if not success then return false, response end
-
-	return net.jsonDecode(response.body)
+	return Network.JsonDecode(response.body)
 end
 
 function Guild:GetRole(id: string) : (DiscordTypes.RoleData? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLE:format(self.id, id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	if not success then return false, response end
-
-	return net.jsonDecode(response.body)
+	return Network.JsonDecode(response.body)
 end	
 
 function Guild:DeleteRole(id: string) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_GUILD_ROLE:format(self.id, id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "DELETE",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local success, response = Network.Delete(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
 	return success, response
 end
@@ -542,16 +386,9 @@ end
 function Guild:ModifyRole(id: string, data: {name: string?, permissions: string?, color: number?, hoist: boolean?, icon: string?, unicode_emoji: string?, mentionable: boolean?}) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_GUILD_ROLE:format(self.id, id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "PATCH",
-			body = net.jsonEncode(data),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local success, response = Network.Patch(url, Network.JsonEncode(data), {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
 	return success, response
 end
@@ -559,19 +396,12 @@ end
 function Guild:MoveRole(id: string, position: number) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "PATCH",
-			body = net.jsonEncode({
-				id = id,
-				position = position
-			}),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local success, response = Network.Patch(url, Network.JsonEncode({
+		id = id,
+		position = position
+	}), {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
 	return success, response
 end
@@ -579,38 +409,21 @@ end
 function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "GET",
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Get(url, {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	if not success then return false, response end
-
-	return net.jsonDecode(response.body)
+	return Network.JsonDecode(response.body)
 end
 
 function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Channel? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
 
-	local success, response = pcall(function()
-		return net.request({
-			url = url,
-			method = "POST",
-			body = net.jsonEncode(data),
-			headers = {
-				['Authorization'] = `Bot {Bot.TOKEN}`
-			}
-		})
-	end)
+	local response = Network.Post(url, Network.JsonEncode(data), {
+		['Authorization'] = `Bot {Bot.TOKEN}`
+	})
 
-	if not success then return false, response end
-
-	return Channel.new(net.jsonDecode(response.body))
+	return Channel.new(Network.JsonDecode(response.body))
 end
 ------------------------------
 return {

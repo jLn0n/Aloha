@@ -1,29 +1,28 @@
 -- Net WebSocket wrapper
-local WebSocket = {}
-WebSocket.__index = WebSocket
-local net = require("@lune/net")
+local DiscordWebSocket = {}
+DiscordWebSocket.__index = DiscordWebSocket
 local Event = require("./Event")
 local Bot = require("../Lib/Bot")
 local task = require("@lune/task")
 local Client = require("../Lib/Client")
 local Misc = require("./Misc")
-local serde = require("@lune/serde")
+local Network = require("../Lib/Network")
 
-type NetSocket = net.WebSocket
+type NetSocket = Network.WebSocket
 type Event = Event.Event
 
 type Payload = {op: number?, d: {[string]:any}, s: number?, t: string?}
-export type WebSocket = {
+export type DiscordWebSocket = {
 	OnMessage: Event,
 	OnClose: Event,
 	Closed: boolean
-} & typeof(WebSocket)
+} & typeof(DiscordWebSocket)
 
-function WebSocket.new(url: string, token: string) : WebSocket
-	local self = setmetatable({}, WebSocket)
+function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
+	local self = setmetatable({}, DiscordWebSocket)
 
 	self._url = url
-	self._socket = net.socket(url)
+	self._socket = Network.WebSocket(url)
 	self._last_payload = nil
 	self.token = token
 
@@ -61,7 +60,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 
 				if #message < 4 or message:sub(-4) ~= ZLIB_SUFFIX then
 					local s, d = pcall(function()
-						return net.jsonDecode(message)
+						return Network.JsonDecode(message)
 					end)
 
 					if s then
@@ -73,12 +72,12 @@ function WebSocket.new(url: string, token: string) : WebSocket
 
 				if not payload then
 					local decompressed = serde.decompress("zlib", buffer)
-					payload = net.jsonDecode(decompressed)
+					payload = Network.JsonDecode(decompressed)
 				end
 
 				buffer = ""]]
 
-				local payload = net.jsonDecode(message)
+				local payload = Network.JsonDecode(message)
 				
 				if payload.op == 10 then					
 					task.spawn(function()
@@ -94,7 +93,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 								print("[WebSocket] 💔 The dead walk among us. Reconnecting...", payload)
 
 								self._socket.close()
-								self._socket = net.socket(self._url)
+								self._socket = Network.WebSocket(self._url)
 
 								continue
 							end
@@ -115,7 +114,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 					print("[WebSocket] 🔄 Reconnect signal received. Attempting to resume.", payload)
 					retry = true
 					self._socket.close()
-					self._socket = net.socket(Bot.RESUME_URL)
+					self._socket = Network.WebSocket(Bot.RESUME_URL)
 					self._socket.send(Bot.OP.RESUME(self.token, self._last_payload.s))
 
 					continue
@@ -124,7 +123,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 				if payload.op == 9 then
 					print("[WebSocket] 🚫 Invalid session. Reconnecting.", payload)
 					self._socket.close()
-					self._socket = net.socket(self._url)
+					self._socket = Network.WebSocket(self._url)
 					
 					break
 				end
@@ -149,7 +148,7 @@ function WebSocket.new(url: string, token: string) : WebSocket
 		self.Closed = true
 		self.OnClose:Fire(self._socket.closeCode, Bot.CLOSE_REASONS[self._socket.closeCode] or "Unknown")
 
-		self._socket = net.socket(self._url)
+		self._socket = Network.WebSocket(self._url)
 
 		connect()
 	end
@@ -178,8 +177,8 @@ function WebSocket.new(url: string, token: string) : WebSocket
 end
 
 
-function WebSocket:Send(data: Payload) : ()
-	print("[WebSocket] 📤 Sending payload.", net.jsonEncode(data))
-	self._socket.send(net.jsonEncode(data))
+function DiscordWebSocket:Send(data: Payload) : ()
+	print("[WebSocket] 📤 Sending payload.", Network.JsonEncode(data))
+	self._socket.send(Network.JsonEncode(data))
 end
-return WebSocket
+return DiscordWebSocket

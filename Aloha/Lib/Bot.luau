@@ -1,9 +1,6 @@
 local Bot = {}
 
-local Cache = require("./Cache")
-local net = require("@lune/net")
 local process = require("@lune/process")
-local Endpoints = require("./Endpoints")
 
 Bot.DISCORD_Bot_VERSION = "10"
 Bot.ALOHA_VERSION = "0.3.2"

@@ -2,14 +2,14 @@ local Aloha = {}
 
 local Endpoints = require("./Lib/Endpoints")
 local Cache = require("./Lib/Cache")
-local WebSocket = require("./Util/WebSocket")
+local DiscordWebSocket = require("./Util/DiscordWebSocket")
 local Bot = require("./Lib/Bot")
 local Objects = require("./Classes/Objects")
 local Commands = require("./Lib/Commands")
 local User = Objects.User
 local Client = require("./Lib/Client")
-local net = require("@lune/net")
 local lfs = require("@lune/fs")
+local Network = require("./Lib/Network")
 local Enum = require("./Lib/Enum")
 local process = require("@lune/process")
 
@@ -26,38 +26,35 @@ function Aloha.Run(token: string, intents: number?)
 	local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
 	Bot.PROCESS_ID = pid_process.stdout:match("%d+")
 
-	local response = net.request({
-		url =  `{Endpoints.BASE_URL}{Endpoints.GET_GATEWAY_BOT}`,
-		method = "GET",
-		headers = {
-			["Authorization"] = `Bot {token}`,
-			["Content-Type"] = "application/json",
-		}
+	local success,response = Network.Get(`{Endpoints.BASE_URL}{Endpoints.GET_GATEWAY_BOT}`, {
+		["Authorization"] = `Bot {token}`,
+		["Content-Type"] = "application/json",
 	})
 
 	Aloha.ClearTemp()
 
-	local base = net.jsonDecode(response.body).url
+	local base = Network.JsonDecode(response.body).url
 
 	local gateway_url = `{base}/?v={Bot.DISCORD_Bot_VERSION}&encoding=json`
 
 	Bot.TOKEN = token
 
-	local clientUserData = net.request({
-		url = `{Endpoints.BASE_URL}{Endpoints.GET_CURRENT_USER}`,
-		headers = {
-			["Authorization"] = `Bot {token}`,
-			["Content-Type"] = "application/json",
-		}
+	local success, clientUserData = Network.Get(`{Endpoints.BASE_URL}{Endpoints.GET_CURRENT_USER}`, {
+		["Authorization"] = `Bot {token}`,
+		["Content-Type"] = "application/json",
 	})
 
-	Cache.Client = User.new(net.jsonDecode(clientUserData.body))
+	if success then
+		Cache.Client = User.new(Network.JsonDecode(clientUserData.body))
+	else
+		error("Failed to fetch client user data")
+	end
 
 	Client.User = Cache.Client
 
 	Bot.STARTED_AT = os.time()
 
-	local ws = WebSocket.new(gateway_url, `Bot {token}`)
+	local ws = DiscordWebSocket.new(gateway_url, `Bot {token}`)
 
 	ws.OnClose:Connect(function(closeCode: number, reason: string)
 		print(`[WebSocket] 🔌 Closed with code {closeCode}: {reason}`)
