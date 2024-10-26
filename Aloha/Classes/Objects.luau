@@ -280,7 +280,6 @@ function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boo
 			body = net.jsonEncode(data),
 			headers = {
 				['Authorization'] = `Bot {API.TOKEN}`,
-				['Content-Type'] = "application/json"
 			}
 		})
 	end)
@@ -309,7 +308,8 @@ function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
 				recipient_id = self.id
 			}),
 			headers = {
-				['Authorization'] = `Bot {API.TOKEN}`
+				['Authorization'] = `Bot {API.TOKEN}`,
+				['Content-Type'] = "application/json"
 			}
 		})
 	end)
