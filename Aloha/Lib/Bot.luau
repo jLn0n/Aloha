@@ -6,7 +6,7 @@ local process = require("@lune/process")
 local Endpoints = require("./Endpoints")
 
 Bot.DISCORD_Bot_VERSION = "10"
-Bot.ALOHA_VERSION = "0.3.1"
+Bot.ALOHA_VERSION = "0.3.2"
 
 Bot.PROCESS_ID = 0
 
