@@ -6,6 +6,8 @@ local Enum = require("./Enum")
 local API = require("./API")
 local Client = {}
 
+Client.User = nil
+
 local DiscordTypes = require("./DiscordTypes")
 type Payload = DiscordTypes.Payload
 

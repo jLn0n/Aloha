@@ -10,6 +10,9 @@ Channel.__index = Channel
 
 local Guild = {}
 Guild.__index = Guild
+
+local Member = {}
+Member.__index = Member
 -----------------------------
 
 local Cache = require("../Lib/Cache")
@@ -35,12 +38,13 @@ export type Message = DiscordTypes.MessageData & {
 	channel: Channel,
 	author: User,
 } & typeof(Message)
+
+export type Member = DiscordTypes.MemberData & {
+	user: User,
+	guild: Guild
+} & typeof(Member)
 -- Functions -----------------
 local function GetChannel(id: string) : Channel
-	if Cache.Channels[id] then
-		return Cache.Channels[id]
-	end
-
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL:format(id)}`
 	local _, response = pcall(function() 
 		return net.request({
@@ -54,39 +58,34 @@ local function GetChannel(id: string) : Channel
 
 	response = net.jsonDecode(response.body)
 
-	Cache.Channels[id] = Channel.new(response)
-
-	return Cache.Channels[id]
+	return Channel.new(response)
 end
 
 local function GetUser(data: DiscordTypes.UserData) : User
-	if Cache.Users[data.id] then
-		return Cache.Users[data.id]
-	end
-
-	Cache.Users[data.id] = User.new(data)
-
-	return Cache.Users[data.id]
+	return User.new(data)
 end
 
-local function GetMessage(data: DiscordTypes.MessageData, noCreate: boolean?) : Message?
-	if Cache.Messages[data.id] then
-		return Cache.Messages[data.id]
-	end
+local function GetMessage(data: DiscordTypes.MessageData) : Message
+	return Message.new(data)
+end
 
-	if not data then return end
-	if noCreate then return end
+local function GetMessageInChannel(channelId: string, messageId: string) : Message?
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL_MESSAGE:format(channelId, messageId)}`
+	local _, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
 
-	Cache.Messages[data.id] = Message.new(data)
-
-	return Cache.Messages[data.id]
+	return Message.new(response)
 end
 
 local function GetGuild(id: string) : Guild?
 	if not id then return end
-	if Cache.Guilds[id] then
-		return Cache.Guilds[id]
-	end
 
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD:format(id)}`
 	local _, response = pcall(function()
@@ -101,9 +100,24 @@ local function GetGuild(id: string) : Guild?
 
 	response = net.jsonDecode(response.body)
 
-	Cache.Guilds[id] = Guild.new(response)
+	return Guild.new(response)
+end
+local function GetMember(userId: string, guildId: string) : (Member? | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(guildId, userId)}`
 
-	return Cache.Guilds[id]
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end
+
+	return Member.new(net.jsonDecode(response.body), guildId)
 end
 ------------------------------ Message
 function Message.new(data: DiscordTypes.MessageData) : Message
@@ -115,8 +129,15 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 	
 	self.channel = GetChannel(self.channel_id)
 	self.author = GetUser(self.author)
+
+	local mentions = {}
+
+	for _, user in data.mentions do
+		mentions[user] = GetUser(user)
+	end
+
+	self.mentions = mentions
 	
-	Cache.Messages[self.id] = self
 	return self
 end
 
@@ -152,6 +173,38 @@ function Message:AddReaction(emoji: string)
 		return net.request({
 			url = url,
 			method = "PUT",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Message:RemoveReaction(emoji: string, userId: string?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, net.urlEncode(emoji), userId or "@me")}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "DELETE",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Message:RemoveAllReactions()
+	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_ALL_REACTIONS:format(self.channel_id, self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "DELETE",
 			headers = {
 				['Authorization'] = `Bot {API.TOKEN}`
 			}
@@ -210,6 +263,30 @@ function Channel:Delete(message_id: string)
 
 	return success, response
 end
+
+function Channel:GetMessage(id: string) : Message
+	local msg = GetMessageInChannel(self.id, id)
+
+	return msg
+end
+
+function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_CHANNEL:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "PATCH",
+			body = net.jsonEncode(data),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`,
+				['Content-Type'] = "application/json"
+			}
+		})
+	end)
+
+	return success, response
+end
 ------------------------------  User
 function User.new(data: DiscordTypes.UserData) : User
 	local self = setmetatable({}, User)
@@ -219,6 +296,79 @@ function User.new(data: DiscordTypes.UserData) : User
 	end
 
 	return self
+end
+
+function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_DM}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "POST",
+			body = net.jsonEncode({
+				recipient_id = self.id
+			}),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end		
+
+	return Channel.new(net.jsonDecode(response.body))
+end
+
+function Member.new(data: DiscordTypes.MemberData, guild: Guild? | string?) : Member
+	local self = setmetatable({}, Member)
+
+	for key, value in data do
+		self[key] = value
+	end
+
+	local user = data.user
+	if user then
+		self.user = GetUser(user)
+	end
+
+	self.guild = guild and (type(guild) == "string" and GetGuild(guild) or guild) or nil
+
+	return self
+end
+
+function Member:Kick()
+	local url = `{Endpoints.BASE_URL}{Endpoints.REMOVE_GUILD_MEMBER:format(self.guild.id, self.user.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "DELETE",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Member:Ban(delete_message_seconds: number?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_BAN:format(self.guild.id, self.user.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "PUT",
+			body = net.jsonEncode({
+				delete_message_seconds = delete_message_seconds
+			}),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
 end
 ------------------------------ Guild
 function Guild.new(data: DiscordTypes.GuildData) : Guild
@@ -235,6 +385,175 @@ function Guild:GetChannel(id: string) : Channel
 	return GetChannel(id)
 end
 
+function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end
+
+	return Member.new(net.jsonDecode(response.body), self)
+end
+
+function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.BULK_GUILD_BAN:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "POST",
+			body = net.jsonEncode({
+				user_ids = userIds,
+				delete_message_seconds = delete_message_seconds
+			}),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean)
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "POST",
+			body = net.jsonEncode({
+				name = name,
+				permissions = permissions,
+				color = color,
+				hoist = hoist,
+				icon = icon,
+				unicode_emoji = unicode_emoji,
+				mentionable = mentionable
+			}),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Guild:GetRoles() : ({DiscordTypes.RoleData} | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end
+
+	return net.jsonDecode(response.body)
+end
+
+function Guild:GetRole(id: string) : (DiscordTypes.RoleData? | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLE:format(self.id, id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end
+
+	return net.jsonDecode(response.body)
+end	
+
+function Guild:DeleteRole(id: string) : (boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_GUILD_ROLE:format(self.id, id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "DELETE",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Guild:ModifyRole(id: string, data: {name: string?, permissions: string?, color: number?, hoist: boolean?, icon: string?, unicode_emoji: string?, mentionable: boolean?}) : (boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_GUILD_ROLE:format(self.id, id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "PATCH",
+			body = net.jsonEncode(data),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Guild:MoveRole(id: string, position: number) : (boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "PATCH",
+			body = net.jsonEncode({
+				id = id,
+				position = position
+			}),
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	return success, response
+end
+
+function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?)
+	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
+
+	local success, response = pcall(function()
+		return net.request({
+			url = url,
+			method = "GET",
+			headers = {
+				['Authorization'] = `Bot {API.TOKEN}`
+			}
+		})
+	end)
+
+	if not success then return false, response end
+
+	return net.jsonDecode(response.body)
+end
 ------------------------------
 return {
 	Message = Message,

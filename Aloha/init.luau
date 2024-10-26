@@ -7,6 +7,7 @@ local API = require("./Lib/API")
 local Objects = require("./Classes/Objects")
 local Commands = require("./Lib/Commands")
 local User = Objects.User
+local Client = require("./Lib/Client")
 local net = require("@lune/net")
 local lfs = require("@lune/fs")
 local Enum = require("./Lib/Enum")
@@ -51,6 +52,8 @@ function Aloha.Run(token: string, intents: number?)
 	})
 
 	Cache.Client = User.new(net.jsonDecode(clientUserData.body))
+
+	Client.User = Cache.Client
 
 	API.STARTED_AT = os.time()
 

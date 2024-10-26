@@ -28,6 +28,7 @@ return {
 	MODIFY_GUILD_MEMBER = "/guilds/%s/members/%s",
 	REMOVE_GUILD_MEMBER = "/guilds/%s/members/%s",
 	GET_GUILD_ROLES = "/guilds/%s/roles",
+	GET_GUILD_ROLE = "/guilds/%s/roles/%s",
 	CREATE_GUILD_ROLE = "/guilds/%s/roles",
 	MODIFY_GUILD_ROLE = "/guilds/%s/roles/%s",
 	DELETE_GUILD_ROLE = "/guilds/%s/roles/%s",
@@ -38,6 +39,7 @@ return {
 	GET_GUILD_INVITES = "/guilds/%s/invites",
 	GET_GUILD_INTEGRATIONS = "/guilds/%s/integrations",
 	GET_GUILD_VANITY_URL = "/guilds/%s/vanity-url",
+	BULK_GUILD_BAN = "/guilds/%s/bulk-ban",
 
 	-- Channels
 	GET_CHANNEL = "/channels/%s",

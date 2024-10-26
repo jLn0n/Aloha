@@ -1,6 +1,7 @@
 local Misc = {}
 local API = require("../Lib/API")
 local fs = require("@lune/fs")
+local DiscordTypes = require("../Lib/DiscordTypes")
 Misc.AddLineNumbers = function(input: string): string
 	local output_string = ""
 	local line_number = 1
@@ -13,6 +14,12 @@ Misc.AddLineNumbers = function(input: string): string
 	end
 
 	return output_string
+end
+
+Misc.ToSnowflake = function(input: string): DiscordTypes.snowflake
+    assert(type(input) == "string" and #input >= 17 and #input <= 20 and input:match("^%d+$"), "Invalid snowflake")
+
+    return input :: DiscordTypes.snowflake
 end
 
 Misc.FormatTime = function(seconds: number): string
