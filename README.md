@@ -1,4 +1,4 @@
-# Aloha <img src="https://cdn.discordapp.com/attachments/1298468918951936010/1299273719482548244/image.png?ex=671c9a72&is=671b48f2&hm=ce3a6397c3f9bc3c5e987dde618611e70d49de9e2655a48d260f95ec73bd85ac&" alt="aloha_logo" style="float: right; margin-left: 10px;" height="150">
+# Aloha <img src="https://cdn.discordapp.com/attachments/1298813084844167219/1299610722954641489/image.png?ex=671dd44d&is=671c82cd&hm=6b6d5476c4ffe5d20da86760a90e2d3f94b818fb0e0eeca2b987e2442f974023&" alt="aloha_logo" height="50">
 ![](https://img.shields.io/badge/version-0.3.0-orange) ![](https://img.shields.io/badge/license-GPLv3-blue)
 
  
