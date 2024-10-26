@@ -560,6 +560,7 @@ return {
 	User = User,
 	Channel = Channel,
 	Guild = Guild,
+	Member = Member,
 
 	GetChannel = GetChannel,
 	GetUser = GetUser,
