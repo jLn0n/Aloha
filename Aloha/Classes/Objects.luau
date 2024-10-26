@@ -37,6 +37,7 @@ export type Channel = DiscordTypes.ChannelData & {
 export type Message = DiscordTypes.MessageData & {
 	channel: Channel,
 	author: User,
+	mentions: {User}
 } & typeof(Message)
 
 export type Member = DiscordTypes.MemberData & {
