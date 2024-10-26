@@ -20,6 +20,12 @@ return {
 				description = "The code to evaluate.",
 				type = Enum.APPLICATION_COMMAND_OPTION_TYPE.STRING,
 				required = true
+			},
+			{
+				name = "ephemeral",
+				description = "Whether this message should only be visible to you.",
+				type = Enum.APPLICATION_COMMAND_OPTION_TYPE.BOOLEAN,
+				required = false
 			}
 		}
 	},
@@ -35,6 +41,7 @@ return {
 			}
 		end
 		local code = options[1].value
+		local ephemeral = options[2] and options[2].value or true
 
 		local start = os.clock()
 		local output, success = Evaluator.Evaluate(code)
@@ -70,6 +77,12 @@ return {
 		process.spawn("./stylua", {temp_file.Path}, {cwd = "."})
 		local beautified_code = fs.readFile(temp_file.Path)
 		temp_file:Delete()
+
+		local flags = nil
+
+		if ephemeral then
+			flags = Enum.MESSAGE_FLAGS.EPHEMERAL
+		end
 			
 		return {
 			type = Enum.INTERACTION_CALLBACK_TYPE.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -85,7 +98,8 @@ return {
 							value = "```\n" .. output .. "\n```"
 						}
 					}).setFooter(`Evaluated in: {timeTaken}ms`).finish()
-				}
+				},
+				flags = flags
 			}
 		}
 	

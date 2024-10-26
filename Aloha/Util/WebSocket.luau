@@ -7,6 +7,7 @@ local API = require("../Lib/API")
 local task = require("@lune/task")
 local Client = require("../Lib/Client")
 local Misc = require("./Misc")
+local serde = require("@lune/serde")
 
 type NetSocket = net.WebSocket
 type Event = Event.Event
@@ -35,6 +36,8 @@ function WebSocket.new(url: string, token: string) : WebSocket
 	connect = function()
 		local retry = false
 		local heartbeat_ack = true
+		local ZLIB_SUFFIX = "\0\0\255\255"
+		local buffer = ""
 		while (not self._socket.closeCode) or retry do
 			retry = false
 
@@ -52,14 +55,36 @@ function WebSocket.new(url: string, token: string) : WebSocket
 			if message then
 				self.Closed = false
 				self.OnMessage:Fire(message)
-				local payload = net.jsonDecode(message)				
+				local payload
+				
+				buffer ..= message
+
+				if #message < 4 or message:sub(-4) ~= ZLIB_SUFFIX then
+					local s, d = pcall(function()
+						return net.jsonDecode(message)
+					end)
+
+					if s then
+						payload = d
+					else
+						continue
+					end
+				end
+
+				if not payload then
+					local decompressed = serde.decompress("zlib", buffer)
+					payload = net.jsonDecode(decompressed)
+				end
+
+				buffer = ""
 				
 				if payload.op == 10 then					
 					task.spawn(function()
 						task.wait((payload.d.heartbeat_interval * math.random()) / 1000)
 						if self._socket.closeCode then return end
-						self:Send(API.OP.HEARTBEAT(payload.s))
-
+						local heartbeat_payload = API.OP.HEARTBEAT(payload.s)
+						self:Send(heartbeat_payload)
+						print("[WebSocket] 💖 Initial heartbeat sent.", heartbeat_payload)
 						while not self._socket.closeCode and not self.Closed do
 							task.wait(payload.d.heartbeat_interval / 1000)
 							if self._socket.closeCode then break end
@@ -73,7 +98,9 @@ function WebSocket.new(url: string, token: string) : WebSocket
 							end
 
 							heartbeat_ack = true
-							self:Send(API.OP.HEARTBEAT(self._last_payload.s))
+							heartbeat_payload = API.OP.HEARTBEAT(self._last_payload.s)
+							print("[WebSocket] 💖 Heartbeat sent.", heartbeat_payload)
+							self:Send(heartbeat_payload)
 						end
 					end)
 
@@ -137,7 +164,6 @@ function WebSocket.new(url: string, token: string) : WebSocket
 		end,
 
 		__index = function(_, index)
-			print(index)
 			if index:sub(1,1) == "_" then
 				return
 			end
@@ -151,6 +177,7 @@ end
 
 
 function WebSocket:Send(data: Payload) : ()
+	print("[WebSocket] 📤 Sending payload.", net.jsonEncode(data))
 	self._socket.send(net.jsonEncode(data))
 end
 return WebSocket

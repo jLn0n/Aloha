@@ -31,7 +31,8 @@ API.OP = {
 					browser = "aloha",
 					device = "aloha"
 				}, 
-				intents = API.INTENTS
+				intents = API.INTENTS,
+				compress = true
 			}
 		}	
 	end,
@@ -50,7 +51,7 @@ API.OP = {
 	["HEARTBEAT"] = function(sequence: number)
 		return {
 			op = 1,
-			d = sequence
+			d = sequence or false
 		}
 	end
 }

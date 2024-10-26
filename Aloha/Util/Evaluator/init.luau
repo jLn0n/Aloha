@@ -11,6 +11,7 @@ function Evaluator.Evaluate(code: string): string
 	local currentThread = coroutine.running()
 
 	code = ([[ 
+	task = require("@lune/task")
 	require = function(req) error("require is disabled.") end
 	getfenv = function() error("getfenv is disabled.") end
 	setfenv = function() error("setfenv is disabled.") end
@@ -44,8 +45,6 @@ function Evaluator.Evaluate(code: string): string
 			if pid == API.PROCESS_ID then
 				continue
 			end
-
-			print("killing", pid)
 
 			process.spawn("taskkill", {"/F", "/T", "/PID", pid}, { shell = true })
 		end

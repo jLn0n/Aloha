@@ -57,7 +57,7 @@ function Aloha.Run(token: string, intents: number?)
 	local ws = WebSocket.new(gateway_url, `Bot {token}`)
 
 	ws.OnClose:Connect(function(closeCode: number, reason: string)
-		print(`[WebSocket] Closed with code {closeCode}: {reason}`)
+		print(`[WebSocket] 🔌 Closed with code {closeCode}: {reason}`)
 	end)
 
 	return ws
@@ -69,11 +69,12 @@ function Aloha.RegisterDefaultCommands() : {Commands.Command}
 	for _, file in lfs.readDir("./Aloha/DefaultCommands") do
 		local command = require(`./DefaultCommands/{file}`)
 
-		Commands.RegisterGlobal(command.Data):SetResponse(command.Response)
+		local cmd = Commands.RegisterGlobal(command.Data)
+		cmd:SetResponse(command.Response)
 
-		table.insert(commands, Commands.Cache[command.Data.name])
+		table.insert(commands, Commands.Cache[cmd.id])
 	end
-
+	
 	return commands
 end
 
