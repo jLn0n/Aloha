@@ -6,7 +6,7 @@ local process = require("@lune/process")
 local Endpoints = require("./Endpoints")
 
 API.DISCORD_API_VERSION = "10"
-API.ALOHA_VERSION = "0.1.0"
+API.ALOHA_VERSION = "0.3.0"
 
 API.PROCESS_ID = 0
 

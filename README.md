@@ -1,4 +1,4 @@
-# Aloha v0.2.0
+# Aloha v0.3.0
  Aloha is a Discord API written in Luau using [Lune](https://github.com/lune-org/lune). This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau.
 
 ## Current Features:
