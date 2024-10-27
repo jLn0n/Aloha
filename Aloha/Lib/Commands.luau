@@ -1,7 +1,6 @@
 local Commands = {}
 local net = require("@lune/net")
 local Endpoints = require("./Endpoints")
-local Cache = require("./Cache")
 local Enum = require("./Enum")
 local DiscordTypes = require("./DiscordTypes")
 local Event = require("../Util/Event")
@@ -65,7 +64,7 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
 
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Cache.Client.id)}`
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
 
 	local response = net.request({
 		url = url,
@@ -90,7 +89,7 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
 
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_APPLICATION_COMMAND:format(Cache.Client.id, guild_id)}`
+	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_APPLICATION_COMMAND:format(Bot.Client.id, guild_id)}`
 
 	local response = net.request({
 		url = url,

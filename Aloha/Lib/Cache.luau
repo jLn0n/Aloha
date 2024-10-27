@@ -1,4 +1,0 @@
-return {
-	Client = nil,
-	Shards = {}
-}

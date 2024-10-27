@@ -1,15 +1,15 @@
 local Aloha = {}
 
 local Endpoints = require("./Lib/Endpoints")
-local Cache = require("./Lib/Cache")
 local Bot = require("./Lib/Bot")
 local Objects = require("./Classes/Objects")
 local Commands = require("./Lib/Commands")
 local User = Objects.User
 local Client = require("./Lib/Client")
+local task = require("@lune/task")
 local lfs = require("@lune/fs")
 local Network = require("./Lib/Network")
-local ShardManager = require("./Util/ShardManager")
+local DiscordWebSocket = require("./Util/DiscordWebSocket")
 local Enum = require("./Lib/Enum")
 local process = require("@lune/process")
 
@@ -48,17 +48,31 @@ function Aloha.Run(token: string, intents: number?)
 	})
 
 	if success then
-		Cache.Client = User.new(Network.JsonDecode(clientUserData.body))
+		Bot.Client = User.new(Network.JsonDecode(clientUserData.body))
 	else
 		error("Failed to fetch client user data")
 	end
 
-	Client.User = Cache.Client
 
 	Bot.STARTED_AT = os.time()
 
+	for shard_id = 0, shards - 1 do
+		Bot.Shards[shard_id] = {Sent = 0, Socket = DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)}
+	end
 
-	return ShardManager.InitializeShards(gateway_url, token, shards)
+	Bot.SHARD_COUNT = shards
+
+	task.spawn(function()
+		while true do
+			task.wait(1)
+
+			for _, shard in Bot.Shards do
+				shard.Sent = 0
+			end
+		end
+	end)
+
+	return Bot.Shards
 end
 
 function Aloha.RegisterDefaultCommands() : {Commands.Command}
