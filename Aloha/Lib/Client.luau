@@ -75,10 +75,10 @@ function Client.On(event: string, callback: (...any) -> ()) : Event.Connection?
 	return callbackInfo.event:Connect(callback)
 end
 
-function Client.Fire(event: string, payload: Payload)
+function Client.Fire(event: string, payload: Payload, shard_id: number?)
 	if payload.t == "INTERACTION_CREATE" then
 		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND then
-			Commands.HandleInteraction(payload.d)
+			Commands.HandleInteraction(payload.d, shard_id)
 		end
 
 		return
@@ -90,7 +90,7 @@ function Client.Fire(event: string, payload: Payload)
 
 	local callbackInfo = eventCallbacks[event]
 
-	callbackInfo.event:Fire(callbackInfo.callback(payload))
+	callbackInfo.event:Fire(callbackInfo.callback(payload, shard_id))
 end
 
 

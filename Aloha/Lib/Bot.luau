@@ -2,7 +2,7 @@ local Bot = {}
 
 local process = require("@lune/process")
 
-Bot.DISCORD_Bot_VERSION = "10"
+Bot.DISCORD_API_VERSION = "10"
 Bot.ALOHA_VERSION = "0.3.3"
 
 Bot.PROCESS_ID = 0
@@ -18,7 +18,8 @@ Bot.INTENTS = 53608447
 
 Bot.OP = {
 	-- Aloha!!
-	["HELLO"] = function(token: string)
+	["HELLO"] = function(token: string, shard_id: number, shards: number)
+		print(shard_id, shards)
 		return {
 			op = 2,
 			d = {
@@ -29,6 +30,7 @@ Bot.OP = {
 					device = "aloha"
 				}, 
 				intents = Bot.INTENTS,
+				shard = {shard_id, shards},
 				--compress = true
 			}
 		}	
@@ -65,7 +67,7 @@ Bot.CLOSE_REASONS = {
 	[4009] = "SESSION_TIMEOUT",
 	[4010] = "INVALID_SHARD",
 	[4011] = "SHARDING_REQUIRED",
-	[4012] = "INVALID_Bot_VERSION",
+	[4012] = "INVALID_API_VERSION",
 	[4013] = "INVALID_INTENTS",
 	[4014] = "DISALLOWED_INTENTS"
 }

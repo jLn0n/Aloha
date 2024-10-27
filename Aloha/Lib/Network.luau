@@ -4,7 +4,11 @@ local net = require("@lune/net")
 export type ServeRequest = net.ServeRequest
 export type ServeResponse = net.ServeResponse	
 export type ServeHandle = net.ServeHandle
-export type WebSocket = net.WebSocket
+export type WebSocket = {
+	Close: () -> (),
+	Next: () -> (any),
+	Send: (data: string) -> ()
+}
 
 function Network.Get(url: string, headers: {[string]: string}) : (boolean, string)
 	local success, response = pcall(function()
@@ -70,7 +74,15 @@ function Network.Put(url: string, body: string, headers: {[string]: string}) : (
 end
 
 function Network.WebSocket(url: string) : WebSocket
-	return net.socket(url)
+	local newSocket = net.socket(url)
+
+
+	return {
+		Close = newSocket.close,
+		Next = newSocket.next,
+		Send = newSocket.send,
+		getCloseCode = function() return newSocket.closeCode end
+	}
 end
 
 function Network.Server(port: number, callback: (request: ServeRequest) -> ServeResponse) : ServeHandle

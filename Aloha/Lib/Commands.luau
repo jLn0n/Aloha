@@ -109,7 +109,7 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 	return command, returnStr
 end
 
-function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData)
+function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData, shard_id: number?)
 	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
 
 	local command = Commands.Cache[applicationData.id]

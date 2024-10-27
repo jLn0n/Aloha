@@ -1,3 +1,4 @@
 return {
 	Client = nil,
+	Shards = {}
 }

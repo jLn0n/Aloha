@@ -2,7 +2,6 @@ local Aloha = {}
 
 local Endpoints = require("./Lib/Endpoints")
 local Cache = require("./Lib/Cache")
-local DiscordWebSocket = require("./Util/DiscordWebSocket")
 local Bot = require("./Lib/Bot")
 local Objects = require("./Classes/Objects")
 local Commands = require("./Lib/Commands")
@@ -10,6 +9,7 @@ local User = Objects.User
 local Client = require("./Lib/Client")
 local lfs = require("@lune/fs")
 local Network = require("./Lib/Network")
+local ShardManager = require("./Util/ShardManager")
 local Enum = require("./Lib/Enum")
 local process = require("@lune/process")
 
@@ -33,9 +33,12 @@ function Aloha.Run(token: string, intents: number?)
 
 	Aloha.ClearTemp()
 
-	local base = Network.JsonDecode(response.body).url
+	local body = Network.JsonDecode(response.body)
+	
+	local shards = body.shards
+	local base = body.url
 
-	local gateway_url = `{base}/?v={Bot.DISCORD_Bot_VERSION}&encoding=json`
+	local gateway_url = `{base}/?v={Bot.DISCORD_API_VERSION}&encoding=json`
 
 	Bot.TOKEN = token
 
@@ -54,13 +57,8 @@ function Aloha.Run(token: string, intents: number?)
 
 	Bot.STARTED_AT = os.time()
 
-	local ws = DiscordWebSocket.new(gateway_url, `Bot {token}`)
 
-	ws.OnClose:Connect(function(closeCode: number, reason: string)
-		print(`[WebSocket] 🔌 Closed with code {closeCode}: {reason}`)
-	end)
-
-	return ws
+	return ShardManager.InitializeShards(gateway_url, token, shards)
 end
 
 function Aloha.RegisterDefaultCommands() : {Commands.Command}

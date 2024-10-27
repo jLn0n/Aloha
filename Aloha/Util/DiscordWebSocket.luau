@@ -18,13 +18,15 @@ export type DiscordWebSocket = {
 	Closed: boolean
 } & typeof(DiscordWebSocket)
 
-function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
+function DiscordWebSocket.new(url: string, token: string, shard_id: number, shards: number) : DiscordWebSocket
 	local self = setmetatable({}, DiscordWebSocket)
 
 	self._url = url
 	self._socket = Network.WebSocket(url)
 	self._last_payload = nil
 	self.token = token
+	self.shard_id = shard_id
+	self.shards = shards
 
 	self.Closed = false
 
@@ -35,13 +37,12 @@ function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
 	connect = function()
 		local retry = false
 		local heartbeat_ack = true
-		--local ZLIB_SUFFIX = "\0\0\255\255"
-		--local buffer = ""
-		while (not self._socket.closeCode) or retry do
+
+		while (not self._socket.getCloseCode()) or retry do
 			retry = false
 
 			local success, message = xpcall(function()
-				return self._socket.next()
+				return self._socket.Next()
 			end, function(err)
 				print("[WebSocket] Error retrieving next message: " .. err)
 			end)
@@ -54,45 +55,23 @@ function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
 			if message then
 				self.Closed = false
 				self.OnMessage:Fire(message)
-				--[[local payload
-				
-				buffer ..= message
-
-				if #message < 4 or message:sub(-4) ~= ZLIB_SUFFIX then
-					local s, d = pcall(function()
-						return Network.JsonDecode(message)
-					end)
-
-					if s then
-						payload = d
-					else
-						continue
-					end
-				end
-
-				if not payload then
-					local decompressed = serde.decompress("zlib", buffer)
-					payload = Network.JsonDecode(decompressed)
-				end
-
-				buffer = ""]]
-
+			
 				local payload = Network.JsonDecode(message)
 				
 				if payload.op == 10 then					
 					task.spawn(function()
 						task.wait((payload.d.heartbeat_interval * math.random()) / 1000)
-						if self._socket.closeCode then return end
+						if self._socket.getCloseCode() then return end
 						local heartbeat_payload = Bot.OP.HEARTBEAT(payload.s)
 						self:Send(heartbeat_payload)
 						print("[WebSocket] 💖 Initial heartbeat sent.", heartbeat_payload)
-						while not self._socket.closeCode and not self.Closed do
+						while not self._socket.getCloseCode() and not self.Closed do
 							task.wait(payload.d.heartbeat_interval / 1000)
-							if self._socket.closeCode then break end
+							if self._socket.getCloseCode() then break end
 							if not heartbeat_ack then
 								print("[WebSocket] 💔 The dead walk among us. Reconnecting...", payload)
 
-								self._socket.close()
+								self._socket.Close()
 								self._socket = Network.WebSocket(self._url)
 
 								continue
@@ -105,7 +84,7 @@ function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
 						end
 					end)
 
-					self:Send(Bot.OP.HELLO(self.token))
+					self:Send(Bot.OP.HELLO(self.token, self.shard_id, self.shards))
 
 					continue
 				end
@@ -113,16 +92,16 @@ function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
 				if payload.op == 7 then
 					print("[WebSocket] 🔄 Reconnect signal received. Attempting to resume.", payload)
 					retry = true
-					self._socket.close()
+					self._socket.Close()
 					self._socket = Network.WebSocket(Bot.RESUME_URL)
-					self._socket.send(Bot.OP.RESUME(self.token, self._last_payload.s))
+					self._socket.Send(Bot.OP.RESUME(self.token, self._last_payload.s))
 
 					continue
 				end
 
 				if payload.op == 9 then
 					print("[WebSocket] 🚫 Invalid session. Reconnecting.", payload)
-					self._socket.close()
+					self._socket.Close()
 					self._socket = Network.WebSocket(self._url)
 					
 					break
@@ -146,7 +125,7 @@ function DiscordWebSocket.new(url: string, token: string) : DiscordWebSocket
 		end
 
 		self.Closed = true
-		self.OnClose:Fire(self._socket.closeCode, Bot.CLOSE_REASONS[self._socket.closeCode] or "Unknown")
+		self.OnClose:Fire(self._socket.getCloseCode(), Bot.CLOSE_REASONS[self._socket.getCloseCode()] or "Unknown")
 
 		self._socket = Network.WebSocket(self._url)
 
@@ -179,6 +158,6 @@ end
 
 function DiscordWebSocket:Send(data: Payload) : ()
 	print("[WebSocket] 📤 Sending payload.", Network.JsonEncode(data))
-	self._socket.send(Network.JsonEncode(data))
+	self._socket.Send(Network.JsonEncode(data))
 end
 return DiscordWebSocket

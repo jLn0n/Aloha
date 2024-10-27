@@ -80,7 +80,7 @@ export type Member = DiscordTypes.MemberData & {
 -- Functions -----------------
 local function GetChannel(id: string) : Channel
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL:format(id)}`
-	local response = Network.Get(url, {
+	local success,response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
 	})
 
@@ -99,7 +99,7 @@ end
 
 local function GetMessageInChannel(channelId: string, messageId: string) : Message?
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL_MESSAGE:format(channelId, messageId)}`
-	local response = Network.Get(url, {
+	local success,response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
 	})
 
@@ -110,7 +110,7 @@ local function GetGuild(id: string) : Guild?
 	if not id then return end
 
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD:format(id)}`
-	local response = Network.Get(url, {
+	local success,response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
 	})
 
@@ -121,7 +121,7 @@ end
 local function GetMember(userId: string, guildId: string) : (Member? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(guildId, userId)}`
 
-	local response = Network.Get(url, {
+	local success,response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
 	})
 
