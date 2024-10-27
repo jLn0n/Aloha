@@ -1,11 +1,11 @@
 local Commands = {}
 local net = require("@lune/net")
-local Endpoints = require("./Endpoints")
-local Enum = require("./Enum")
-local DiscordTypes = require("./DiscordTypes")
+local Endpoints = require("Endpoints")
+local Enum = require("Enum")
+local DiscordTypes = require("DiscordTypes")
 local Event = require("../Util/Event")
-local Bot = require("./Bot")
-
+local Bot = require("Bot")
+local task = require("@lune/task")
 export type GlobalCommand = {
 	name: string,
 	name_localizations: { [string]: string }?,
@@ -32,9 +32,11 @@ export type GuildCommand = {
 }
 
 Commands.Cache = {}
+Commands.RateLimit = {}
 
 local Command = {}
 Command.__index = Command
+
 
 export type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {Executed: Event.Event, Response: {type: number, data: DiscordTypes.InteractionCallbackData}?}
 
@@ -111,6 +113,12 @@ end
 function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData, shard_id: number?)
 	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
 
+	if applicationData.target_id and Bot.RATE_LIMIT > 0 then
+		if Commands.RateLimit[applicationData.target_id] then
+			return
+		end
+	end
+
 	local command = Commands.Cache[applicationData.id]
 	if not command then return end
 	command.Executed:Fire(applicationData.options)
@@ -128,6 +136,13 @@ function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData, s
 			["Content-Type"] = "application/json"
 		}
 	})
+
+	if applicationData.target_id and Bot.RATE_LIMIT > 0 then
+		Commands.RateLimit[applicationData.target_id] = true
+		task.delay(Bot.RATE_LIMIT, function()
+			Commands.RateLimit[applicationData.target_id] = nil
+		end)
+	end
 end
 
 return Commands

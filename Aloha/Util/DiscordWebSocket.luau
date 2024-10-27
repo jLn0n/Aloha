@@ -6,6 +6,7 @@ local Bot = require("../Lib/Bot")
 local task = require("@lune/task")
 local Client = require("../Lib/Client")
 local Misc = require("./Misc")
+local Timer = require("./Timer")
 local Network = require("../Lib/Network")
 
 type NetSocket = Network.WebSocket
@@ -27,6 +28,8 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 	self.token = token
 	self.shard_id = shard_id
 	self.shards = shards
+	self._last_heartbeat_interval = 0
+	self._heartbeat_timer = nil
 
 	self.Closed = false
 
@@ -58,64 +61,60 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 			
 				local payload = Network.JsonDecode(message)
 				
-				if payload.op == 10 then					
-					task.spawn(function()
-						task.wait((payload.d.heartbeat_interval * math.random()) / 1000)
-						if self._socket.getCloseCode() then return end
-						local heartbeat_payload = Bot.OP.HEARTBEAT(payload.s)
-						self:Send(heartbeat_payload)
-						print("[WebSocket] 💖 Initial heartbeat sent.", heartbeat_payload)
-						while not self._socket.getCloseCode() and not self.Closed do
-							task.wait(payload.d.heartbeat_interval / 1000)
-							if self._socket.getCloseCode() then break end
-							if not heartbeat_ack then
-								print("[WebSocket] 💔 The dead walk among us. Reconnecting...", payload)
+				if payload.op == 10 then	
+					local initial_delay = (payload.d.heartbeat_interval * math.random()) / 1000
+					self._last_heartbeat_interval = payload.d.heartbeat_interval
 
-								self._socket.Close()
-								self._socket = Network.WebSocket(self._url)
-
-								continue
-							end
-
-							heartbeat_ack = true
-							heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
-							print("[WebSocket] 💖 Heartbeat sent.", heartbeat_payload)
-							self:Send(heartbeat_payload)
+					local function heartbeat_interval_callback()
+						if self._socket.getCloseCode() then
+							print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`)
+							self._heartbeat_timer:Stop()
 						end
-					end)
+					end
 
-					self:Send(Bot.OP.HELLO(self.token, self.shard_id, self.shards))
+					local function heartbeat_end_callback()
+						if self._socket.getCloseCode() then
+							print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`)
+							self._heartbeat_timer:Stop()
+							return
+						end
+
+						local heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
+						self:Send(heartbeat_payload)
+						print(`[Shard {self.shard_id}] 💖 Heartbeat sent.`, heartbeat_payload)
+
+						self._heartbeat_timer = Timer.new(payload.d.heartbeat_interval / 1000, 0.1, heartbeat_interval_callback, heartbeat_end_callback)
+					end
+
+					self._heartbeat_timer = Timer.new(initial_delay, 0.1, heartbeat_interval_callback, heartbeat_end_callback)
+
+
+					self:Send(Bot.OP.IDENTIFY(self.token, self.shard_id, self.shards, initial_delay))
 
 					continue
 				end
 
 				if payload.op == 7 then
-					print("[WebSocket] 🔄 Reconnect signal received. Attempting to resume.", payload)
+					print(`[Shard {self.shard_id}] 🔄 Reconnect signal received. Attempting to resume.`, payload)
 					retry = true
 					self._socket.Close()
 					self._socket = Network.WebSocket(Bot.RESUME_URL)
-					self._socket.Send(Bot.OP.RESUME(self.token, self._last_payload.s))
-
+					self._socket.Send(Bot.OP.RESUME(self.token, self._last_payload.s, self.shard_id))
 					continue
 				end
 
 				if payload.op == 9 then
-					print("[WebSocket] 🚫 Invalid session. Reconnecting.", payload)
+					print(`[Shard {self.shard_id}] 🚫 Invalid session. Reconnecting.`, payload)
 					self._socket.Close()
 					self._socket = Network.WebSocket(self._url)
-					
 					break
 				end
 
-				if payload.op ~= 0 and payload.op ~= 11 then
-					print("[WebSocket] ❓ Unknown opcode received.", payload)
-				end
-				
 				if payload.op == 11 then
-					print("[WebSocket] ❤️ Heartbeat received. Uptime: " .. Misc.FormatTime(os.time() - Bot.STARTED_AT))
+					print(`[Shard {self.shard_id}] 💜 Heartbeat received. Uptime: {Misc.FormatTime(os.time() - Bot.STARTED_AT)} (Next in: {Misc.FormatTime(self._last_heartbeat_interval / 1000)})`)
 					heartbeat_ack = true
 				end
-				
+
 				if payload.op == 0 and payload.t then
 					Client.Fire(payload.t, payload)
 				end
@@ -157,7 +156,6 @@ end
 
 
 function DiscordWebSocket:Send(data: Payload) : ()
-	print("[WebSocket] 📤 Sending payload.", Network.JsonEncode(data))
 	self._socket.Send(Network.JsonEncode(data))
 end
 return DiscordWebSocket

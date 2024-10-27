@@ -30,6 +30,8 @@ Misc.FormatTime = function(seconds: number): string
     local minutes = math.floor(seconds / 60)
     seconds %= 60
 
+    seconds = math.floor(seconds * 1000) / 1000
+
     local result = ""
     if days > 0 then 
         result ..= days .. "d" 
@@ -45,7 +47,6 @@ Misc.FormatTime = function(seconds: number): string
     end
 
     return result
-
 end
 
 function Misc.CreateTempFile(content: string): {Path: string, Delete: () -> () }

@@ -57,7 +57,12 @@ function Aloha.Run(token: string, intents: number?)
 	Bot.STARTED_AT = os.time()
 
 	for shard_id = 0, shards - 1 do
-		Bot.Shards[shard_id] = {Sent = 0, Socket = DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)}
+		local socket = DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)
+		Bot.Shards[shard_id] = {Sent = 0, Socket = socket}
+
+		socket.OnClose:Connect(function(code, reason)
+			print(`[Shard {shard_id}] DISCONNECTED: {code} - {reason}`)
+		end)
 	end
 
 	Bot.SHARD_COUNT = shards
@@ -75,8 +80,12 @@ function Aloha.Run(token: string, intents: number?)
 	return Bot.Shards
 end
 
-function Aloha.RegisterDefaultCommands() : {Commands.Command}
+function Aloha.RegisterDefaultCommands(options: {rateLimit: number?}?) : {Commands.Command}
 	local commands = {}
+
+	if options and options.rateLimit then
+		Bot.RATE_LIMIT = options.rateLimit
+	end
 
 	for _, file in lfs.readDir("./Aloha/DefaultCommands") do
 		local command = require(`./DefaultCommands/{file}`)

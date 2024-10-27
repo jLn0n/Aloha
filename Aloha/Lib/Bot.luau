@@ -20,12 +20,42 @@ Bot.RESUME_URL = ""
 Bot.SESSION_ID = ""
 
 Bot.STARTED_AT = 0
+Bot.RATE_LIMIT = 0
 
 Bot.INTENTS = 53608447
 
+local function formatTime(seconds: number): string
+    local days = math.floor(seconds / 86400)
+    seconds %= 86400
+    local hours = math.floor(seconds / 3600)
+    seconds %= 3600
+    local minutes = math.floor(seconds / 60)
+    seconds %= 60
+
+	seconds = math.floor(seconds * 1000) / 1000
+
+    local result = ""
+    if days > 0 then 
+        result ..= days .. "d" 
+    end
+    if hours > 0 then 
+        result ..= hours .. "h" 
+    end
+    if minutes > 0 then 
+        result ..= minutes .. "m" 
+    end
+    if seconds > 0 or #result == 0 then
+        result ..= seconds .. "s"
+    end
+
+
+    return result
+end
+
 Bot.OP = {
 	-- Aloha!!
-	["HELLO"] = function(token: string, shard_id: number, shards: number)
+	["IDENTIFY"] = function(token: string, shard_id: number, shards: number, heartbeat_delay: number)
+		print(`[Shard {shard_id}] 🔑 Identifying with intents {Bot.INTENTS}. Heartbeat in: {formatTime(heartbeat_delay)}`)
 		return {
 			op = 2,
 			d = {
@@ -42,7 +72,8 @@ Bot.OP = {
 		}	
 	end,
 
-	["RESUME"] = function(token: string, sequence: number)
+	["RESUME"] = function(token: string, sequence: number, shard_id: number)
+		print(`[Shard {shard_id}] 🔑 Resuming session with sequence {sequence}...`)
 		return {
 			op = 6,
 			d = {
