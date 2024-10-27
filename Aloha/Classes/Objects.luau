@@ -102,7 +102,11 @@ local function GetMessageInChannel(channelId: string, messageId: string) : Messa
 		['Authorization'] = `Bot {Bot.TOKEN}`
 	})
 
-	return Message.new(response)
+	if success then
+		return Message.new(Network.JsonDecode(response.body))
+	end
+
+	return nil
 end
 
 local function GetGuild(id: string) : Guild?
@@ -134,15 +138,22 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 		self[key] = value
 	end
 	
-	self.channel = GetChannel(self.channel_id)
-	self.author = GetUser(self.author)
+	if self.channel_id then
+		self.channel = GetChannel(self.channel_id)
+	end
+
+	if self.author then
+		self.author = GetUser(self.author)
+	end
 
 	local mentions = {}
 
-	for _, user in data.mentions do
-		table.insert(mentions, GetUser(user))
+	if data.mentions then
+		for _, user in data.mentions do
+			table.insert(mentions, GetUser(user))
+		end
 	end
-
+	
 	self.mentions = mentions
 
 	if data.referenced_message then
@@ -172,6 +183,7 @@ function Message:Delete()
 end
 
 function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
+
 	self.channel:Send(content, embeds, {
 		type = 0,
 		message_id = self.id,
@@ -261,6 +273,7 @@ function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, refere
 			print(`[Shard {shard_id}] MESSAGE_CREATE Rate limited. Deferring to next cycle.`)
 			task.wait(1)
 		end
+
 	end
 
 	return Network.Post(url, Network.JsonEncode({

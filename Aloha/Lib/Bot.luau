@@ -2,6 +2,7 @@ local Bot = {}
 
 local process = require("@lune/process")
 local DiscordTypes = require("./DiscordTypes")
+local Network = require("./Network")
 
 Bot.DISCORD_API_VERSION = "10"
 Bot.ALOHA_VERSION = "0.3.3"
@@ -25,7 +26,6 @@ Bot.INTENTS = 53608447
 Bot.OP = {
 	-- Aloha!!
 	["HELLO"] = function(token: string, shard_id: number, shards: number)
-		print(shard_id, shards)
 		return {
 			op = 2,
 			d = {
@@ -90,16 +90,17 @@ function Bot.GenerateGUID(wrapInBraces: boolean?) : string
 	return wrapInBraces and `\{{s}\}` or s
 end
 
-function Bot.GetShard(guild_id: DiscordTypes.snowflake)
+function Bot.GetShard(guild_id: DiscordTypes.snowflake) : (number?, Network.WebSocket?)
 	local id = tonumber(guild_id)
 	if not id then return end
-
+	
 	local shard_id = bit32.rshift(id, 22) % Bot.SHARD_COUNT
 
-	return shard_id, Bot.Shards[shard_id].Socket
+	return shard_id, Bot.Shards[shard_id]
 end
 
 function Bot.IsRateLimited(shard_id: number)
+	print("Checking ratelimit")
 	return Bot.Shards[shard_id].Sent >= 50 / Bot.SHARD_COUNT
 end
 

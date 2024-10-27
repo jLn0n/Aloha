@@ -87,7 +87,7 @@ end
 	@return string -- The computed SHA-1 hash as a string of hexadecimal digits
 	@return {number} -- The computed SHA-1 hash as an array of 5 integers
 ]=]
-local function sha1(message: string): string
+local function sha1(message: string): buffer
 	local digest = {
 		0x67452301,
 		0xEFCDAB89,
@@ -113,8 +113,15 @@ local function sha1(message: string): string
 	local finalBlock = table.concat(finalMessage)
 	processBlocks(digest, finalBlock, 1, #finalBlock)
 
-	-- Return SHA-1 digest as binary string
-	return string.pack(">I4I4I4I4I4", digest[1], digest[2], digest[3], digest[4], digest[5])
+	local newBuffer = buffer.create(20)
+
+	buffer.writeu32(newBuffer, 0, digest[1])
+	buffer.writeu32(newBuffer, 4, digest[2])
+	buffer.writeu32(newBuffer, 8, digest[3])
+	buffer.writeu32(newBuffer, 12, digest[4])
+	buffer.writeu32(newBuffer, 16, digest[5])
+
+	return newBuffer
 end
 
 return sha1
