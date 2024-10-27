@@ -13,8 +13,6 @@ function Timer.new(time: number, interval: number, interval_callback: (totalTime
 	self._interval_callback = interval_callback
 	self._end_callback = end_callback
 
-	self._end_called = false
-
 	self._task = task.spawn(function()
 		while self._started + time > os.time() and not self._closed do
 			task.wait(self._interval)
@@ -22,7 +20,7 @@ function Timer.new(time: number, interval: number, interval_callback: (totalTime
 			self._interval_callback(os.time() - self._started)
 		end
 
-		if not self._end_called and self._end_callback then
+		if self._end_callback then
 			self._end_callback()
 		end
 	end)
@@ -36,11 +34,6 @@ function Timer:Stop()
 	if coroutine.status(self._task) == "running" then
 		task.cancel(self._task)
 	end
-
-	self._end_called = true
-
-	if not self._end_callback then return end
-	self._end_callback()
 end
 
 return Timer

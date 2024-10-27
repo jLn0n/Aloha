@@ -65,11 +65,16 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					local initial_delay = (payload.d.heartbeat_interval * math.random()) / 1000
 					self._last_heartbeat_interval = payload.d.heartbeat_interval
 
+					local t = 0
 					local function heartbeat_interval_callback()
 						if self._socket.getCloseCode() then
 							print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`)
 							self._heartbeat_timer:Stop()
 						end
+
+						t += 1
+
+						print(`[Shard {self.shard_id}] 💖 Heartbeat interval callback.`, t)
 					end
 
 					local function heartbeat_end_callback()
@@ -83,10 +88,10 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 						self:Send(heartbeat_payload)
 						print(`[Shard {self.shard_id}] 💖 Heartbeat sent.`, heartbeat_payload)
 
-						self._heartbeat_timer = Timer.new(payload.d.heartbeat_interval / 1000, 0.1, heartbeat_interval_callback, heartbeat_end_callback)
+						self._heartbeat_timer = Timer.new(payload.d.heartbeat_interval / 1000, 1, heartbeat_interval_callback, heartbeat_end_callback)
 					end
 
-					self._heartbeat_timer = Timer.new(initial_delay, 0.1, heartbeat_interval_callback, heartbeat_end_callback)
+					self._heartbeat_timer = Timer.new(initial_delay, 1, heartbeat_interval_callback, heartbeat_end_callback)
 
 
 					self:Send(Bot.OP.IDENTIFY(self.token, self.shard_id, self.shards, initial_delay))
