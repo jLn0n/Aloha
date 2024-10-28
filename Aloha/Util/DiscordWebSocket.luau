@@ -79,11 +79,24 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 							return
 						end
 
+						if not heartbeat_ack then
+							-- close and reconnect
+							print(`[Shard {self.shard_id}] 🧟 Heartbeat not acknowledged. Reconnecting...`)
+							retry = true
+							self._socket.Close()
+							self._socket = Network.WebSocket(self._url)
+
+							self._heartbeat_timer:Stop()
+							return
+						end
+
 						local heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
 						self:Send(heartbeat_payload)
 						print(`[Shard {self.shard_id}] 💖 Heartbeat sent.`, heartbeat_payload)
 
 						self._heartbeat_timer = Timer.new(payload.d.heartbeat_interval / 1000, 1, heartbeat_interval_callback, heartbeat_end_callback)
+
+						heartbeat_ack = false
 					end
 
 					self._heartbeat_timer = Timer.new(initial_delay, 1, heartbeat_interval_callback, heartbeat_end_callback)
