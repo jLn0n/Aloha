@@ -1,5 +1,5 @@
 # Aloha <img src="https://cdn.discordapp.com/attachments/1298813084844167219/1299610722954641489/image.png?ex=671dd44d&is=671c82cd&hm=6b6d5476c4ffe5d20da86760a90e2d3f94b818fb0e0eeca2b987e2442f974023&" alt="aloha_logo" height="50">
-![](https://img.shields.io/badge/Version-0.3.3-orange) ![](https://img.shields.io/badge/License-GPLv3-blue)[](![]())
+![](https://img.shields.io/badge/Version-0.3.5-orange) ![](https://img.shields.io/badge/License-GPLv3-blue)[](![]())
 [![Support Server](https://img.shields.io/badge/Support_Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/S3skPhG2VT)
  
  Aloha is a Discord Bot written in Luau using [Lune](https://github.com/lune-org/lune). This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau.
@@ -19,9 +19,11 @@ end)
 ```
 - A fully fledged type file for all of Discord's objects, so you don't have to check the docs!
 - Enums for all those pesky numbers and constants from Discord.
-- A secure WebSocket connection that automatically reconnects on failure.
+- A secure and efficient WebSocket connection that automatically reconnects on failure.
 - A built-in Luau evaluator for your convenience, sandboxed and safe for anyone to use!
 - A janitor clone for cleaning up your connections.
+- Built-in rate limiting.
+- Shard management that scales with your bot.
 
 
 ## Getting started:

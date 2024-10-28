@@ -88,6 +88,20 @@ local function GetChannel(id: string) : Channel
 	return Channel.new(response)
 end
 
+local function rateLimit(guild_id: string)
+	if not guild_id then return end
+	local shard_id, shard = Bot.GetShard(guild_id)
+	shard.Sent += 1
+	task.delay(1, function()
+		shard.Sent = 0
+	end)
+
+	if Bot.IsRateLimited(shard_id) then
+		print(`[Shard {shard_id}] MESSAGE_DELETE Rate limited. Deferring to next cycle.`)
+		task.wait(1)
+	end
+end
+
 local function GetUser(data: DiscordTypes.UserData) : User
 	return User.new(data)
 end
@@ -166,16 +180,8 @@ end
 function Message:Delete()
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.channel_id, self.id)}`
 
-	local guild_id = self.channel.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
+	rateLimit(self.channel.guild_id)
 
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MESSAGE_DELETE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
 
 	return Network.Delete(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -195,16 +201,8 @@ end
 function Message:AddReaction(emoji: string)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji))}`
 
-	local guild_id = self.channel.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MESSAGE_ADD_REACTION Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.channel.guild_id)
+	
 
 	return Network.Put(url, "", {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -214,16 +212,7 @@ end
 function Message:RemoveReaction(emoji: string, userId: string?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji), userId or "@me")}`
 
-	local guild_id = self.channel.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MESSAGE_REMOVE_REACTION Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.channel.guild_id)
 
 	return Network.Delete(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -233,16 +222,7 @@ end
 function Message:RemoveAllReactions()
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_ALL_REACTIONS:format(self.channel_id, self.id)}`
 
-	local guild_id = self.channel.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MESSAGE_REMOVE_ALL_REACTIONS Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.channel.guild_id)
 
 	return Network.Delete(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -264,17 +244,7 @@ end
 function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_MESSAGE:format(self.id)}`
 
-	local guild_id = self.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MESSAGE_CREATE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-
-	end
+	rateLimit(self.guild_id)
 
 	return Network.Post(url, Network.JsonEncode({
 		content = content,
@@ -289,16 +259,7 @@ end
 function Channel:Delete(message_id: string)
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
 
-	local guild_id = self.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MESSAGE_DELETE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.guild_id)
 
 	return Network.Delete(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -306,16 +267,7 @@ function Channel:Delete(message_id: string)
 end
 
 function Channel:GetMessage(id: string) : Message
-	local guild_id = self.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] GET_CHANNEL_MESSAGE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.guild_id)
 
 	local msg = GetMessageInChannel(self.id, id)
 
@@ -325,16 +277,7 @@ end
 function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_CHANNEL:format(self.id)}`
 
-	local guild_id = self.guild_id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MODIFY_CHANNEL Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.guild_id)
 
 	local success, response = Network.Patch(url, Network.JsonEncode(data), {
 		['Authorization'] = `Bot {Bot.TOKEN}`,
@@ -389,16 +332,7 @@ end
 function Member:Kick()
 	local url = `{Endpoints.BASE_URL}{Endpoints.REMOVE_GUILD_MEMBER:format(self.guild.id, self.user.id)}`
 
-	local guild_id = self.guild.id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] REMOVE_GUILD_MEMBER Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.guild.id)
 
 	return Network.Delete(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -408,16 +342,8 @@ end
 function Member:Ban(delete_message_seconds: number?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_BAN:format(self.guild.id, self.user.id)}`
 
-	local guild_id = self.guild.id
-	if guild_id then
-		local shard_id, shard = Bot.GetShard(guild_id)
-		shard.Sent += 1
+	rateLimit(self.guild.id)
 
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] CREATE_GUILD_BAN Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
 
 
 	return Network.Put(url, Network.JsonEncode({
@@ -444,15 +370,7 @@ end
 function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] GET_GUILD_MEMBER Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -464,16 +382,7 @@ end
 function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.BULK_GUILD_BAN:format(self.id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] BULK_GUILD_BAN Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
-
+	rateLimit(self.id)
 
 	return Network.Post(url, Network.JsonEncode({
 		user_ids = userIds,
@@ -486,15 +395,7 @@ end
 function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] CREATE_GUILD_ROLE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	return Network.Post(url, Network.JsonEncode({
 		name = name,
@@ -511,16 +412,8 @@ end
 
 function Guild:GetRoles() : ({DiscordTypes.RoleData} | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
-
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] GET_GUILD_ROLES Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	
+	rateLimit(self.id)
 
 	local response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -532,15 +425,7 @@ end
 function Guild:GetRole(id: string) : (DiscordTypes.RoleData? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLE:format(self.id, id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] GET_GUILD_ROLE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -552,15 +437,7 @@ end
 function Guild:DeleteRole(id: string) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_GUILD_ROLE:format(self.id, id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] DELETE_GUILD_ROLE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local success, response = Network.Delete(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -572,15 +449,7 @@ end
 function Guild:ModifyRole(id: string, data: {name: string?, permissions: string?, color: number?, hoist: boolean?, icon: string?, unicode_emoji: string?, mentionable: boolean?}) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_GUILD_ROLE:format(self.id, id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MODIFY_GUILD_ROLE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local success, response = Network.Patch(url, Network.JsonEncode(data), {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -592,15 +461,7 @@ end
 function Guild:MoveRole(id: string, position: number) : (boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] MOVE_GUILD_ROLE Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local success, response = Network.Patch(url, Network.JsonEncode({
 		id = id,
@@ -615,15 +476,7 @@ end
 function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] GET_GUILD_VANITY_URL Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local response = Network.Get(url, {
 		['Authorization'] = `Bot {Bot.TOKEN}`
@@ -635,15 +488,7 @@ end
 function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Channel? | boolean, {any}?)
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
 
-	if self.id then
-		local shard_id, shard = Bot.GetShard(self.id)
-		shard.Sent += 1
-
-		if Bot.IsRateLimited(shard_id) then
-			print(`[Shard {shard_id}] CREATE_GUILD_CHANNEL Rate limited. Deferring to next cycle.`)
-			task.wait(1)
-		end
-	end
+	rateLimit(self.id)
 
 	local response = Network.Post(url, Network.JsonEncode(data), {
 		['Authorization'] = `Bot {Bot.TOKEN}`

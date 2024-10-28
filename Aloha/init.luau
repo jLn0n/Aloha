@@ -7,6 +7,7 @@ local Commands = require("./Lib/Commands")
 local User = Objects.User
 local Client = require("./Lib/Client")
 local task = require("@lune/task")
+local Timer = require("./Util/Timer")
 local lfs = require("@lune/fs")
 local Network = require("./Lib/Network")
 local DiscordWebSocket = require("./Util/DiscordWebSocket")
@@ -66,16 +67,6 @@ function Aloha.Run(token: string, intents: number?)
 	end
 
 	Bot.SHARD_COUNT = shards
-
-	task.spawn(function()
-		while true do
-			task.wait(1)
-
-			for _, shard in Bot.Shards do
-				shard.Sent = 0
-			end
-		end
-	end)
 
 	return Bot.Shards
 end

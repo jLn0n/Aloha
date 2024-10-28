@@ -5,7 +5,7 @@ local DiscordTypes = require("./DiscordTypes")
 local Network = require("./Network")
 
 Bot.DISCORD_API_VERSION = "10"
-Bot.ALOHA_VERSION = "0.3.3"
+Bot.ALOHA_VERSION = "0.3.5"
 
 Bot.PROCESS_ID = 0
 
@@ -79,7 +79,7 @@ Bot.OP = {
 			d = {
 				token = token,
 				session_id = Bot.SESSION_ID,
-				seq = sequence
+				seq = sequence or false
 			}
 		}
 	end,
