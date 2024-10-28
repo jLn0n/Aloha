@@ -18,6 +18,10 @@ Remove-Item -Path $luneZipPath
 
 Write-Output "Lune has been downloaded and unzipped to $luneExtractPath."
 
+# Run 'lune setup'
+Write-Output "Running 'lune setup'..."
+& "$luneExtractPath\lune.exe" setup
+
 Write-Output "Downloading StyLua from $styluaUrl..."
 Invoke-WebRequest -Uri $styluaUrl -OutFile $styluaZipPath
 

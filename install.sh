@@ -17,6 +17,9 @@ unzip -o $LUNE_ZIP_PATH -d $LUNE_EXTRACT_PATH
 rm $LUNE_ZIP_PATH
 echo "Lune has been downloaded and unzipped to $LUNE_EXTRACT_PATH."
 
+echo "Running 'lune setup'..."
+./lune setup
+
 echo "Downloading StyLua from $STYLUA_URL..."
 curl -L -o $STYLUA_ZIP_PATH $STYLUA_URL
 
