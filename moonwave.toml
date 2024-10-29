@@ -1,0 +1,21 @@
+title = "Aloha"  # From Git
+gitRepoUrl = "https://github.com/thegalaxydev/Aloha" # From Git
+
+gitSourceBranch = "main"
+changelog = true
+classOrder = []
+
+[docusaurus]
+onBrokenLinks = "warn"
+onBrokenMarkdownLinks = "warn"
+
+# From git:
+organizationName = "thegalaxydev"
+projectName = "Aloha"
+url = "https://thegalaxydev.github.io"
+baseUrl = "/Aloha"
+tagline = "Aloha is a Discord API library written in Luau using Lune. This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau."
+
+[footer]
+style = "dark"
+copyright = "Copyright © 2024 Galaxy Development, LLC. Built with Moonwave and Docusaurus"
