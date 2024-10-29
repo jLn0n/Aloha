@@ -2,7 +2,7 @@
 ![](https://img.shields.io/badge/Version-0.3.5-orange) ![](https://img.shields.io/badge/License-GPLv3-blue)[](![]())
 [![Support Server](https://img.shields.io/badge/Support_Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/S3skPhG2VT)
  
- Aloha is a Discord Bot written in Luau using [Lune](https://github.com/lune-org/lune). This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau.
+ Aloha is a Discord API library written in Luau using [Lune](https://github.com/lune-org/lune). This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau.
 
 
 ## Current Features:

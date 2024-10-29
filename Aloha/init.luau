@@ -71,7 +71,11 @@ function Aloha.Run(token: string, intents: number?)
 	return Bot.Shards
 end
 
-function Aloha.RegisterDefaultCommands(options: {rateLimit: number?}?) : {Commands.Command}
+type DefaultCommandOptions = {
+	rateLimit: number?
+}
+
+function Aloha.RegisterDefaultCommands(options: DefaultCommandOptions?) : {Commands.Command}
 	local commands = {}
 
 	if options and options.rateLimit then
