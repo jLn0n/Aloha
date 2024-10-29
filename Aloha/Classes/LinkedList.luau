@@ -1,9 +1,18 @@
+--[=[
+@class LinkedList
+A linked list implementation.
+]=]
 local LinkedList = {}
 LinkedList.__Index = LinkedList
 LinkedList.__len = function(self)
 	return self.Length
 end
 
+--[=[
+@within LinkedList
+@type LinkedListNode<T> {Next: LinkedListNode<T>?, Prev: LinkedListNode<T>?, Index: number, Value: T}
+A node in the linked list.
+]=]
 type LinkedListNode<T> = {
 	Next: LinkedListNode<T>?,
 	Prev: LinkedListNode<T>?,
@@ -11,12 +20,23 @@ type LinkedListNode<T> = {
 	Value: T
 }
 
+--[=[
+@within LinkedList
+@type LinkedList<T> {Head: LinkedListNode<T>?, Tail: LinkedListNode<T>?, Length: number}
+A linked list.
+]=]
 export type LinkedList<T> = {
 	Head: LinkedListNode<T>?,
 	Tail: LinkedListNode<T>?,
 	Length: number
 }
 
+--[=[
+@within LinkedList
+@param ... T
+@return LinkedList<T>
+Creates a new linked list.
+]=]
 function LinkedList.new<T>(...: T): LinkedList<T>
 	local self = setmetatable({}, LinkedList)
 	local elements = {...} 
@@ -38,6 +58,11 @@ function LinkedList.new<T>(...: T): LinkedList<T>
 	return self
 end
 
+--[=[
+@within LinkedList
+@param Value T
+Pushes a value to the right of the linked list.
+]=]
 function LinkedList:PushRight<T>(Value: T)
 	local node = {
 		Next = nil,
@@ -56,6 +81,11 @@ function LinkedList:PushRight<T>(Value: T)
 	self.Length += 1
 end
 
+--[=[
+@within LinkedList
+@param Value T
+Pushes a value to the left of the linked list.
+]=]
 function LinkedList:PushLeft<T>(Value: T)
 	local node = {
 		Next = self.Head,
@@ -79,6 +109,11 @@ function LinkedList:PushLeft<T>(Value: T)
 	self.Length += 1
 end
 
+--[=[
+@within LinkedList
+@return T?
+Pops a value from the right of the linked list.
+]=]
 function LinkedList:PopRight<T>(): T?
 	if not self.Tail then
 		return nil
@@ -97,6 +132,11 @@ function LinkedList:PopRight<T>(): T?
 	return Value
 end
 
+--[=[
+@within LinkedList
+@return T?
+Pops a value from the left of the linked list.
+]=]
 function LinkedList:PopLeft<T>(): T?
 	if not self.Head then
 		return nil

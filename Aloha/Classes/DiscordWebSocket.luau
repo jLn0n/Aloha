@@ -1,6 +1,6 @@
 --[=[
 	@class DiscordWebSocket
-	@description Class to spawn sharded websockets for Discord.
+	Class to spawn sharded websockets for Discord.
 ]=]
 local DiscordWebSocket = {}
 DiscordWebSocket.__index = DiscordWebSocket

@@ -1,4 +1,7 @@
---- @ignore
+--[=[
+    @class Commands
+    Handles Discord application command registration and interaction responses.
+]=]
 local Commands = {}
 local net = require("@lune/net")
 local Endpoints = require("Endpoints")
@@ -9,6 +12,11 @@ local Bot = require("Bot")
 local task = require("@lune/task")
 local Objects = require("../Classes/Objects")
 
+--[=[
+    @type GlobalCommand {name: string, name_localizations: {[string]: string}?, description: string?, description_localizations: {[string]: string}?, options: {CommandOptionData}?, default_member_permissions: string?, integration_types: {number}?, contexts: {number}?, type: number, nsfw: boolean?}
+    @within Commands
+    Data for registering a global application command.
+]=]
 export type GlobalCommand = {
 	name: string,
 	name_localizations: { [string]: string }?,
@@ -22,6 +30,11 @@ export type GlobalCommand = {
 	nsfw: boolean?
 }
 
+--[=[
+    @type GuildCommand {name: string, name_localizations: {[string]: string}?, description: string?, description_localizations: {[string]: string}?, options: CommandOptionData?, default_member_permissions: string?, default_permission: boolean?, type: number, nsfw: boolean?}
+    @within Commands
+    Data for registering a guild-specific application command.
+]=]
 export type GuildCommand = {
 	name: string,
 	name_localizations: { [string]: string }?,
@@ -34,15 +47,40 @@ export type GuildCommand = {
 	nsfw: boolean?
 }
 
+--[=[
+    @prop Cache {[string]: Command}
+    @within Commands
+    Cache of registered commands indexed by ID.
+]=]
 Commands.Cache = {}
+
+--[=[
+    @prop RateLimit {[string]: boolean}
+    @within Commands
+    Rate limit tracking for command usage.
+]=]
 Commands.RateLimit = {}
 
+--[=[
+    @class Command
+    Represents a Discord application command.
+]=]
 local Command = {}
 Command.__index = Command
 
-
+--[=[
+    @type Command ApplicationCommandData & {Executed: Event, Response: {type: number, data: InteractionCallbackData}?}
+    @within Commands
+    A Discord application command instance.
+]=]
 export type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {Executed: Event.Event, Response: {type: number, data: DiscordTypes.InteractionCallbackData}?}
 
+--[=[
+    @function new
+    @within Command
+    @param data ApplicationCommandData -- The command data from Discord
+    @return Command -- A new Command instance
+]=]
 function Command.new(data: DiscordTypes.ApplicationCommandData) : Command
 	local self = setmetatable({}, Command)
 
@@ -57,12 +95,23 @@ function Command.new(data: DiscordTypes.ApplicationCommandData) : Command
 	return self
 end
 
+--[=[
+    @method SetResponse
+    @within Command
+    @param callback (ApplicationCommandInteractionData) -> {type: number, data: InteractionCallbackData} -- The response callback function
+    Sets the response handler for when the command is executed.
+]=]
 function Command:SetResponse(callback: (DiscordTypes.ApplicationCommandInteractionData) -> {type: number, data: DiscordTypes.InteractionCallbackData})
 	self.Response = callback
 end
 
-
-
+--[=[
+    @function RegisterGlobal
+    @within Commands
+    @param data GlobalCommand -- The command data to register
+    @return Command, string -- The registered command and status message
+    Registers a global application command.
+]=]
 function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 	local returnStr = "SUCCESS"
 	if data.type == Enum.APPLICATION_COMMAND_TYPE.CHAT_INPUT and not data.description then
@@ -88,6 +137,14 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 	return command, returnStr
 end
 
+--[=[
+    @function RegisterGuild
+    @within Commands
+    @param data GuildCommand -- The command data to register
+    @param guild_id string -- The ID of the guild to register the command in
+    @return Command, string -- The registered command and status message
+    Registers a guild-specific application command.
+]=]
 function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command, string)
 	local returnStr = "SUCCESS"
 	if data.type == Enum.APPLICATION_COMMAND_TYPE.CHAT_INPUT and not data.description then
@@ -113,6 +170,13 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 	return command, returnStr
 end
 
+--[=[
+    @function HandleInteraction
+    @within Commands
+    @param int InteractionData -- The interaction data from Discord
+    @param shard_id number? -- Optional shard ID
+    Handles an incoming command interaction.
+]=]
 function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?)
 	local interaction = Objects.Interaction.new(int)
 

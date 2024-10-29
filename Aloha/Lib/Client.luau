@@ -1,4 +1,8 @@
---- @ignore
+--[=[
+	@class Client
+	The main Discord client class that handles events and interactions.
+]=]
+
 local Event = require("../Classes/Event")
 
 local Objects = require("../Classes/Objects")
@@ -7,11 +11,22 @@ local Enum = require("./Enum")
 local Bot = require("./Bot")
 local Client = {}
 
+--[=[
+	@prop User any
+	@within Client
+	The bot's user object.
+]=]
 Client.User = nil
 
 local DiscordTypes = require("./DiscordTypes")
 type Payload = DiscordTypes.Payload
 
+--[=[
+	@private
+	@type EventCallbacks {[string]: {callback: (Payload, number?) -> any, aliases: {string}, event: Event}}
+	@within Client
+	Table of event callbacks and their associated data.
+]=]
 local eventCallbacks = {	
 	["READY"] = {
 		callback = function(payload: Payload, shard_id: number)
@@ -434,6 +449,15 @@ local eventCallbacks = {
 
 type EventString = "READY" | "MESSAGE_CREATE" | "MESSAGE_UPDATE" | "MESSAGE_DELETE" | "MESSAGE_REACTION_ADD" | "MESSAGE_REACTION_REMOVE" | "MESSAGE_REACTION_REMOVE_ALL" | "MESSAGE_REACTION_REMOVE_EMOJI" | "CHANNEL_CREATE" | "CHANNEL_UPDATE" | "CHANNEL_DELETE" | "CHANNEL_PINS_UPDATE" | "GUILD_CREATE" | "GUILD_UPDATE" | "GUILD_DELETE" | "GUILD_ROLE_CREATE" | "GUILD_ROLE_UPDATE" | "GUILD_ROLE_DELETE" | "GUILD_MEMBER_ADD" | "GUILD_MEMBER_UPDATE" | "GUILD_MEMBER_REMOVE" | "USER_UPDATE" | "PRESENCE_UPDATE" | "VOICE_STATE_UPDATE" | "GUILD_SCHEDULED_EVENT_CREATE" | "GUILD_SCHEDULED_EVENT_UPDATE" | "APPLICATION_COMMAND_DELETE" | "WEBHOOKS_UPDATE" | "INVITE_DELETE" | "TYPING_START"
 
+--[=[
+	@function On
+	@within Client
+	@param event EventString -- The event to listen for
+	@param callback function -- The callback function to run when the event fires
+	@return Event.Connection? -- The event connection, if successful
+	
+	Registers an event handler for the specified Discord gateway event.
+]=]
 function Client.On(event: EventString, callback: (...any) -> any) : Event.Connection?
 	local callbackInfo = eventCallbacks[event]
 
@@ -455,6 +479,15 @@ function Client.On(event: EventString, callback: (...any) -> any) : Event.Connec
 	return callbackInfo.event:Connect(callback)
 end
 
+--[=[
+	@function Fire
+	@within Client
+	@param event string -- The event name to fire
+	@param payload Payload -- The event payload
+	@param shard_id number? -- Optional shard ID
+	
+	Fires a Discord gateway event internally.
+]=]
 function Client.Fire(event: string, payload: Payload, shard_id: number?)
 	if payload.t == "INTERACTION_CREATE" then
 		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND then

@@ -1,6 +1,6 @@
 --[=[
 	@class Network
-	@description Library to handle network requests.
+	Library to handle network requests and responses. Provides methods for making HTTP requests, handling WebSocket connections, and managing rate limits.
 ]=]
 local Network = {}
 local net = require("@lune/net")
@@ -8,11 +8,40 @@ local Bot = require("./Bot")
 local Endpoints = require("./Endpoints")
 local task = require("@lune/task")
 local Mutex = require("../Util/Mutex")
+
+--[=[
+	@type Response net.FetchResponse
+	@within Network
+	Response type from net.request()
+]=]
 type Response = net.FetchResponse
 
+--[=[
+	@type ServeRequest net.ServeRequest
+	@within Network
+	Request type for net.serve()
+]=]
 export type ServeRequest = net.ServeRequest
-export type ServeResponse = net.ServeResponse	
+
+--[=[
+	@type ServeResponse net.ServeResponse
+	@within Network
+	Response type for net.serve()
+]=]
+export type ServeResponse = net.ServeResponse
+
+--[=[
+	@type ServeHandle net.ServeHandle
+	@within Network
+	Handle type for net.serve()
+]=]
 export type ServeHandle = net.ServeHandle
+
+--[=[
+	@type WebSocket {Close: () -> (), Next: () -> (any), Send: (data: string) -> ()}
+	@within Network
+	WebSocket connection interface
+]=]
 export type WebSocket = {
 	Close: () -> (),
 	Next: () -> (any),
@@ -62,6 +91,13 @@ local function generateBoundary(files, boundary)
 	return boundary
 end
 
+--[=[
+	@function AttachFiles
+	@within Network
+	@param body string -- The request body
+	@param files {[any]: any} -- Files to attach
+	@return string, string -- Returns the multipart body and boundary
+]=]
 function Network.AttachFiles(body: string, files: {[any]: any}) : (string, string)
 	local boundary = generateBoundary(files)
 	local ret = {
@@ -80,18 +116,33 @@ function Network.AttachFiles(body: string, files: {[any]: any}) : (string, strin
 	return table.concat(ret, '\r\n'), boundary
 end
 
-function Network.Request(data: {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?}, shard_id: number?) : (boolean, Response)
+
+Network.TotalRequests = 0
+
+--[=[
+	@function Request
+	@within Network
+	@param data {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?} -- Request data
+	@return boolean, Response -- Returns success status and response
+]=]
+function Network.Request(data: {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?}) : (boolean, Response)
 	local _, current = coroutine.running()
 
 	if current then
 		return error("Network requests must be made from a non-main thread.")
 	end
 
-	if shard_id then
-		if Bot.IsRateLimited(shard_id)[shard_id] then
-			print(`[Shard {shard_id}] Rate limited, deferring to the next cycle.`)
+	if Bot.GLOBAL_RATE_LIMIT then
+		Network.TotalRequests += 1
+
+		if Network.TotalRequests >= 50 then
+			print("Rate limited, deferring to the next cycle.")
 			task.wait(1)
 		end
+
+		task.delay(1, function()
+			Network.TotalRequests = 0
+		end)
 	end
 	
 	local url = Endpoints.BASE_URL .. data.endpoint
@@ -123,6 +174,16 @@ function Network.Request(data: {method: string, endpoint: string, body: {[string
 	return not not response, response
 end
 
+--[=[
+	@function Commit
+	@within Network
+	@param method string -- HTTP method
+	@param url string -- Request URL
+	@param headers {[any]: any} -- Request headers
+	@param body string? -- Request body
+	@param retries number -- Number of retries
+	@return {[any]: any}, number -- Returns response data and delay
+]=]
 function Network.Commit(method: string, url: string, headers: {[any]: any}, body: string?, retries: number) : ({[any]: any}, number)
 	local delay = 250
 	
@@ -178,6 +239,13 @@ function Network.Commit(method: string, url: string, headers: {[any]: any}, body
 	return response, delay
 end
 
+--[=[
+	@function Get
+	@within Network
+	@param url string -- Request URL
+	@param headers {[string]: string} -- Request headers
+	@return boolean, string -- Returns success status and response
+]=]
 function Network.Get(url: string, headers: {[string]: string}) : (boolean, string)
 	local success, response = pcall(function()
 		return net.request({
@@ -190,6 +258,14 @@ function Network.Get(url: string, headers: {[string]: string}) : (boolean, strin
 	return success, response
 end
 
+--[=[
+	@function Post
+	@within Network
+	@param url string -- Request URL
+	@param body string -- Request body
+	@param headers {[string]: string} -- Request headers
+	@return boolean, string -- Returns success status and response
+]=]
 function Network.Post(url: string, body: string, headers: {[string]: string}) : (boolean, string)
 	local success, response = pcall(function()
 		return net.request({
@@ -203,6 +279,13 @@ function Network.Post(url: string, body: string, headers: {[string]: string}) : 
 	return success, response
 end
 
+--[=[
+	@function Delete
+	@within Network
+	@param url string -- Request URL
+	@param headers {[string]: string} -- Request headers
+	@return boolean, string -- Returns success status and response
+]=]
 function Network.Delete(url: string, headers: {[string]: string}) : (boolean, string)
 	local success, response = pcall(function()
 		return net.request({
@@ -215,6 +298,14 @@ function Network.Delete(url: string, headers: {[string]: string}) : (boolean, st
 	return success, response
 end
 
+--[=[
+	@function Patch
+	@within Network
+	@param url string -- Request URL
+	@param body string -- Request body
+	@param headers {[string]: string} -- Request headers
+	@return boolean, string -- Returns success status and response
+]=]
 function Network.Patch(url: string, body: string, headers: {[string]: string}) : (boolean, string)
 	local success, response = pcall(function()
 		return net.request({
@@ -228,6 +319,14 @@ function Network.Patch(url: string, body: string, headers: {[string]: string}) :
 	return success, response
 end
 
+--[=[
+	@function Put
+	@within Network
+	@param url string -- Request URL
+	@param body string -- Request body
+	@param headers {[string]: string} -- Request headers
+	@return boolean, string -- Returns success status and response
+]=]
 function Network.Put(url: string, body: string, headers: {[string]: string}) : (boolean, string)
 	local success, response = pcall(function()
 		return net.request({
@@ -241,6 +340,12 @@ function Network.Put(url: string, body: string, headers: {[string]: string}) : (
 	return success, response
 end
 
+--[=[
+	@function WebSocket
+	@within Network
+	@param url string -- WebSocket URL
+	@return WebSocket -- Returns WebSocket interface
+]=]
 function Network.WebSocket(url: string) : WebSocket
 	local newSocket = net.socket(url)
 
@@ -253,22 +358,53 @@ function Network.WebSocket(url: string) : WebSocket
 	}
 end
 
+--[=[
+	@function Server
+	@within Network
+	@param port number -- Server port
+	@param callback (request: ServeRequest) -> ServeResponse -- Request handler
+	@return ServeHandle -- Returns server handle
+]=]
 function Network.Server(port: number, callback: (request: ServeRequest) -> ServeResponse) : ServeHandle
 	return net.serve(port, callback)
 end	
 
+--[=[
+	@function JsonEncode
+	@within Network
+	@param data any -- Data to encode
+	@return string -- Returns JSON string
+]=]
 function Network.JsonEncode(data: any) : string
 	return net.jsonEncode(data)
 end
 
+--[=[
+	@function JsonDecode
+	@within Network
+	@param data string -- JSON string to decode
+	@return {[any]: any} -- Returns decoded data
+]=]
 function Network.JsonDecode(data: string) : {[any]: any}
 	return net.jsonDecode(data)
 end
 
+--[=[
+	@function UrlEncode
+	@within Network
+	@param data string -- String to URL encode
+	@return string -- Returns encoded string
+]=]
 function Network.UrlEncode(data: string) : string
 	return net.urlEncode(data)
 end
 
+--[=[
+	@function UrlDecode
+	@within Network
+	@param data string -- URL encoded string to decode
+	@return string -- Returns decoded string
+]=]
 function Network.UrlDecode(data: string) : string
 	return net.urlDecode(data)
 end

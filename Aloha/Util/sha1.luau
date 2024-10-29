@@ -1,16 +1,24 @@
---- @ignore
+--[=[
+    @class sha1
+    SHA-1 hashing implementation. Credit to Dekkonot - https://github.com/Dekkonot/lua-hashing
+]=]
+
 --!strict
 --!native
 --!optimize 2
 
--- Credit to Dekkonot - https://github.com/Dekkonot/lua-hashing
-
---- An allocation that is reused for blocks during hashing
+-- An allocation that is reused for blocks during hashing
 local BLOCK = table.create(80)
 
 --[=[
-	Processes `message` from byte `start` to byte `finish` using `digest`.
-	It is assumed that `(finish - start) % 64 == 0`.
+    @function processBlocks
+    @within sha1
+    @param digest {number} -- The digest array to update
+    @param message string -- The message to process
+    @param start number -- Starting byte position
+    @param finish number -- Ending byte position
+    Processes message from byte start to byte finish using digest. Assumes (finish - start) % 64 == 0
+    @private
 ]=]
 local function processBlocks(digest: { number }, message: string, start: number, finish: number)
 	local block = BLOCK
@@ -79,14 +87,11 @@ local function processBlocks(digest: { number }, message: string, start: number,
 end
 
 --[=[
-	Computes the SHA-1 hash for `message` and returns it.
-	This function returns both a hexadecimal encoded string of the hash
-	and returns a **read-only** table containing the five 32-bit integers
-	that make up the hash.
-	
-	@param message -- The payload to compute the SHA-1 hash of
-	@return string -- The computed SHA-1 hash as a string of hexadecimal digits
-	@return {number} -- The computed SHA-1 hash as an array of 5 integers
+    @function sha1
+    @within sha1
+    @param message string -- The payload to compute the SHA-1 hash of
+    @return buffer -- The computed SHA-1 hash as a buffer
+    Computes the SHA-1 hash for the given message and returns it as a buffer
 ]=]
 local function sha1(message: string): buffer
 	local digest = {

@@ -1,8 +1,18 @@
---- @ignore
+--[=[
+    @class Misc
+    Utility functions for various operations
+]=]
 local Misc = {}
 local Bot = require("../Lib/Bot")
 local fs = require("@lune/fs")
 local DiscordTypes = require("../Lib/DiscordTypes")
+
+--[=[
+    @function AddLineNumbers
+    @within Misc
+    @param input string -- Input string to add line numbers to
+    @return string -- String with line numbers added
+]=]
 Misc.AddLineNumbers = function(input: string): string
 	local output_string = ""
 	local line_number = 1
@@ -17,12 +27,24 @@ Misc.AddLineNumbers = function(input: string): string
 	return output_string
 end
 
+--[=[
+    @function ToSnowflake
+    @within Misc
+    @param input string -- String to convert to snowflake
+    @return DiscordTypes.snowflake -- Discord snowflake ID
+]=]
 Misc.ToSnowflake = function(input: string): DiscordTypes.snowflake
     assert(type(input) == "string" and #input >= 17 and #input <= 20 and input:match("^%d+$"), "Invalid snowflake")
 
     return input :: DiscordTypes.snowflake
 end
 
+--[=[
+    @function FormatTime
+    @within Misc
+    @param seconds number -- Number of seconds to format
+    @return string -- Formatted time string (e.g. "1d2h3m4s")
+]=]
 Misc.FormatTime = function(seconds: number): string
     local days = math.floor(seconds / 86400)
     seconds %= 86400
@@ -50,6 +72,12 @@ Misc.FormatTime = function(seconds: number): string
     return result
 end
 
+--[=[
+    @function CreateTempFile
+    @within Misc
+    @param content string -- Content to write to temporary file
+    @return {Path: string, Delete: () -> ()} -- Table containing file path and delete function
+]=]
 function Misc.CreateTempFile(content: string): {Path: string, Delete: () -> () }
 	local tag = Bot.GenerateGUID(false)
 	local path = `./Aloha/temp/{tag}.lua`
@@ -62,6 +90,12 @@ function Misc.CreateTempFile(content: string): {Path: string, Delete: () -> () }
 	}, tag
 end
 
+--[=[
+    @function Beautify
+    @within Misc
+    @param code string -- Code string to beautify
+    @return string -- Beautified code string with proper indentation
+]=]
 function Misc.Beautify(code: string): string
 	local beautified_code = ""
     local indent_level = 0

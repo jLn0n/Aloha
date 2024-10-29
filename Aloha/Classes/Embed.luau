@@ -1,6 +1,6 @@
 --[=[
 	@class Embed
-	@description Class to create Discord embeds.
+	Class to create Discord embeds.
 ]=]
 local Embed = {}
 local Color3 = require("Color3")
@@ -26,6 +26,8 @@ export type Embed = {
 }
 
 --[=[
+	@function new
+	@within Embed
 	Creates a new Embed.
 	@return Embed
 ]=]
@@ -34,6 +36,7 @@ function Embed.new(): Embed
 	newEmbed._structure = {}
 
 	--[=[
+	@function setTitle
 	Sets the title of the embed.
 	@within Embed
 	@param title string
@@ -46,6 +49,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setDescription
 	Sets the description of the embed.
 	@within Embed
 	@param description string
@@ -58,6 +62,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setUrl
 	Sets the URL of the embed.
 	@within Embed
 	@param url string
@@ -70,6 +75,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setTimestamp
 	Sets the timestamp of the embed.
 	@within Embed
 	@param time string?
@@ -86,6 +92,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setColor
 	Sets the color of the embed.
 	@within Embed
 	@param color Color3
@@ -98,6 +105,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setFooter
 	Sets the footer of the embed.
 	@within Embed
 	@param text string
@@ -116,6 +124,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setImage
 	Sets the image of the embed.
 	@within Embed
 	@param url string
@@ -136,6 +145,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setThumbnail
 	Sets the thumbnail of the embed.
 	@within Embed
 	@param url string
@@ -156,6 +166,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setVideo
 	Sets the video of the embed.
 	@within Embed
 	@param url string
@@ -176,6 +187,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setProvider
 	Sets the provider of the embed.
 	@within Embed
 	@param name string?
@@ -192,6 +204,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setAuthor
 	Sets the author of the embed.
 	@within Embed
 	@param name string
@@ -212,6 +225,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function setFields
 	Sets the fields of the embed.
 	@within Embed
 	@param fields { { name: string, value: string, inline: boolean? } }
@@ -224,12 +238,13 @@ function Embed.new(): Embed
 	end
 
 	--[=[
-	Adds a field to the embed.
+	@function addField
 	@within Embed
 	@param name string
 	@param value string
 	@param inline boolean?
 	@return Embed
+	Adds a field to the embed.
 	]=]
 	newEmbed.addField = function(name: string, value: string, inline: boolean?)
 		if not newEmbed._structure.fields then
@@ -246,6 +261,7 @@ function Embed.new(): Embed
 	end
 
 	--[=[
+	@function finish
 	Finishes the embed and returns the embed data as a structured table.
 	@within Embed
 	@return DiscordTypes.EmbedData

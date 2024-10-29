@@ -1,4 +1,7 @@
---- @ignore
+--[=[
+    @class Evaluator
+    Utility class for evaluating Luau code in a sandboxed environment
+]=]
 local Evaluator = {}
 local fs = require("@lune/fs")
 local process = require("@lune/process")
@@ -6,6 +9,13 @@ local task = require("@lune/task")
 local Bot = require("../Lib/Bot")
 local Misc = require("./Misc")
 
+--[=[
+    @function Evaluate
+    @within Evaluator
+    @param code string -- The Luau code to evaluate
+    @return string, boolean -- Returns the evaluation result and success status
+    Evaluates the given Luau code in a sandboxed environment with a timeout
+]=]
 function Evaluator.Evaluate(code: string): string
     local ret = "Timed out while evaluating code."
     local success = false

@@ -1,4 +1,5 @@
 --- @ignore
+--- @class Endpoints
 return {
 	-- Base Bot URL
 	BASE_URL = "https://discord.com/api/v10",

@@ -1,6 +1,6 @@
 --[=[
 	@class Event
-	@description Class to create events.
+	Class to create events.
 ]=]
 local task = require("@lune/task")
 
@@ -56,7 +56,7 @@ end
 --[=[
 	Fires the event.
 	@within Event
-	@param ...any
+	@param ... any
 ]=]
 function Event:Fire(...:any)
 	for func in pairs(self.Callbacks) do

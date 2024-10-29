@@ -1,4 +1,4 @@
---- @ignore
+
 local Enum = require("../Lib/Enum")
 local DiscordTypes = require("../Lib/DiscordTypes")
 local Evaluator = require("../Util/Evaluator")
@@ -11,7 +11,8 @@ local task = require("@lune/task")
 local Color3 = require("../Classes/Color3")
 local Debug = require("../Lib/Debug")
 local Objects = require("../Classes/Objects")
-
+--- @ignore
+--- @class DefaultCommands.Eval
 return {
 	Data = {
 		name = "eval",

@@ -1,4 +1,7 @@
---- @ignore
+--[=[
+	@class Aloha
+	The main entry point for the Aloha Discord bot framework
+]=]
 local Aloha = {}
 
 local Endpoints = require("./Lib/Endpoints")
@@ -15,6 +18,11 @@ local DiscordWebSocket = require("./Classes/DiscordWebSocket")
 local Enum = require("./Lib/Enum")
 local process = require("@lune/process")
 
+--[=[
+	@function ClearTemp
+	@within Aloha
+	Clears the temporary directory used by Aloha
+]=]
 function Aloha.ClearTemp()
 	if lfs.isDir("./Aloha/temp") then
 		lfs.removeDir("./Aloha/temp")
@@ -22,6 +30,14 @@ function Aloha.ClearTemp()
 	lfs.writeDir("./Aloha/temp")
 end
 
+--[=[
+	@function Run
+	@within Aloha
+	@param token string -- The Discord bot token
+	@param intents number? -- Optional gateway intents bitmask
+	@return {[number]: {Socket: DiscordWebSocket, ResumeURL: string, SessionID: string}} -- Table of shards
+	Starts the Discord bot with the given token and intents
+]=]
 function Aloha.Run(token: string, intents: number?)
 	Bot.INTENTS = intents or Enum.INTENTS.DEFAULT
 
@@ -60,7 +76,7 @@ function Aloha.Run(token: string, intents: number?)
 
 	for shard_id = 0, shards - 1 do
 		local socket = DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)
-		Bot.Shards[shard_id] = {Sent = 0, Socket = socket, ResumeURL = "", SessionID = ""}
+		Bot.Shards[shard_id] = {Socket = socket, ResumeURL = "", SessionID = ""}
 
 		socket.OnClose:Connect(function(code, reason)
 			print(`[Shard {shard_id}] DISCONNECTED: {code} - {reason}`)
@@ -72,10 +88,21 @@ function Aloha.Run(token: string, intents: number?)
 	return Bot.Shards
 end
 
+--[=[
+	@type DefaultCommandOptions {rateLimit: number?}
+	@within Aloha
+]=]
 type DefaultCommandOptions = {
 	rateLimit: number?
 }
 
+--[=[
+	@function RegisterDefaultCommands
+	@within Aloha
+	@param options DefaultCommandOptions? -- Optional configuration for default commands
+	@return {Commands.Command} -- Array of registered commands
+	Registers the default commands included with Aloha
+]=]
 function Aloha.RegisterDefaultCommands(options: DefaultCommandOptions?) : {Commands.Command}
 	local commands = {}
 
@@ -96,6 +123,12 @@ function Aloha.RegisterDefaultCommands(options: DefaultCommandOptions?) : {Comma
 	return commands
 end
 
+--[=[
+	@function RegisterCommandsIn
+	@within Aloha
+	@param directory string -- Directory containing command modules
+	Registers all commands in the specified directory
+]=]
 function Aloha.RegisterCommandsIn(directory: string)
 	for _, file in lfs.readDir(directory) do
 		local command = require(`{directory}/{file}`)

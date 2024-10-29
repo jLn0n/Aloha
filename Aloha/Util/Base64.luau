@@ -1,8 +1,10 @@
---- @ignore
+--[=[
+	@class Base64
+	Base64 encoding and decoding utilities. Credit to Reselim - https://github.com/Reselim/Base64
+]=]
+
 --!native
 --!optimize 2
-
--- Credit to Reselim - https://github.com/Reselim/Base64
 
 local lookupValueToCharacter = buffer.create(64)
 local lookupCharacterToValue = buffer.create(256)
@@ -18,6 +20,12 @@ for index = 1, 64 do
 	buffer.writeu8(lookupCharacterToValue, character, value)
 end
 
+--[=[
+	@function encode
+	@within Base64
+	@param input buffer -- Buffer to encode
+	@return buffer -- Base64 encoded buffer
+]=]
 local function encode(input: buffer): buffer
 	local inputLength = buffer.len(input)
 	local inputChunks = math.ceil(inputLength / 3)
@@ -91,6 +99,12 @@ local function encode(input: buffer): buffer
 	return output
 end
 
+--[=[
+	@function decode
+	@within Base64
+	@param input buffer -- Base64 encoded buffer
+	@return buffer -- Decoded buffer
+]=]
 local function decode(input: buffer): buffer
 	local inputLength = buffer.len(input)
 	local inputChunks = math.ceil(inputLength / 4)

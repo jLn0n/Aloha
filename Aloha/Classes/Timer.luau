@@ -1,10 +1,21 @@
---- @ignore
+--[=[
+    @class Timer
+    A utility class for managing timed callbacks.
+]=]
 local Timer = {}
 Timer.__index = Timer
 local task = require("@lune/task")
 
 export type Timer = typeof(Timer)
 
+--[=[
+    @param time number -- The total time to run in seconds
+    @param interval number -- The interval between callbacks in seconds
+    @param interval_callback ((totalTime: number) -> ())? -- Optional callback that runs each interval with total elapsed time
+    @param end_callback (() -> ())? -- Optional callback that runs when timer completes
+    @return Timer -- The new Timer instance
+    Creates a new Timer that runs for the specified duration.
+]=]
 function Timer.new(time: number, interval: number, interval_callback: (totalTime: number) -> ()?, end_callback: () -> ()?) : Timer
 	local self = setmetatable({}, Timer)
 
@@ -29,6 +40,10 @@ function Timer.new(time: number, interval: number, interval_callback: (totalTime
 	return self
 end
 
+--[=[
+    @within Timer
+    Stops the timer and cancels any pending callbacks.
+]=]
 function Timer:Stop()
 	self._closed = true
 
