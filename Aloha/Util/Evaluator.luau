@@ -6,18 +6,9 @@ local Bot = require("../Lib/Bot")
 local Misc = require("./Misc")
 
 function Evaluator.Evaluate(code: string): string
-    local ret = ""
+    local ret = "Timed out while evaluating code."
     local success = false
     local currentThread = coroutine.running()
-
-    code = ([[ 
-    task = require("@lune/task")
-    require = function(req) error("require is disabled.") end
-    getfenv = function() error("getfenv is disabled.") end
-    setfenv = function() error("setfenv is disabled.") end
-
-    %s
-    ]]):format(code)
 
     local temp = Misc.CreateTempFile(code)
     
@@ -28,7 +19,7 @@ function Evaluator.Evaluate(code: string): string
         
         success = #result.stderr == 0
         ret = success and result.stdout or result.stderr:gsub('%[string ".-/.-"%]:(%d+):', function(n)
-            return ("[eval]:%d:"):format(n - 5)
+            return ("[eval]:%d:"):format(n)
         end)
         
         temp:Delete() 

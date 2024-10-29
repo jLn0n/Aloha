@@ -13,6 +13,9 @@ Guild.__index = Guild
 
 local Member = {}
 Member.__index = Member
+
+local Interaction = {}
+Interaction.__index = Interaction
 -----------------------------
 
 local DiscordTypes = require("../Lib/DiscordTypes")
@@ -31,6 +34,28 @@ export type User = DiscordTypes.UserData & {
 export type Channel = DiscordTypes.ChannelData & {
 	guild: Guild
 } & typeof(Channel)
+
+export type Interaction = {
+	id: DiscordTypes.snowflake,
+	application_id: DiscordTypes.snowflake,
+	type: number,
+	data: (DiscordTypes.ApplicationCommandInteractionData | DiscordTypes.MessageComponentInteractionData)?,
+	guild: Guild?,
+	guild_id: DiscordTypes.snowflake?,
+	channel: Channel?,
+	channel_id: DiscordTypes.snowflake?,
+	member: Member?,
+	user: User?,
+	token: string,
+	version: number,
+	message: Message,
+	app_permissions: string,
+	locale: string,
+	guild_locale: string,
+	entitlements: {DiscordTypes.EntitlementData}?,
+	authorizing_integration_owners: {[number]: DiscordTypes.snowflake},
+	context: number,
+} & typeof(Interaction)
 
 export type Message = typeof(Message) & {
 	channel: Channel,
@@ -72,9 +97,20 @@ export type Message = typeof(Message) & {
 	call: DiscordTypes.CallData?
 }
 
-export type Member = DiscordTypes.MemberData & {
-	user: User,
-	guild: Guild
+export type Member = {
+	user: User?,
+	nick: string?,
+	avatar: string?,
+	banner: string?,
+	roles: {number}?,
+	joined_at: string,
+	premium_since: string?,
+	deaf: boolean,
+	mute: boolean,
+	pending: boolean?,
+	permissions: string?,
+	communication_disabled_until: string?,
+	avatar_decoration_data: DiscordTypes.AvatarDecorationData?
 } & typeof(Member)
 -- Functions -----------------
 local function GetChannel(id: string) : Channel
@@ -97,7 +133,7 @@ local function rateLimit(guild_id: string)
 	end)
 
 	if Bot.IsRateLimited(shard_id) then
-		print(`[Shard {shard_id}] MESSAGE_DELETE Rate limited. Deferring to next cycle.`)
+		print(`[Shard {shard_id}] Rate limited. Deferring to next cycle.`)
 		task.wait(1)
 	end
 end
@@ -143,6 +179,28 @@ local function GetMember(userId: string, guildId: string) : (Member? | boolean, 
 	})
 
 	return Member.new(Network.JsonDecode(response.body), guildId)
+end
+------------------------------ Interaction
+function Interaction.new(data: DiscordTypes.InteractionData) : Interaction
+	local self = setmetatable({}, Interaction)
+
+	for key, value in data do
+		self[key] = value
+	end
+
+	if self.member then
+		self.member = Member.new(self.member, self.guild_id)
+	end
+
+	if self.channel_id then
+		self.channel = GetChannel(self.channel_id)
+	end
+
+	if self.guild_id then
+		self.guild = GetGuild(self.guild_id)
+	end
+
+	return self
 end
 ------------------------------ Message
 function Message.new(data: DiscordTypes.MessageData) : Message
@@ -246,11 +304,13 @@ function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, refere
 
 	rateLimit(self.guild_id)
 
-	return Network.Post(url, Network.JsonEncode({
+	local send = Network.JsonEncode({
 		content = content,
 		embeds = embeds,
 		message_reference = reference 
-	}), {
+	})
+
+	return Network.Post(url, send, {
 		['Authorization'] = `Bot {Bot.TOKEN}`,
 		['Content-Type'] = "application/json"
 	})
@@ -503,6 +563,7 @@ return {
 	Channel = Channel,
 	Guild = Guild,
 	Member = Member,
+	Interaction = Interaction,
 
 	GetChannel = GetChannel,
 	GetUser = GetUser,

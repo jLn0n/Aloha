@@ -8,6 +8,8 @@ local process = require("@lune/process")
 local Embed = require("../Classes/Embed")
 local task = require("@lune/task")
 local Color3 = require("../Classes/Color3")
+local Debug = require("../Lib/Debug")
+local Objects = require("../Classes/Objects")
 
 return {
 	Data = {
@@ -30,7 +32,8 @@ return {
 		}
 	},
 
-	Response = function(data: DiscordTypes.ApplicationCommandInteractionData)
+	Response = function(interaction: Objects.Interaction)
+		local data = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
 		local options = data.options
 		if not options then 
 			return {
@@ -43,14 +46,28 @@ return {
 		local code = options[1].value
 		local ephemeral = options[2] and options[2].value or true
 
+		local canUseDebug = (data.target_id and table.find(Debug.AllowedUsers, data.target_id)) or (interaction.member and interaction.member.user and interaction.member.user.id and table.find(Debug.AllowedUsers, interaction.member.user.id))
+
+		local input = code:sub(1, 100) .. (#code > 100 and "..." or "")
+		code = ([[ 
+		task = require("@lune/task")
+		%s
+		%s
+		]]):format(
+			not canUseDebug and [[
+				require = function() error("require is disabled.") end
+				getfenv = function() error("getfenv is disabled.") end
+				setfenv = function() error("setfenv is disabled.") end
+			]] or "",
+		code)
+
 		local start = os.clock()
 		local output, success = Evaluator.Evaluate(code)
 		local timeTaken = (os.clock() - start) * 1000
 		timeTaken = math.floor(timeTaken * 10 + 0.5) / 10
 
-		local embedColor = success and Color3.new(107/255, 245/255, 76/255) or Color3.new(230/255, 32/255, 32/255)
 
-		local input = code:sub(1, 100) .. (#code > 100 and "..." or "")
+		local embedColor = success and Color3.new(107/255, 245/255, 76/255) or Color3.new(230/255, 32/255, 32/255)
 		
 		local lines = {}
 		local isLong = false

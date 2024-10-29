@@ -7,10 +7,10 @@ local Commands = require("./Lib/Commands")
 local User = Objects.User
 local Client = require("./Lib/Client")
 local task = require("@lune/task")
-local Timer = require("./Util/Timer")
+local Timer = require("./Classes/Timer")
 local lfs = require("@lune/fs")
 local Network = require("./Lib/Network")
-local DiscordWebSocket = require("./Util/DiscordWebSocket")
+local DiscordWebSocket = require("./Classes/DiscordWebSocket")
 local Enum = require("./Lib/Enum")
 local process = require("@lune/process")
 
@@ -78,7 +78,8 @@ function Aloha.RegisterDefaultCommands(options: {rateLimit: number?}?) : {Comman
 		Bot.RATE_LIMIT = options.rateLimit
 	end
 
-	for _, file in lfs.readDir("./Aloha/DefaultCommands") do
+
+	for _, file in lfs.readDir("Aloha/DefaultCommands") do
 		local command = require(`./DefaultCommands/{file}`)
 
 		local cmd = Commands.RegisterGlobal(command.Data)

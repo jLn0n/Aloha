@@ -3,9 +3,11 @@ local net = require("@lune/net")
 local Endpoints = require("Endpoints")
 local Enum = require("Enum")
 local DiscordTypes = require("DiscordTypes")
-local Event = require("../Util/Event")
+local Event = require("../Classes/Event")
 local Bot = require("Bot")
 local task = require("@lune/task")
+local Objects = require("../Classes/Objects")
+
 export type GlobalCommand = {
 	name: string,
 	name_localizations: { [string]: string }?,
@@ -110,13 +112,16 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 	return command, returnStr
 end
 
-function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData, shard_id: number?)
-	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
+function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?)
+	local interaction = Objects.Interaction.new(int)
 
-	if applicationData.target_id and Bot.RATE_LIMIT > 0 then
-		if Commands.RateLimit[applicationData.target_id] then
-			return
-		end
+	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
+	
+
+	if applicationData.target_id and Commands.RateLimit[applicationData.target_id] then
+		return
+	elseif interaction.member and interaction.member.user and interaction.member.user.id and Commands.RateLimit[interaction.member.user.id] then
+		return
 	end
 
 	local command = Commands.Cache[applicationData.id]
@@ -130,7 +135,7 @@ function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData, s
 	net.request({
 		url = url,
 		method = "POST",
-		body = net.jsonEncode(command.Response(applicationData)),
+		body = net.jsonEncode(command.Response(interaction)),
 		headers = {
 			["Authorization"] = `BOT {Bot.TOKEN}`,
 			["Content-Type"] = "application/json"
@@ -141,6 +146,12 @@ function Commands.HandleInteraction(interaction: DiscordTypes.InteractionData, s
 		Commands.RateLimit[applicationData.target_id] = true
 		task.delay(Bot.RATE_LIMIT, function()
 			Commands.RateLimit[applicationData.target_id] = nil
+		end)
+	elseif interaction.member and interaction.member.user and interaction.member.user.id then
+		if Bot.RATE_LIMIT <= 0 then return end
+		Commands.RateLimit[interaction.member.user.id] = true
+		task.delay(Bot.RATE_LIMIT, function()
+			Commands.RateLimit[interaction.member.user.id] = nil
 		end)
 	end
 end

@@ -1,4 +1,4 @@
-local Event = require("../Util/Event")
+local Event = require("../Classes/Event")
 
 local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")

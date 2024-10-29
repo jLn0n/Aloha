@@ -5,7 +5,7 @@ local Event = require("./Event")
 local Bot = require("../Lib/Bot")
 local task = require("@lune/task")
 local Client = require("../Lib/Client")
-local Misc = require("./Misc")
+local Misc = require("../Util/Misc")
 local Timer = require("./Timer")
 local Network = require("../Lib/Network")
 

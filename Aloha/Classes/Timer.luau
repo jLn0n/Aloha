@@ -31,7 +31,7 @@ end
 function Timer:Stop()
 	self._closed = true
 
-	if coroutine.status(self._task) == "running" then
+	if coroutine.status(self._task) == "suspended" then
 		task.cancel(self._task)
 	end
 end
