@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[2377],{51065:e=>{e.exports=JSON.parse('{"functions":[],"properties":[],"types":[],"name":"Interaction","desc":"Interaction object wrapper.","source":{"line":45,"path":"../Aloha/Aloha/Classes/Objects.luau"}}')}}]);
