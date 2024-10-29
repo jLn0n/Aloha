@@ -40,33 +40,30 @@ end
 ]=]
 function Aloha.Run(token: string, intents: number?)
 	Bot.INTENTS = intents or Enum.INTENTS.DEFAULT
+	Bot.TOKEN = token
 
 	local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
 	Bot.PROCESS_ID = pid_process.stdout:match("%d+")
 
-	local success,response = Network.Get(`{Endpoints.BASE_URL}{Endpoints.GET_GATEWAY_BOT}`, {
-		["Authorization"] = `Bot {token}`,
-		["Content-Type"] = "application/json",
+	local _, response = Network.Request({
+		method = "GET",
+		endpoint = Endpoints.GET_GATEWAY_BOT
 	})
 
 	Aloha.ClearTemp()
-
-	local body = Network.JsonDecode(response.body)
 	
-	local shards = body.shards
-	local base = body.url
+	local shards = response.shards
+	local base = response.url
 
 	local gateway_url = `{base}/?v={Bot.DISCORD_API_VERSION}&encoding=json`
 
-	Bot.TOKEN = token
-
-	local success, clientUserData = Network.Get(`{Endpoints.BASE_URL}{Endpoints.GET_CURRENT_USER}`, {
-		["Authorization"] = `Bot {token}`,
-		["Content-Type"] = "application/json",
+	local success, clientUserData = Network.Request({
+		method = "GET",
+		endpoint = Endpoints.GET_CURRENT_USER
 	})
 
 	if success then
-		Bot.Client = User.new(Network.JsonDecode(clientUserData.body))
+		Bot.Client = User.new(clientUserData)
 	else
 		error("Failed to fetch client user data")
 	end

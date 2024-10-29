@@ -95,7 +95,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 							-- close and reconnect
 							print(`[Shard {self.shard_id}] 🧟 Heartbeat not acknowledged. Reconnecting...`)
 							retry = true
-							self._socket.Close()
+							self._socket.Close(4000)
 							self._socket = Network.WebSocket(self._url)
 
 							self._heartbeat_timer:Stop()
@@ -122,15 +122,15 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 				if payload.op == 7 then
 					print(`[Shard {self.shard_id}] 🔄 Reconnect signal received. Attempting to resume.`, payload)
 					retry = true
-					self._socket.Close()
+					self._socket.Close(4000)
 					self._socket = Network.WebSocket(Bot.Shards[self.shard_id].ResumeURL)
-					self._socket.Send(Bot.OP.RESUME(self.token, self._last_payload.s, self.shard_id))
+					self:Send(Bot.OP.RESUME(self.token, self._last_payload.s, self.shard_id))
 					continue
 				end
 
 				if payload.op == 9 then
 					print(`[Shard {self.shard_id}] 🚫 Invalid session. Reconnecting.`, payload)
-					self._socket.Close()
+					self._socket.Close(4000)
 					self._socket = Network.WebSocket(self._url)
 					break
 				end
@@ -177,7 +177,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 	})
 
 	return proxy
-end
+end	
 
 --[=[
 	Sends a payload to Discord.

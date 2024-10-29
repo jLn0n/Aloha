@@ -53,7 +53,7 @@ local Network = require("../Lib/Network")
 local task = require("@lune/task")
 
 --[=[
-	@within Objects
+	@within Guild
 	@type Guild {}
 	A guild object.
 ]=]
@@ -62,7 +62,7 @@ export type Guild = DiscordTypes.GuildData & {
 } & typeof(Guild)
 
 --[=[
-	@within Objects
+	@within User
 	@type User {}
 	A user object.
 ]=]
@@ -70,7 +70,7 @@ export type User = DiscordTypes.UserData & {
 } & typeof(User)
 
 --[=[
-	@within Objects
+	@within Channel
 	@type Channel {guild: Guild}
 	A channel object.
 ]=]
@@ -79,7 +79,7 @@ export type Channel = DiscordTypes.ChannelData & {
 } & typeof(Channel)
 
 --[=[
-	@within Objects
+	@within Interaction
 	@type Interaction {id: DiscordTypes.snowflake, application_id: DiscordTypes.snowflake, type: number, data: (DiscordTypes.ApplicationCommandInteractionData | DiscordTypes.MessageComponentInteractionData)?, guild: Guild?, guild_id: DiscordTypes.snowflake?, channel: Channel?, channel_id: DiscordTypes.snowflake?, member: Member?, user: User?, token: string, version: number, message: Message, app_permissions: string, locale: string, guild_locale: string, entitlements: {DiscordTypes.EntitlementData}?, authorizing_integration_owners: {[number]: DiscordTypes.snowflake}, context: number}
 	An interaction object.
 ]=]
@@ -106,7 +106,7 @@ export type Interaction = {
 } & typeof(Interaction)
 
 --[=[
-	@within Objects
+	@within Message
 	@type Message {channel: Channel, author: User, mentions: {User}, id: DiscordTypes.snowflake, channel_id: DiscordTypes.snowflake, content: string, timestamp: string, edited_timestamp: string?, tts: boolean, mention_everyone: boolean, mention_roles: {number}, mention_channels: {DiscordTypes.ChannelMentionData}, attachments: {DiscordTypes.AttachmentData}, embeds: {DiscordTypes.EmbedData}, reactions: {DiscordTypes.ReactionData}?, nonce: (number | string)?, pinned: boolean, webhook_id: DiscordTypes.snowflake?, type: number, activity: DiscordTypes.ActivityData?, application: DiscordTypes.ApplicationData?, application_id: DiscordTypes.snowflake?, flags: number?, message_reference: DiscordTypes.MessageReferenceData?, message_snapshots: {DiscordTypes.MessageSnapshotData}?, referenced_message: Message?, interaction_metadata: DiscordTypes.InteractionMetadataData?, interaction: DiscordTypes.InteractionData?, thread: DiscordTypes.ChannelData?, components: {DiscordTypes.ComponentData}?, sticker_items: {DiscordTypes.StickerItemData}?, stickers: {DiscordTypes.StickerData}?, position: number?, role_subscription_data: DiscordTypes.RoleSubscriptionData?, resolved: DiscordTypes.ResolvedData?, poll: DiscordTypes.PollData?, call: DiscordTypes.CallData?}
 	A message object.
 ]=]
@@ -265,7 +265,7 @@ local function GetMember(userId: string, guildId: string) : (Member? | boolean, 
 end
 ------------------------------ Interaction
 --[=[
-	@within Objects
+	@within Interaction
 	@param data DiscordTypes.InteractionData -- The interaction data
 	@return Interaction -- The interaction object
 	Creates a new interaction object.
@@ -293,7 +293,7 @@ function Interaction.new(data: DiscordTypes.InteractionData) : Interaction
 end
 ------------------------------ Message
 --[=[
-	@within Objects
+	@within Message
 	@param data DiscordTypes.MessageData -- The message data
 	@return Message -- The message object
 	Creates a new message object.
@@ -407,7 +407,7 @@ function Message:RemoveAllReactions()
 end
 ------------------------------ Channel
 --[=[
-	@within Objects
+	@within Channel
 	@param data DiscordTypes.ChannelData -- The channel data
 	@return Channel -- The channel object
 	Creates a new channel object.
@@ -491,7 +491,7 @@ function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boo
 end
 ------------------------------  User
 --[=[
-	@within Objects
+	@within User
 	@param data DiscordTypes.UserData -- The user data
 	@return User -- The user object
 	Creates a new user object.
@@ -526,7 +526,7 @@ function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
 end
 
 --[=[
-	@within Objects
+	@within Member
 	@param data DiscordTypes.MemberData -- The member data
 	@param guild Guild? | string? -- The guild object or ID
 	@return Member -- The member object
@@ -580,7 +580,7 @@ function Member:Ban(delete_message_seconds: number?)
 end
 ------------------------------ Guild
 --[=[
-	@within Objects
+	@within Guild
 	@param data DiscordTypes.GuildData -- The guild data
 	@return Guild -- The guild object
 	Creates a new guild object.

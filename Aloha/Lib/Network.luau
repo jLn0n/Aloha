@@ -177,7 +177,7 @@ end
 --[=[
 	@function Commit
 	@within Network
-	@param method string -- HTTP method
+	@param method -- HTTP method
 	@param url string -- Request URL
 	@param headers {[any]: any} -- Request headers
 	@param body string? -- Request body
@@ -224,7 +224,7 @@ function Network.Commit(method: string, url: string, headers: {[any]: any}, body
 
 	local retry
 	if response.statusCode == 502 then
-		delay = delay + math.random(2000)
+		delay += math.random(2000)
 		retry = retries < 3
 	elseif response.statusCode == 429 then
 		delay = 1000 * data['retry-after']
