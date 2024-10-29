@@ -1,3 +1,4 @@
+--- @ignore
 return {
 	APPLICATION_COMMAND_OPTION_TYPE = {
 		SUB_COMMAND = 1,

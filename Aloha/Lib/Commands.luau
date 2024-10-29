@@ -1,3 +1,4 @@
+--- @ignore
 local Commands = {}
 local net = require("@lune/net")
 local Endpoints = require("Endpoints")

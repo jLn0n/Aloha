@@ -1,3 +1,4 @@
+--- @ignore
 export type snowflake = string
 
 export type UserData = {

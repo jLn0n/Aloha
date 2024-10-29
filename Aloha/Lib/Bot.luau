@@ -1,8 +1,14 @@
+--- @ignore
 local Bot = {}
 
 local process = require("@lune/process")
 local DiscordTypes = require("./DiscordTypes")
-local Network = require("./Network")
+
+type WebSocket = {
+	Close: () -> (),
+	Next: () -> (any),
+	Send: (data: string) -> ()
+}
 
 Bot.DISCORD_API_VERSION = "10"
 Bot.ALOHA_VERSION = "0.3.5"
@@ -12,12 +18,9 @@ Bot.PROCESS_ID = 0
 Bot.TOKEN = ""
 
 Bot.Client = nil
-Bot.Shards = {}
+	Bot.Shards = {} :: {[number]: {Sent: number, Socket: WebSocket, ResumeURL: string, SessionID: string}}
 
 Bot.SHARD_COUNT = 0
-
-Bot.RESUME_URL = ""
-Bot.SESSION_ID = ""
 
 Bot.STARTED_AT = 0
 Bot.RATE_LIMIT = 0
@@ -78,7 +81,7 @@ Bot.OP = {
 			op = 6,
 			d = {
 				token = token,
-				session_id = Bot.SESSION_ID,
+				session_id = Bot.Shards[shard_id].SessionID,
 				seq = sequence or false
 			}
 		}
@@ -121,17 +124,16 @@ function Bot.GenerateGUID(wrapInBraces: boolean?) : string
 	return wrapInBraces and `\{{s}\}` or s
 end
 
-function Bot.GetShard(guild_id: DiscordTypes.snowflake) : (number?, Network.WebSocket?)
-	local id = tonumber(guild_id)
+function Bot.GetShard(guild_id: DiscordTypes.snowflake) : (number?, WebSocket?)
+	local id = tonumber(guild_id)	
 	if not id then return end
 	
 	local shard_id = bit32.rshift(id, 22) % Bot.SHARD_COUNT
 
-	return shard_id, Bot.Shards[shard_id]
+	return shard_id, Bot.Shards[shard_id].Socket
 end
 
 function Bot.IsRateLimited(shard_id: number)
-	print("Checking ratelimit")
 	return Bot.Shards[shard_id].Sent >= 50 / Bot.SHARD_COUNT
 end
 

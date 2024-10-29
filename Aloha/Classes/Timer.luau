@@ -1,3 +1,4 @@
+--- @ignore
 local Timer = {}
 Timer.__index = Timer
 local task = require("@lune/task")

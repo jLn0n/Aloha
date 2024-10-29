@@ -1,3 +1,4 @@
+--- @ignore
 -- Janitor fork to work with my library. Thank you to howmanysmall for the original Janitor.
 local Bot = require("../Lib/Bot")
 local task = require("@lune/task")

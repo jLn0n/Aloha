@@ -1,3 +1,7 @@
+--[=[
+	@class Embed
+	@description Class to create Discord embeds.
+]=]
 local Embed = {}
 local Color3 = require("Color3")
 type Color3 = Color3.Color3
@@ -21,29 +25,56 @@ export type Embed = {
 	finish: () -> DiscordTypes.EmbedData,
 }
 
-
+--[=[
+	Creates a new Embed.
+	@return Embed
+]=]
 function Embed.new(): Embed
 	local newEmbed = {}
 	newEmbed._structure = {}
 
+	--[=[
+	Sets the title of the embed.
+	@within Embed
+	@param title string
+	@return Embed
+]=]
 	newEmbed.setTitle = function(title: string)
 		newEmbed._structure.title = title
 
 		return newEmbed
 	end
 
+	--[=[
+	Sets the description of the embed.
+	@within Embed
+	@param description string
+	@return Embed
+	]=]
 	newEmbed.setDescription = function(description: string)
 		newEmbed._structure.description = description
 
 		return newEmbed
 	end
 
+	--[=[
+	Sets the URL of the embed.
+	@within Embed
+	@param url string
+	@return Embed
+	]=]
 	newEmbed.setUrl = function(url: string)
 		newEmbed._structure.url = url
 
 		return newEmbed
 	end
 
+	--[=[
+	Sets the timestamp of the embed.
+	@within Embed
+	@param time string?
+	@return Embed
+	]=]
 	newEmbed.setTimestamp = function(time: string?)
 		local now = time or os.time()
 		local tz_offset_sec = os.difftime(now, os.time(os.date("!*t", now)))
@@ -54,12 +85,26 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the color of the embed.
+	@within Embed
+	@param color Color3
+	@return Embed
+	]=]
 	newEmbed.setColor = function(color: Color3)
 		newEmbed._structure.color = color:ToInt()
 
 		return newEmbed
 	end
 
+	--[=[
+	Sets the footer of the embed.
+	@within Embed
+	@param text string
+	@param icon_url string?
+	@param proxy_icon_url string?
+	@return Embed
+	]=]
 	newEmbed.setFooter = function(text: string, icon_url: string?, proxy_icon_url: string?)
 		newEmbed._structure.footer = {
 			text = text,
@@ -70,6 +115,15 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the image of the embed.
+	@within Embed
+	@param url string
+	@param height number?
+	@param width number?
+	@param proxy_url string?
+	@return Embed
+	]=]
 	newEmbed.setImage = function(url: string, height: number?, width: number?, proxy_url: string?)
 		newEmbed._structure.image = {
 			url = url,
@@ -81,6 +135,15 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the thumbnail of the embed.
+	@within Embed
+	@param url string
+	@param height number?
+	@param width number?
+	@param proxy_url string?
+	@return Embed
+	]=]
 	newEmbed.setThumbnail = function(url: string, height: number?, width: number?, proxy_url: string?)
 		newEmbed._structure.thumbnail = {
 			url = url,
@@ -92,6 +155,15 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the video of the embed.
+	@within Embed
+	@param url string
+	@param height number?
+	@param width number?
+	@param proxy_url string?
+	@return Embed
+	]=]
 	newEmbed.setVideo = function(url: string, height: number?, width: number?, proxy_url: string?)
 		newEmbed._structure.video = {
 			url = url,
@@ -103,6 +175,13 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the provider of the embed.
+	@within Embed
+	@param name string?
+	@param url string?
+	@return Embed
+	]=]
 	newEmbed.setProvider = function(name: string?, url: string?)
 		newEmbed._structure.provider = {
 			name = name,
@@ -112,6 +191,15 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the author of the embed.
+	@within Embed
+	@param name string
+	@param icon_url string?
+	@param url string?
+	@param proxy_icon_url string?
+	@return Embed
+	]=]
 	newEmbed.setAuthor = function(name: string, icon_url: string?, url: string?, proxy_icon_url: string?)
 		newEmbed._structure.author = {
 			name = name,
@@ -123,12 +211,26 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Sets the fields of the embed.
+	@within Embed
+	@param fields { { name: string, value: string, inline: boolean? } }
+	@return Embed
+	]=]
 	newEmbed.setFields = function(fields: { { name: string, value: string, inline: boolean? } })
 		newEmbed._structure.fields = fields
 
 		return newEmbed
 	end
 
+	--[=[
+	Adds a field to the embed.
+	@within Embed
+	@param name string
+	@param value string
+	@param inline boolean?
+	@return Embed
+	]=]
 	newEmbed.addField = function(name: string, value: string, inline: boolean?)
 		if not newEmbed._structure.fields then
 			newEmbed._structure.fields = {}
@@ -143,6 +245,11 @@ function Embed.new(): Embed
 		return newEmbed
 	end
 
+	--[=[
+	Finishes the embed and returns the embed data as a structured table.
+	@within Embed
+	@return DiscordTypes.EmbedData
+	]=]
 	newEmbed.finish = function() : DiscordTypes.EmbedData
 		return newEmbed._structure
 	end

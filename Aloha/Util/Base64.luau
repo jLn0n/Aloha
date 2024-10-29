@@ -1,3 +1,4 @@
+--- @ignore
 --!native
 --!optimize 2
 

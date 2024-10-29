@@ -1,3 +1,4 @@
+--- @ignore
 local Debug = {}
 local Objects = require("../Classes/Objects")
 

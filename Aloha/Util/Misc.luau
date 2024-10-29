@@ -1,3 +1,4 @@
+--- @ignore
 local Misc = {}
 local Bot = require("../Lib/Bot")
 local fs = require("@lune/fs")

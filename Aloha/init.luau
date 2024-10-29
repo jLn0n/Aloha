@@ -1,3 +1,4 @@
+--- @ignore
 local Aloha = {}
 
 local Endpoints = require("./Lib/Endpoints")
@@ -59,7 +60,7 @@ function Aloha.Run(token: string, intents: number?)
 
 	for shard_id = 0, shards - 1 do
 		local socket = DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)
-		Bot.Shards[shard_id] = {Sent = 0, Socket = socket}
+		Bot.Shards[shard_id] = {Sent = 0, Socket = socket, ResumeURL = "", SessionID = ""}
 
 		socket.OnClose:Connect(function(code, reason)
 			print(`[Shard {shard_id}] DISCONNECTED: {code} - {reason}`)

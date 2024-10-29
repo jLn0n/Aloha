@@ -1,4 +1,7 @@
--- Net WebSocket wrapper
+--[=[
+	@class DiscordWebSocket
+	@description Class to spawn sharded websockets for Discord.
+]=]
 local DiscordWebSocket = {}
 DiscordWebSocket.__index = DiscordWebSocket
 local Event = require("./Event")
@@ -19,6 +22,15 @@ export type DiscordWebSocket = {
 	Closed: boolean
 } & typeof(DiscordWebSocket)
 
+--[=[
+	Creates a new DiscordWebSocket.
+	@within DiscordWebSocket
+	@param url string
+	@param token string
+	@param shard_id number
+	@param shards number
+	@return DiscordWebSocket
+]=]
 function DiscordWebSocket.new(url: string, token: string, shard_id: number, shards: number) : DiscordWebSocket
 	local self = setmetatable({}, DiscordWebSocket)
 
@@ -111,7 +123,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					print(`[Shard {self.shard_id}] 🔄 Reconnect signal received. Attempting to resume.`, payload)
 					retry = true
 					self._socket.Close()
-					self._socket = Network.WebSocket(Bot.RESUME_URL)
+					self._socket = Network.WebSocket(Bot.Shards[self.shard_id].ResumeURL)
 					self._socket.Send(Bot.OP.RESUME(self.token, self._last_payload.s, self.shard_id))
 					continue
 				end
@@ -129,7 +141,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 				end
 
 				if payload.op == 0 and payload.t then
-					Client.Fire(payload.t, payload)
+					Client.Fire(payload.t, payload, self.shard_id)
 				end
 
 				self._last_payload = payload
@@ -167,7 +179,11 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 	return proxy
 end
 
-
+--[=[
+	Sends a payload to Discord.
+	@param data Payload
+	@within DiscordWebSocket
+]=]
 function DiscordWebSocket:Send(data: Payload) : ()
 	self._socket.Send(Network.JsonEncode(data))
 end

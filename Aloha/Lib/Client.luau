@@ -1,3 +1,4 @@
+--- @ignore
 local Event = require("../Classes/Event")
 
 local Objects = require("../Classes/Objects")
@@ -13,9 +14,9 @@ type Payload = DiscordTypes.Payload
 
 local eventCallbacks = {	
 	["READY"] = {
-		callback = function(payload: Payload)
-			Bot.RESUME_URL = payload.d.resume_gateway_url
-			Bot.SESSION_ID = payload.d.session_id
+		callback = function(payload: Payload, shard_id: number)
+			Bot.Shards[shard_id].ResumeURL = payload.d.resume_gateway_url
+			Bot.Shards[shard_id].SessionID = payload.d.session_id
 		end,
 
 		aliases = {"ready", "Ready"},

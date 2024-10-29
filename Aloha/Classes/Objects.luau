@@ -1,19 +1,42 @@
---------------------
+--[=[
+	@class Objects
+	@description Class to create Discord objects.
+]=]
 local Message = {}
 Message.__index = Message
 
+--[=[
+	@class User
+	@description Class to create Discord users.
+]=]
 local User = {}
 User.__index = User
 
+--[=[
+	@class Channel
+	@description Class to create Discord channels.
+]=]
 local Channel = {}
 Channel.__index = Channel
 
+--[=[
+	@class Guild
+	@description Class to create Discord guilds.
+]=]
 local Guild = {}
 Guild.__index = Guild
 
+--[=[
+	@class Member
+	@description Class to create Discord members.
+]=]
 local Member = {}
 Member.__index = Member
 
+--[=[
+	@class Interaction
+	@description Class to create Discord interactions.
+]=]
 local Interaction = {}
 Interaction.__index = Interaction
 -----------------------------
@@ -114,28 +137,13 @@ export type Member = {
 } & typeof(Member)
 -- Functions -----------------
 local function GetChannel(id: string) : Channel
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL:format(id)}`
-	local success,response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local url = `{Endpoints.GET_CHANNEL:format(id)}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
-	response = Network.JsonDecode(response.body)
-
 	return Channel.new(response)
-end
-
-local function rateLimit(guild_id: string)
-	if not guild_id then return end
-	local shard_id, shard = Bot.GetShard(guild_id)
-	shard.Sent += 1
-	task.delay(1, function()
-		shard.Sent = 0
-	end)
-
-	if Bot.IsRateLimited(shard_id) then
-		print(`[Shard {shard_id}] Rate limited. Deferring to next cycle.`)
-		task.wait(1)
-	end
 end
 
 local function GetUser(data: DiscordTypes.UserData) : User
@@ -147,13 +155,14 @@ local function GetMessage(data: DiscordTypes.MessageData) : Message
 end
 
 local function GetMessageInChannel(channelId: string, messageId: string) : Message?
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_CHANNEL_MESSAGE:format(channelId, messageId)}`
-	local success,response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local url = `{Endpoints.GET_CHANNEL_MESSAGE:format(channelId, messageId)}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
 	if success then
-		return Message.new(Network.JsonDecode(response.body))
+		return Message.new(response)
 	end
 
 	return nil
@@ -162,23 +171,23 @@ end
 local function GetGuild(id: string) : Guild?
 	if not id then return end
 
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD:format(id)}`
-	local success,response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local url = `{Endpoints.GET_GUILD:format(id)}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
-
-	response = Network.JsonDecode(response.body)
 
 	return Guild.new(response)
 end
 local function GetMember(userId: string, guildId: string) : (Member? | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(guildId, userId)}`
+	local url = `{Endpoints.GET_GUILD_MEMBER:format(guildId, userId)}`
 
-	local success,response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
-	return Member.new(Network.JsonDecode(response.body), guildId)
+	return Member.new(response, guildId)
 end
 ------------------------------ Interaction
 function Interaction.new(data: DiscordTypes.InteractionData) : Interaction
@@ -236,19 +245,16 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 end
 
 function Message:Delete()
-	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.channel_id, self.id)}`
+	local url = `{Endpoints.DELETE_MESSAGE:format(self.channel_id, self.id)}`
 
-	rateLimit(self.channel.guild_id)
-
-
-	return Network.Delete(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 end
 
 function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
-
-	self.channel:Send(content, embeds, {
+	return self.channel:Send(content, embeds, {
 		type = 0,
 		message_id = self.id,
 		channel_id = self.channel_id,
@@ -257,33 +263,30 @@ function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
 end
 
 function Message:AddReaction(emoji: string)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji))}`
+	local url = `{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji))}`
 
-	rateLimit(self.channel.guild_id)
-	
-
-	return Network.Put(url, "", {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "PUT",
+		endpoint = url,
+		body = ""
 	})
 end
 
 function Message:RemoveReaction(emoji: string, userId: string?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji), userId or "@me")}`
+	local url = `{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji), userId or "@me")}`
 
-	rateLimit(self.channel.guild_id)
-
-	return Network.Delete(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 end
 
 function Message:RemoveAllReactions()
-	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_ALL_REACTIONS:format(self.channel_id, self.id)}`
+	local url = `{Endpoints.DELETE_ALL_REACTIONS:format(self.channel_id, self.id)}`
 
-	rateLimit(self.channel.guild_id)
-
-	return Network.Delete(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 end
 ------------------------------ Channel
@@ -300,51 +303,43 @@ function Channel.new(data: DiscordTypes.ChannelData) : Channel
 end
 
 function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_MESSAGE:format(self.id)}`
+	local url = `{Endpoints.CREATE_MESSAGE:format(self.id)}`
 
-	rateLimit(self.guild_id)
-
-	local send = Network.JsonEncode({
-		content = content,
-		embeds = embeds,
-		message_reference = reference 
-	})
-
-	return Network.Post(url, send, {
-		['Authorization'] = `Bot {Bot.TOKEN}`,
-		['Content-Type'] = "application/json"
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = {
+			content = content,
+			embeds = embeds,
+			message_reference = reference 
+		}
 	})
 end
 
 function Channel:Delete(message_id: string)
-	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
+	local url = `{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
 
-	rateLimit(self.guild_id)
-
-	return Network.Delete(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 end
 
 function Channel:GetMessage(id: string) : Message
-	rateLimit(self.guild_id)
-
 	local msg = GetMessageInChannel(self.id, id)
 
 	return msg
 end
 
 function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_CHANNEL:format(self.id)}`
+	local url = `{Endpoints.MODIFY_CHANNEL:format(self.id)}`
 
-	rateLimit(self.guild_id)
-
-	local success, response = Network.Patch(url, Network.JsonEncode(data), {
-		['Authorization'] = `Bot {Bot.TOKEN}`,
-		['Content-Type'] = "application/json"
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = body
 	})
-
-	return success, response
 end
 ------------------------------  User
 function User.new(data: DiscordTypes.UserData) : User
@@ -358,18 +353,17 @@ function User.new(data: DiscordTypes.UserData) : User
 end
 
 function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_DM}`
+	local url = `{Endpoints.CREATE_DM}`
 
 	if (self :: User).bot then return false, {message = "Bots cannot DM bots!"} end
 
-	local response = Network.Post(url, Network.JsonEncode({
-		recipient_id = self.id
-	}), {
-		['Authorization'] = `Bot {Bot.TOKEN}`,
-		['Content-Type'] = "application/json"
+	local response = Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = {recipient_id = self.id}
 	})
 
-	return Channel.new(Network.JsonDecode(response.body))
+	return Channel.new(response)
 end
 
 function Member.new(data: DiscordTypes.MemberData, guild: Guild? | string?) : Member
@@ -390,26 +384,21 @@ function Member.new(data: DiscordTypes.MemberData, guild: Guild? | string?) : Me
 end
 
 function Member:Kick()
-	local url = `{Endpoints.BASE_URL}{Endpoints.REMOVE_GUILD_MEMBER:format(self.guild.id, self.user.id)}`
+	local url = `{Endpoints.REMOVE_GUILD_MEMBER:format(self.guild.id, self.user.id)}`
 
-	rateLimit(self.guild.id)
-
-	return Network.Delete(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 end
 
 function Member:Ban(delete_message_seconds: number?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_BAN:format(self.guild.id, self.user.id)}`
+	local url = `{Endpoints.CREATE_GUILD_BAN:format(self.guild.id, self.user.id)}`
 
-	rateLimit(self.guild.id)
-
-
-
-	return Network.Put(url, Network.JsonEncode({
-		delete_message_seconds = delete_message_seconds
-	}), {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "PUT",
+		endpoint = url,
+		body = {delete_message_seconds = delete_message_seconds}
 	})
 end
 ------------------------------ Guild
@@ -428,133 +417,129 @@ function Guild:GetChannel(id: string) : Channel
 end
 
 function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
+	local url = `{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
 
-	rateLimit(self.id)
-
-	local response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
-	return Member.new(Network.JsonDecode(response.body), self)
+	return Member.new(response, self)
 end
 
 function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.BULK_GUILD_BAN:format(self.id)}`
+	local url = `{Endpoints.BULK_GUILD_BAN:format(self.id)}`
 
-	rateLimit(self.id)
-
-	return Network.Post(url, Network.JsonEncode({
-		user_ids = userIds,
-		delete_message_seconds = delete_message_seconds
-	}), {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = {
+			user_ids = userIds,
+			delete_message_seconds = delete_message_seconds
+		}
 	})
 end
 
 function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
+	local url = `{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
 
-	rateLimit(self.id)
-
-	return Network.Post(url, Network.JsonEncode({
-		name = name,
-		permissions = permissions,
-		color = color,
-		hoist = hoist,
-		icon = icon,
-		unicode_emoji = unicode_emoji,
-		mentionable = mentionable
-	}), {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local success, response = Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = {
+			name = name,
+			permissions = permissions,
+			color = color,
+			hoist = hoist,
+			icon = icon,
+			unicode_emoji = unicode_emoji,
+			mentionable = mentionable
+		}
 	})
+
+	return success, response
 end
 
 function Guild:GetRoles() : ({DiscordTypes.RoleData} | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_ROLES:format(self.id)}`
 	
-	rateLimit(self.id)
-
-	local response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
-	return Network.JsonDecode(response.body)
+	return response
 end
 
 function Guild:GetRole(id: string) : (DiscordTypes.RoleData? | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLE:format(self.id, id)}`
+	local url = `{Endpoints.GET_GUILD_ROLE:format(self.id, id)}`
 
-	rateLimit(self.id)
-
-	local response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
-	return Network.JsonDecode(response.body)
+	return response
 end	
 
 function Guild:DeleteRole(id: string) : (boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.DELETE_GUILD_ROLE:format(self.id, id)}`
+	local url = `{Endpoints.DELETE_GUILD_ROLE:format(self.id, id)}`
 
-	rateLimit(self.id)
-
-	local success, response = Network.Delete(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local success, response = Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 
 	return success, response
 end
 
 function Guild:ModifyRole(id: string, data: {name: string?, permissions: string?, color: number?, hoist: boolean?, icon: string?, unicode_emoji: string?, mentionable: boolean?}) : (boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.MODIFY_GUILD_ROLE:format(self.id, id)}`
+	local url = `{Endpoints.MODIFY_GUILD_ROLE:format(self.id, id)}`
 
-	rateLimit(self.id)
-
-	local success, response = Network.Patch(url, Network.JsonEncode(data), {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local success, response = Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = data
 	})
 
 	return success, response
 end
 
 function Guild:MoveRole(id: string, position: number) : (boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_ROLES:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_ROLES:format(self.id)}`
 
-	rateLimit(self.id)
-
-	local success, response = Network.Patch(url, Network.JsonEncode({
-		id = id,
-		position = position
-	}), {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = {
+			id = id,
+			position = position
+		}
 	})
-
-	return success, response
 end
 
 function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
 
-	rateLimit(self.id)
-
-	local response = Network.Get(url, {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local response = Network.Request({
+		method = "GET",
+		endpoint = url
 	})
 
-	return Network.JsonDecode(response.body)
+	return response
 end
 
 function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Channel? | boolean, {any}?)
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
+	local url = `{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
 
-	rateLimit(self.id)
-
-	local response = Network.Post(url, Network.JsonEncode(data), {
-		['Authorization'] = `Bot {Bot.TOKEN}`
+	local body = data :: {[string]: any}
+	local response = Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = body
 	})
 
-	return Channel.new(Network.JsonDecode(response.body))
+	return Channel.new(response)
 end
 ------------------------------
 return {

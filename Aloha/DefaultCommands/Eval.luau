@@ -1,3 +1,4 @@
+--- @ignore
 local Enum = require("../Lib/Enum")
 local DiscordTypes = require("../Lib/DiscordTypes")
 local Evaluator = require("../Util/Evaluator")
