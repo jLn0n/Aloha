@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="plugin-moonwave plugin-id-moonwave">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v2.3.1">
+<title data-rh="true">Objects | Aloha</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://thegalaxydev.github.io/Aloha/api/Objects"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Objects | Aloha"><meta data-rh="true" name="description" content="Class to create Discord objects."><meta data-rh="true" property="og:description" content="Class to create Discord objects."><link data-rh="true" rel="canonical" href="https://thegalaxydev.github.io/Aloha/api/Objects"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Objects" hreflang="en"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Objects" hreflang="x-default"><link rel="stylesheet" href="/Aloha/assets/css/styles.19a5646f.css">
+<link rel="preload" href="/Aloha/assets/js/runtime~main.2e15e94e.js" as="script">
+<link rel="preload" href="/Aloha/assets/js/main.626ae6f3.js" as="script">
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function e(e){document.documentElement.setAttribute("data-theme",e)}var t=function(){var e=null;try{e=localStorage.getItem("theme")}catch(e){}return e}();null!==t?e(t):window.matchMedia("(prefers-color-scheme: dark)").matches?e("dark"):(window.matchMedia("(prefers-color-scheme: light)").matches,e("light"))}()</script><div id="__docusaurus">
+<div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/Aloha/"><b class="navbar__title text--truncate">Aloha</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/Aloha/api/">API</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/thegalaxydev/Aloha" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="searchBox_ZlJk"><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input type="search" id="search_input_react" placeholder="Loading..." aria-label="Search" class="navbar__search-input search-bar" disabled=""></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0 docPageContainer_wNNk"><div class="docPage_Dpn1"><div class="docSidebarContainer_o_re"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Aloha">​Aloha</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Base64">​Base64</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Bot">​Bot</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Channel">​Channel</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Client">​Client</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Color3">​Color3</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Command">​Command</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Commands">​Commands</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Debug">​Debug</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/DiscordTypes">​Discord​Types</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/DiscordWebSocket">​Discord​Web​Socket</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Embed">​Embed</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Enum">​Enum</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Evaluator">​Evaluator</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Event">​Event</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Guild">​Guild</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Interaction">​Interaction</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/LinkedList">​Linked​List</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Member">​Member</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Message">​Message</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Misc">​Misc</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Mutex">​Mutex</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Network">​Network</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/Aloha/api/Objects">​Objects</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Sweeper">​Sweeper</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Timer">​Timer</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/User">​User</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/sha1">sha1</a></li></ul></nav></div></div><main class="docMainContainer_HJE1"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_MU3C"><div class="docItemContainer_Wv98"><article><div class="member_J0w1 markdown"><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_oUs_"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><header><h1 class="docTitle_mZRt" style="text-decoration:none"><span style="display:inline-block">Objects</span></h1><div class="luaClassTags_EipM"></div><div>
+<p>Class to create Discord objects.</p>
+</div></header><h2 class="anchor anchorWithStickyNavbar_LWe7" id="types">Types<a href="#types" class="hash-link" aria-label="Direct link to Types" title="Direct link to Types">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Guild"><code style="text-decoration:none">Guild</code><a href="#Guild" class="hash-link" aria-label="Direct link to Guild" title="Direct link to Guild">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L60"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>Guild<!-- --> = </code> <code class="purple_ieR2">{</code><code class="purple_ieR2">}</code></div><div>
+<p>A guild object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="User"><code style="text-decoration:none">User</code><a href="#User" class="hash-link" aria-label="Direct link to User" title="Direct link to User">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L69"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>User<!-- --> = </code> <code class="purple_ieR2">{</code><code class="purple_ieR2">}</code></div><div>
+<p>A user object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Channel"><code style="text-decoration:none">Channel</code><a href="#Channel" class="hash-link" aria-label="Direct link to Channel" title="Direct link to Channel">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L77"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>Channel<!-- --> = </code> <code class="purple_ieR2">{</code><code>guild<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Guild">Guild</a></code><code class="purple_ieR2">}</code></div><div>
+<p>A channel object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Interaction"><code style="text-decoration:none">Interaction</code><a href="#Interaction" class="hash-link" aria-label="Direct link to Interaction" title="Direct link to Interaction">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L86"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>Interaction<!-- --> = </code> <code class="purple_ieR2">{</code><div class="inset_uKQm"><code>id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>application_id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>type<!-- -->: </code><code class="blue_P4bS">number</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>data<!-- -->: </code><code class="green_DgR4">(</code><code class="blue_P4bS">DiscordTypes.ApplicationCommandInteractionData</code><code class="op_lSLc"> | </code><code class="blue_P4bS">DiscordTypes.MessageComponentInteractionData</code><code class="green_DgR4">)</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>guild<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Guild">Guild?</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>guild_id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>channel<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Channel">Channel?</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>channel_id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>member<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Member">Member?</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>user<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#User">User?</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>token<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>version<!-- -->: </code><code class="blue_P4bS">number</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>message<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Message">Message</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>app_permissions<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>locale<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>guild_locale<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>entitlements<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.EntitlementData</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>authorizing_integration_owners<!-- -->: </code><code class="green_DgR4">{</code><span><code>[</code><code class="blue_P4bS">number</code><code>]</code></span><code>: </code><code class="blue_P4bS">DiscordTypes.snowflake</code><code class="green_DgR4">}</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>context<!-- -->: </code><code class="blue_P4bS">number</code></div><code class="purple_ieR2">}</code></div><div>
+<p>An interaction object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Message"><code style="text-decoration:none">Message</code><a href="#Message" class="hash-link" aria-label="Direct link to Message" title="Direct link to Message">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L113"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>Message<!-- --> = </code> <code class="purple_ieR2">{</code><div class="inset_uKQm"><code>channel<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Channel">Channel</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>author<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#User">User</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>mentions<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#User">User</a></code><code class="green_DgR4">}</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>channel_id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>content<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>timestamp<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>edited_timestamp<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>tts<!-- -->: </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>mention_everyone<!-- -->: </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>mention_roles<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">number</code><code class="green_DgR4">}</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>mention_channels<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.ChannelMentionData</code><code class="green_DgR4">}</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>attachments<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.AttachmentData</code><code class="green_DgR4">}</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>embeds<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.EmbedData</code><code class="green_DgR4">}</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>reactions<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.ReactionData</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>nonce<!-- -->: </code><code class="green_DgR4">(</code><code class="blue_P4bS">number</code><code class="op_lSLc"> | </code><code class="blue_P4bS">string</code><code class="green_DgR4">)</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>pinned<!-- -->: </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>webhook_id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>type<!-- -->: </code><code class="blue_P4bS">number</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>activity<!-- -->: </code><code class="blue_P4bS">DiscordTypes.ActivityData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>application<!-- -->: </code><code class="blue_P4bS">DiscordTypes.ApplicationData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>application_id<!-- -->: </code><code class="blue_P4bS">DiscordTypes.snowflake?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>flags<!-- -->: </code><code class="blue_P4bS">number?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>message_reference<!-- -->: </code><code class="blue_P4bS">DiscordTypes.MessageReferenceData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>message_snapshots<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.MessageSnapshotData</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>referenced_message<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Message">Message?</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>interaction_metadata<!-- -->: </code><code class="blue_P4bS">DiscordTypes.InteractionMetadataData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>interaction<!-- -->: </code><code class="blue_P4bS">DiscordTypes.InteractionData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>thread<!-- -->: </code><code class="blue_P4bS">DiscordTypes.ChannelData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>components<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.ComponentData</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>sticker_items<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.StickerItemData</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>stickers<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.StickerData</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>position<!-- -->: </code><code class="blue_P4bS">number?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>role_subscription_data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.RoleSubscriptionData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>resolved<!-- -->: </code><code class="blue_P4bS">DiscordTypes.ResolvedData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>poll<!-- -->: </code><code class="blue_P4bS">DiscordTypes.PollData?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>call<!-- -->: </code><code class="blue_P4bS">DiscordTypes.CallData?</code></div><code class="purple_ieR2">}</code></div><div>
+<p>A message object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Member"><code style="text-decoration:none">Member</code><a href="#Member" class="hash-link" aria-label="Direct link to Member" title="Direct link to Member">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L158"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>Member<!-- --> = </code> <code class="purple_ieR2">{</code><div class="inset_uKQm"><code>user<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#User">User?</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>nick<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>avatar<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>banner<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>roles<!-- -->: </code><code class="green_DgR4">{</code><code class="blue_P4bS">number</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>joined_at<!-- -->: </code><code class="blue_P4bS">string</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>premium_since<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>deaf<!-- -->: </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>mute<!-- -->: </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>pending<!-- -->: </code><code class="blue_P4bS">boolean?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>permissions<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>communication_disabled_until<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>avatar_decoration_data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.AvatarDecorationData?</code></div><code class="purple_ieR2">}</code></div><div>
+<p>A member object.</p>
+</div><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetChannel"><code style="text-decoration:none">GetChannel</code><a href="#GetChannel" class="hash-link" aria-label="Direct link to GetChannel" title="Direct link to GetChannel">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L180"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">GetChannel</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel ID</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Channel">Channel</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel object</p>
+</span></span></div><div>
+<p>Gets a channel by ID.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetUser"><code style="text-decoration:none">GetUser</code><a href="#GetUser" class="hash-link" aria-label="Direct link to GetUser" title="Direct link to GetUser">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L196"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">GetUser</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.UserData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The user data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#User">User</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The user object</p>
+</span></span></div><div>
+<p>Gets a user by ID.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetMessage"><code style="text-decoration:none">GetMessage</code><a href="#GetMessage" class="hash-link" aria-label="Direct link to GetMessage" title="Direct link to GetMessage">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L206"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">GetMessage</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.MessageData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The message data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Message">Message</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The message object</p>
+</span></span></div><div>
+<p>Gets a message by ID.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetMessageInChannel"><code style="text-decoration:none">GetMessageInChannel</code><a href="#GetMessageInChannel" class="hash-link" aria-label="Direct link to GetMessageInChannel" title="Direct link to GetMessageInChannel">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L217"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">GetMessageInChannel</code><code>(</code><div class="inset_uKQm"><div><code>channelId<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel ID</p>
+</span></span></div><div><code>messageId<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The message ID</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Message">Message?</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The message object if found</p>
+</span></span></div><div>
+<p>Gets a message by ID in a channel.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetGuild"><code style="text-decoration:none">GetGuild</code><a href="#GetGuild" class="hash-link" aria-label="Direct link to GetGuild" title="Direct link to GetGuild">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L237"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">GetGuild</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The guild ID</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Guild">Guild?</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The guild object if found</p>
+</span></span></div><div>
+<p>Gets a guild by ID.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetMember"><code style="text-decoration:none">GetMember</code><a href="#GetMember" class="hash-link" aria-label="Direct link to GetMember" title="Direct link to GetMember">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L256"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">GetMember</code><code>(</code><div class="inset_uKQm"><div><code>userId<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The user ID</p>
+</span></span></div><div><code>guildId<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The guild ID</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Member">Member?</a></code><code class="op_lSLc"> | </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>The member object if found</p>
+</span></span></div><div>
+<p>Gets a member by ID in a guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L273"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.InteractionData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The interaction data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Interaction">Interaction</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The interaction object</p>
+</span></span></div><div>
+<p>Creates a new interaction object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L301"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.MessageData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The message data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Message">Message</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The message object</p>
+</span></span></div><div>
+<p>Creates a new message object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L415"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.ChannelData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Channel">Channel</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel object</p>
+</span></span></div><div>
+<p>Creates a new channel object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L499"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.UserData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The user data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#User">User</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The user object</p>
+</span></span></div><div>
+<p>Creates a new user object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L535"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.MemberData</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The member data</p>
+</span></span></div><div><code>guild<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Guild">Guild?</a></code><code class="op_lSLc"> | </code><code class="blue_P4bS">string?</code><span class="inlineDescription_G7Er">-- <span>
+<p>The guild object or ID</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Member">Member</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The member object</p>
+</span></span></div><div>
+<p>Creates a new member object.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="new"><code style="text-decoration:none">new</code><a href="#new" class="hash-link" aria-label="Direct link to new" title="Direct link to new">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L588"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Objects<!-- -->.</code><code class="green_DgR4">new</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.GuildData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The guild data</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Guild">Guild</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The guild object</p>
+</span></span></div><div>
+<p>Creates a new guild object.</p>
+</div></div></article></div><details><summary>Show raw api</summary><pre style="max-width:100%;white-space:pre-wrap">{
+    &quot;functions&quot;: [
+        {
+            &quot;name&quot;: &quot;GetChannel&quot;,
+            &quot;desc&quot;: &quot;Gets a channel by ID.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The channel ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The channel object&quot;,
+                    &quot;lua_type&quot;: &quot;Channel&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 180,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetUser&quot;,
+            &quot;desc&quot;: &quot;Gets a user by ID.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The user data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.UserData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The user object&quot;,
+                    &quot;lua_type&quot;: &quot;User&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 196,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetMessage&quot;,
+            &quot;desc&quot;: &quot;Gets a message by ID.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The message data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.MessageData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The message object&quot;,
+                    &quot;lua_type&quot;: &quot;Message&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 206,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetMessageInChannel&quot;,
+            &quot;desc&quot;: &quot;Gets a message by ID in a channel.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;channelId&quot;,
+                    &quot;desc&quot;: &quot;The channel ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;messageId&quot;,
+                    &quot;desc&quot;: &quot;The message ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The message object if found&quot;,
+                    &quot;lua_type&quot;: &quot;Message?&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 217,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetGuild&quot;,
+            &quot;desc&quot;: &quot;Gets a guild by ID.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The guild ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The guild object if found&quot;,
+                    &quot;lua_type&quot;: &quot;Guild?&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 237,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetMember&quot;,
+            &quot;desc&quot;: &quot;Gets a member by ID in a guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;userId&quot;,
+                    &quot;desc&quot;: &quot;The user ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;guildId&quot;,
+                    &quot;desc&quot;: &quot;The guild ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The member object if found&quot;,
+                    &quot;lua_type&quot;: &quot;(Member? | boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 256,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new interaction object.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The interaction data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.InteractionData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The interaction object&quot;,
+                    &quot;lua_type&quot;: &quot;Interaction&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 273,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new message object.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The message data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.MessageData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The message object&quot;,
+                    &quot;lua_type&quot;: &quot;Message&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 301,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new channel object.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The channel data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.ChannelData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The channel object&quot;,
+                    &quot;lua_type&quot;: &quot;Channel&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 415,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new user object.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The user data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.UserData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The user object&quot;,
+                    &quot;lua_type&quot;: &quot;User&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 499,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new member object.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The member data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.MemberData&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;guild&quot;,
+                    &quot;desc&quot;: &quot;The guild object or ID&quot;,
+                    &quot;lua_type&quot;: &quot;Guild? | string?&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The member object&quot;,
+                    &quot;lua_type&quot;: &quot;Member&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 535,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;new&quot;,
+            &quot;desc&quot;: &quot;Creates a new guild object.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The guild data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.GuildData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The guild object&quot;,
+                    &quot;lua_type&quot;: &quot;Guild&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 588,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        }
+    ],
+    &quot;properties&quot;: [],
+    &quot;types&quot;: [
+        {
+            &quot;name&quot;: &quot;Guild&quot;,
+            &quot;desc&quot;: &quot;A guild object.&quot;,
+            &quot;lua_type&quot;: &quot;{}&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 60,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;User&quot;,
+            &quot;desc&quot;: &quot;A user object.&quot;,
+            &quot;lua_type&quot;: &quot;{}&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 69,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Channel&quot;,
+            &quot;desc&quot;: &quot;A channel object.&quot;,
+            &quot;lua_type&quot;: &quot;{guild: Guild}&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 77,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Interaction&quot;,
+            &quot;desc&quot;: &quot;An interaction object.&quot;,
+            &quot;lua_type&quot;: &quot;{id: DiscordTypes.snowflake, application_id: DiscordTypes.snowflake, type: number, data: (DiscordTypes.ApplicationCommandInteractionData | DiscordTypes.MessageComponentInteractionData)?, guild: Guild?, guild_id: DiscordTypes.snowflake?, channel: Channel?, channel_id: DiscordTypes.snowflake?, member: Member?, user: User?, token: string, version: number, message: Message, app_permissions: string, locale: string, guild_locale: string, entitlements: {DiscordTypes.EntitlementData}?, authorizing_integration_owners: {[number]: DiscordTypes.snowflake}, context: number}&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 86,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Message&quot;,
+            &quot;desc&quot;: &quot;A message object.&quot;,
+            &quot;lua_type&quot;: &quot;{channel: Channel, author: User, mentions: {User}, id: DiscordTypes.snowflake, channel_id: DiscordTypes.snowflake, content: string, timestamp: string, edited_timestamp: string?, tts: boolean, mention_everyone: boolean, mention_roles: {number}, mention_channels: {DiscordTypes.ChannelMentionData}, attachments: {DiscordTypes.AttachmentData}, embeds: {DiscordTypes.EmbedData}, reactions: {DiscordTypes.ReactionData}?, nonce: (number | string)?, pinned: boolean, webhook_id: DiscordTypes.snowflake?, type: number, activity: DiscordTypes.ActivityData?, application: DiscordTypes.ApplicationData?, application_id: DiscordTypes.snowflake?, flags: number?, message_reference: DiscordTypes.MessageReferenceData?, message_snapshots: {DiscordTypes.MessageSnapshotData}?, referenced_message: Message?, interaction_metadata: DiscordTypes.InteractionMetadataData?, interaction: DiscordTypes.InteractionData?, thread: DiscordTypes.ChannelData?, components: {DiscordTypes.ComponentData}?, sticker_items: {DiscordTypes.StickerItemData}?, stickers: {DiscordTypes.StickerData}?, position: number?, role_subscription_data: DiscordTypes.RoleSubscriptionData?, resolved: DiscordTypes.ResolvedData?, poll: DiscordTypes.PollData?, call: DiscordTypes.CallData?}&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 113,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Member&quot;,
+            &quot;desc&quot;: &quot;A member object.&quot;,
+            &quot;lua_type&quot;: &quot;{user: User?, nick: string?, avatar: string?, banner: string?, roles: {number}?, joined_at: string, premium_since: string?, deaf: boolean, mute: boolean, pending: boolean?, permissions: string?, communication_disabled_until: string?, avatar_decoration_data: DiscordTypes.AvatarDecorationData?}&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 158,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        }
+    ],
+    &quot;name&quot;: &quot;Objects&quot;,
+    &quot;desc&quot;: &quot;Class to create Discord objects.&quot;,
+    &quot;source&quot;: {
+        &quot;line&quot;: 5,
+        &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+    }
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a><ul><li><a href="#Channel" class="table-of-contents__link toc-highlight">Channel</a></li><li><a href="#Guild" class="table-of-contents__link toc-highlight">Guild</a></li><li><a href="#Interaction" class="table-of-contents__link toc-highlight">Interaction</a></li><li><a href="#Member" class="table-of-contents__link toc-highlight">Member</a></li><li><a href="#Message" class="table-of-contents__link toc-highlight">Message</a></li><li><a href="#User" class="table-of-contents__link toc-highlight">User</a></li></ul></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#GetChannel" class="table-of-contents__link toc-highlight">.GetChannel</a></li><li><a href="#GetGuild" class="table-of-contents__link toc-highlight">.GetGuild</a></li><li><a href="#GetMember" class="table-of-contents__link toc-highlight">.GetMember</a></li><li><a href="#GetMessage" class="table-of-contents__link toc-highlight">.GetMessage</a></li><li><a href="#GetMessageInChannel" class="table-of-contents__link toc-highlight">.GetMessageInChannel</a></li><li><a href="#GetUser" class="table-of-contents__link toc-highlight">.GetUser</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li><li><a href="#new" class="table-of-contents__link toc-highlight">.new</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Galaxy Development, LLC. Built with Moonwave and Docusaurus</div></div></div></footer></div>
+<script src="/Aloha/assets/js/runtime~main.2e15e94e.js"></script>
+<script src="/Aloha/assets/js/main.626ae6f3.js"></script>
+</body>
+</html>

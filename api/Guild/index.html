@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="plugin-moonwave plugin-id-moonwave">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v2.3.1">
+<title data-rh="true">Guild | Aloha</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://thegalaxydev.github.io/Aloha/api/Guild"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Guild | Aloha"><meta data-rh="true" name="description" content="Guild object wrapper."><meta data-rh="true" property="og:description" content="Guild object wrapper."><link data-rh="true" rel="canonical" href="https://thegalaxydev.github.io/Aloha/api/Guild"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Guild" hreflang="en"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Guild" hreflang="x-default"><link rel="stylesheet" href="/Aloha/assets/css/styles.19a5646f.css">
+<link rel="preload" href="/Aloha/assets/js/runtime~main.2e15e94e.js" as="script">
+<link rel="preload" href="/Aloha/assets/js/main.626ae6f3.js" as="script">
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function e(e){document.documentElement.setAttribute("data-theme",e)}var t=function(){var e=null;try{e=localStorage.getItem("theme")}catch(e){}return e}();null!==t?e(t):window.matchMedia("(prefers-color-scheme: dark)").matches?e("dark"):(window.matchMedia("(prefers-color-scheme: light)").matches,e("light"))}()</script><div id="__docusaurus">
+<div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/Aloha/"><b class="navbar__title text--truncate">Aloha</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/Aloha/api/">API</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/thegalaxydev/Aloha" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="searchBox_ZlJk"><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input type="search" id="search_input_react" placeholder="Loading..." aria-label="Search" class="navbar__search-input search-bar" disabled=""></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0 docPageContainer_wNNk"><div class="docPage_Dpn1"><div class="docSidebarContainer_o_re"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Aloha">​Aloha</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Base64">​Base64</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Bot">​Bot</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Channel">​Channel</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Client">​Client</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Color3">​Color3</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Command">​Command</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Commands">​Commands</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Debug">​Debug</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/DiscordTypes">​Discord​Types</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/DiscordWebSocket">​Discord​Web​Socket</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Embed">​Embed</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Enum">​Enum</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Evaluator">​Evaluator</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Event">​Event</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/Aloha/api/Guild">​Guild</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Interaction">​Interaction</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/LinkedList">​Linked​List</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Member">​Member</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Message">​Message</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Misc">​Misc</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Mutex">​Mutex</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Network">​Network</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Objects">​Objects</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Sweeper">​Sweeper</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Timer">​Timer</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/User">​User</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/sha1">sha1</a></li></ul></nav></div></div><main class="docMainContainer_HJE1"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_MU3C"><div class="docItemContainer_Wv98"><article><div class="member_J0w1 markdown"><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_oUs_"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><header><h1 class="docTitle_mZRt" style="text-decoration:none"><span style="display:inline-block">Guild</span></h1><div class="luaClassTags_EipM"></div><div>
+<p>Guild object wrapper.</p>
+</div></header><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetChannel"><code style="text-decoration:none">GetChannel</code><a href="#GetChannel" class="hash-link" aria-label="Direct link to GetChannel" title="Direct link to GetChannel">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L604"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">GetChannel</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel ID</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Channel">Channel</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel object</p>
+</span></span></div><div>
+<p>Gets a channel in the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetMember"><code style="text-decoration:none">GetMember</code><a href="#GetMember" class="hash-link" aria-label="Direct link to GetMember" title="Direct link to GetMember">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L614"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">GetMember</code><code>(</code><div class="inset_uKQm"><div><code>userId<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The user ID</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Member">Member?</a></code><code class="op_lSLc"> | </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>The member object if found</p>
+</span></span></div><div>
+<p>Gets a member in the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="BulkBan"><code style="text-decoration:none">BulkBan</code><a href="#BulkBan" class="hash-link" aria-label="Direct link to BulkBan" title="Direct link to BulkBan">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L632"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">BulkBan</code><code>(</code><div class="inset_uKQm"><div><code>userIds<!-- -->: </code><code class="purple_ieR2">{</code><code class="blue_P4bS">string</code><code class="purple_ieR2">}</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Array of user IDs to ban</p>
+</span></span></div><div><code>delete_message_seconds<!-- -->: </code><code class="blue_P4bS">number?</code><span class="inlineDescription_G7Er">-- <span>
+<p>Optional number of seconds of messages to delete</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">boolean</code><span class="inlineDescription_G7Er">-- <span>
+<p>Whether the users were banned</p>
+</span></span></div><div>
+<p>Bulk bans users from the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="CreateRole"><code style="text-decoration:none">CreateRole</code><a href="#CreateRole" class="hash-link" aria-label="Direct link to CreateRole" title="Direct link to CreateRole">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L657"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">CreateRole</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role name</p>
+</span></span></div><div><code>permissions<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role permissions</p>
+</span></span></div><div><code>color<!-- -->: </code><code class="blue_P4bS">number</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role color</p>
+</span></span></div><div><code>hoist<!-- -->: </code><code class="blue_P4bS">boolean</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Whether the role should be displayed separately</p>
+</span></span></div><div><code>icon<!-- -->: </code><code class="blue_P4bS">string?</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Optional role icon</p>
+</span></span></div><div><code>unicode_emoji<!-- -->: </code><code class="blue_P4bS">string?</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Optional role unicode emoji</p>
+</span></span></div><div><code>mentionable<!-- -->: </code><code class="blue_P4bS">boolean</code><span class="inlineDescription_G7Er">-- <span>
+<p>Whether the role should be mentionable</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>Whether the role was created and the response data</p>
+</span></span></div><div>
+<p>Creates a new role in the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetRoles"><code style="text-decoration:none">GetRoles</code><a href="#GetRoles" class="hash-link" aria-label="Direct link to GetRoles" title="Direct link to GetRoles">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L682"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">GetRoles</code><code>(</code><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">DiscordTypes.RoleData</code><code class="green_DgR4">}</code><code class="op_lSLc"> | </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>Array of roles if successful</p>
+</span></span></div><div>
+<p>Gets all roles in the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetRole"><code style="text-decoration:none">GetRole</code><a href="#GetRole" class="hash-link" aria-label="Direct link to GetRole" title="Direct link to GetRole">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L699"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">GetRole</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role ID</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS">DiscordTypes.RoleData?</code><code class="op_lSLc"> | </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role data if found</p>
+</span></span></div><div>
+<p>Gets a role in the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="DeleteRole"><code style="text-decoration:none">DeleteRole</code><a href="#DeleteRole" class="hash-link" aria-label="Direct link to DeleteRole" title="Direct link to DeleteRole">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L715"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">DeleteRole</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role ID to delete</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>Success status and response data</p>
+</span></span></div><div>
+<p>Deletes a role from the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="ModifyRole"><code style="text-decoration:none">ModifyRole</code><a href="#ModifyRole" class="hash-link" aria-label="Direct link to ModifyRole" title="Direct link to ModifyRole">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L733"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">ModifyRole</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role ID to modify</p>
+</span></span></div><div><code>data<!-- -->: </code><code class="purple_ieR2">{</code><div class="inset_uKQm"><code>name<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>permissions<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>color<!-- -->: </code><code class="blue_P4bS">number?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>hoist<!-- -->: </code><code class="blue_P4bS">boolean?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>icon<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>unicode_emoji<!-- -->: </code><code class="blue_P4bS">string?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>mentionable<!-- -->: </code><code class="blue_P4bS">boolean?</code></div><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
+<p>The data to modify</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>Success status and response data</p>
+</span></span></div><div>
+<p>Modifies a role in the guild.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="MoveRole"><code style="text-decoration:none">MoveRole</code><a href="#MoveRole" class="hash-link" aria-label="Direct link to MoveRole" title="Direct link to MoveRole">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L752"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">MoveRole</code><code>(</code><div class="inset_uKQm"><div><code>id<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>The role ID to move</p>
+</span></span></div><div><code>position<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>The new position</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>Success status and response data</p>
+</span></span></div><div>
+<p>Changes a role's position in the guild's role hierarchy.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetVanityURL"><code style="text-decoration:none">GetVanityURL</code><a href="#GetVanityURL" class="hash-link" aria-label="Direct link to GetVanityURL" title="Direct link to GetVanityURL">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L770"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">GetVanityURL</code><code>(</code><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="green_DgR4">{</code><div class="inset_uKQm"><code>code<!-- -->: </code><code class="blue_P4bS">string</code><code class="green_DgR4">,</code></div><div class="inset_uKQm"><code>uses<!-- -->: </code><code class="blue_P4bS">number</code></div><code class="green_DgR4">}</code><code class="blue_P4bS">?</code><code class="op_lSLc"> | </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>The vanity URL data if successful</p>
+</span></span></div><div>
+<p>Gets the guild's vanity URL if it has one.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="CreateChannel"><code style="text-decoration:none">CreateChannel</code><a href="#CreateChannel" class="hash-link" aria-label="Direct link to CreateChannel" title="Direct link to CreateChannel">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Classes/Objects.luau#L787"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Guild<!-- -->:</code><code class="green_DgR4">CreateChannel</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS">DiscordTypes.CreateGuildChannelData</code><span class="inlineDescription_G7Er">-- <span>
+<p>The channel creation data</p>
+</span></span></div></div><code>) → </code><code class="purple_ieR2">(</code><div class="inset_uKQm"><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Objects#Channel">Channel?</a></code><code class="op_lSLc"> | </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code class="green_DgR4">{</code><code class="blue_P4bS">any</code><code class="green_DgR4">}</code><code class="blue_P4bS">?</code></div><code class="purple_ieR2">)</code><span class="inlineDescription_G7Er">-- <span>
+<p>The created channel if successful</p>
+</span></span></div><div>
+<p>Creates a new channel in the guild.</p>
+</div></div></article></div><details><summary>Show raw api</summary><pre style="max-width:100%;white-space:pre-wrap">{
+    &quot;functions&quot;: [
+        {
+            &quot;name&quot;: &quot;GetChannel&quot;,
+            &quot;desc&quot;: &quot;Gets a channel in the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The channel ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The channel object&quot;,
+                    &quot;lua_type&quot;: &quot;Channel&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 604,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetMember&quot;,
+            &quot;desc&quot;: &quot;Gets a member in the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;userId&quot;,
+                    &quot;desc&quot;: &quot;The user ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The member object if found&quot;,
+                    &quot;lua_type&quot;: &quot;(Member? | boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 614,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;BulkBan&quot;,
+            &quot;desc&quot;: &quot;Bulk bans users from the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;userIds&quot;,
+                    &quot;desc&quot;: &quot;Array of user IDs to ban&quot;,
+                    &quot;lua_type&quot;: &quot;{string}&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;delete_message_seconds&quot;,
+                    &quot;desc&quot;: &quot;Optional number of seconds of messages to delete&quot;,
+                    &quot;lua_type&quot;: &quot;number?&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;Whether the users were banned&quot;,
+                    &quot;lua_type&quot;: &quot;boolean&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 632,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;CreateRole&quot;,
+            &quot;desc&quot;: &quot;Creates a new role in the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;name&quot;,
+                    &quot;desc&quot;: &quot;The role name&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;permissions&quot;,
+                    &quot;desc&quot;: &quot;The role permissions&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;color&quot;,
+                    &quot;desc&quot;: &quot;The role color&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;hoist&quot;,
+                    &quot;desc&quot;: &quot;Whether the role should be displayed separately&quot;,
+                    &quot;lua_type&quot;: &quot;boolean&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;icon&quot;,
+                    &quot;desc&quot;: &quot;Optional role icon&quot;,
+                    &quot;lua_type&quot;: &quot;string?&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;unicode_emoji&quot;,
+                    &quot;desc&quot;: &quot;Optional role unicode emoji&quot;,
+                    &quot;lua_type&quot;: &quot;string?&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;mentionable&quot;,
+                    &quot;desc&quot;: &quot;Whether the role should be mentionable&quot;,
+                    &quot;lua_type&quot;: &quot;boolean&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;Whether the role was created and the response data&quot;,
+                    &quot;lua_type&quot;: &quot;(boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 657,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetRoles&quot;,
+            &quot;desc&quot;: &quot;Gets all roles in the guild.&quot;,
+            &quot;params&quot;: [],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;Array of roles if successful&quot;,
+                    &quot;lua_type&quot;: &quot;({DiscordTypes.RoleData} | boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 682,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetRole&quot;,
+            &quot;desc&quot;: &quot;Gets a role in the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The role ID&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The role data if found&quot;,
+                    &quot;lua_type&quot;: &quot;(DiscordTypes.RoleData? | boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 699,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;DeleteRole&quot;,
+            &quot;desc&quot;: &quot;Deletes a role from the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The role ID to delete&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;Success status and response data&quot;,
+                    &quot;lua_type&quot;: &quot;(boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 715,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;ModifyRole&quot;,
+            &quot;desc&quot;: &quot;Modifies a role in the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The role ID to modify&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The data to modify&quot;,
+                    &quot;lua_type&quot;: &quot;{name: string?, permissions: string?, color: number?, hoist: boolean?, icon: string?, unicode_emoji: string?, mentionable: boolean?}&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;Success status and response data&quot;,
+                    &quot;lua_type&quot;: &quot;(boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 733,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;MoveRole&quot;,
+            &quot;desc&quot;: &quot;Changes a role&#x27;s position in the guild&#x27;s role hierarchy.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;id&quot;,
+                    &quot;desc&quot;: &quot;The role ID to move&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;position&quot;,
+                    &quot;desc&quot;: &quot;The new position&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;Success status and response data&quot;,
+                    &quot;lua_type&quot;: &quot;(boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 752,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetVanityURL&quot;,
+            &quot;desc&quot;: &quot;Gets the guild&#x27;s vanity URL if it has one.&quot;,
+            &quot;params&quot;: [],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The vanity URL data if successful&quot;,
+                    &quot;lua_type&quot;: &quot;({code: string, uses: number}? | boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 770,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;CreateChannel&quot;,
+            &quot;desc&quot;: &quot;Creates a new channel in the guild.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;data&quot;,
+                    &quot;desc&quot;: &quot;The channel creation data&quot;,
+                    &quot;lua_type&quot;: &quot;DiscordTypes.CreateGuildChannelData&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;The created channel if successful&quot;,
+                    &quot;lua_type&quot;: &quot;(Channel? | boolean, {any}?)&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;method&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 787,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+            }
+        }
+    ],
+    &quot;properties&quot;: [],
+    &quot;types&quot;: [],
+    &quot;name&quot;: &quot;Guild&quot;,
+    &quot;desc&quot;: &quot;Guild object wrapper.&quot;,
+    &quot;source&quot;: {
+        &quot;line&quot;: 31,
+        &quot;path&quot;: &quot;../Aloha/Aloha/Classes/Objects.luau&quot;
+    }
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#BulkBan" class="table-of-contents__link toc-highlight">:BulkBan</a></li><li><a href="#CreateChannel" class="table-of-contents__link toc-highlight">:CreateChannel</a></li><li><a href="#CreateRole" class="table-of-contents__link toc-highlight">:CreateRole</a></li><li><a href="#DeleteRole" class="table-of-contents__link toc-highlight">:DeleteRole</a></li><li><a href="#GetChannel" class="table-of-contents__link toc-highlight">:GetChannel</a></li><li><a href="#GetMember" class="table-of-contents__link toc-highlight">:GetMember</a></li><li><a href="#GetRole" class="table-of-contents__link toc-highlight">:GetRole</a></li><li><a href="#GetRoles" class="table-of-contents__link toc-highlight">:GetRoles</a></li><li><a href="#GetVanityURL" class="table-of-contents__link toc-highlight">:GetVanityURL</a></li><li><a href="#ModifyRole" class="table-of-contents__link toc-highlight">:ModifyRole</a></li><li><a href="#MoveRole" class="table-of-contents__link toc-highlight">:MoveRole</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Galaxy Development, LLC. Built with Moonwave and Docusaurus</div></div></div></footer></div>
+<script src="/Aloha/assets/js/runtime~main.2e15e94e.js"></script>
+<script src="/Aloha/assets/js/main.626ae6f3.js"></script>
+</body>
+</html>

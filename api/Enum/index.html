@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="plugin-moonwave plugin-id-moonwave">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v2.3.1">
+<title data-rh="true">Enum | Aloha</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://thegalaxydev.github.io/Aloha/api/Enum"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Enum | Aloha"><meta data-rh="true" name="description" content="Enums used throughout the library"><meta data-rh="true" property="og:description" content="Enums used throughout the library"><link data-rh="true" rel="canonical" href="https://thegalaxydev.github.io/Aloha/api/Enum"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Enum" hreflang="en"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Enum" hreflang="x-default"><link rel="stylesheet" href="/Aloha/assets/css/styles.19a5646f.css">
+<link rel="preload" href="/Aloha/assets/js/runtime~main.2e15e94e.js" as="script">
+<link rel="preload" href="/Aloha/assets/js/main.626ae6f3.js" as="script">
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function e(e){document.documentElement.setAttribute("data-theme",e)}var t=function(){var e=null;try{e=localStorage.getItem("theme")}catch(e){}return e}();null!==t?e(t):window.matchMedia("(prefers-color-scheme: dark)").matches?e("dark"):(window.matchMedia("(prefers-color-scheme: light)").matches,e("light"))}()</script><div id="__docusaurus">
+<div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/Aloha/"><b class="navbar__title text--truncate">Aloha</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/Aloha/api/">API</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/thegalaxydev/Aloha" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="searchBox_ZlJk"><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input type="search" id="search_input_react" placeholder="Loading..." aria-label="Search" class="navbar__search-input search-bar" disabled=""></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0 docPageContainer_wNNk"><div class="docPage_Dpn1"><div class="docSidebarContainer_o_re"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Aloha">​Aloha</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Base64">​Base64</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Bot">​Bot</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Channel">​Channel</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Client">​Client</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Color3">​Color3</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Command">​Command</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Commands">​Commands</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Debug">​Debug</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/DiscordTypes">​Discord​Types</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/DiscordWebSocket">​Discord​Web​Socket</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Embed">​Embed</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/Aloha/api/Enum">​Enum</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Evaluator">​Evaluator</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Event">​Event</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Guild">​Guild</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Interaction">​Interaction</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/LinkedList">​Linked​List</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Member">​Member</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Message">​Message</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Misc">​Misc</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Mutex">​Mutex</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Network">​Network</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Objects">​Objects</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Sweeper">​Sweeper</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/Timer">​Timer</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/User">​User</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/Aloha/api/sha1">sha1</a></li></ul></nav></div></div><main class="docMainContainer_HJE1"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_MU3C"><div class="docItemContainer_Wv98"><article><div class="member_J0w1 markdown"><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_oUs_"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><header><h1 class="docTitle_mZRt" style="text-decoration:none"><span style="display:inline-block">Enum</span></h1><div class="luaClassTags_EipM"></div><div>
+<p>Enums used throughout the library</p>
+</div></header><h2 class="anchor anchorWithStickyNavbar_LWe7" id="types">Types<a href="#types" class="hash-link" aria-label="Direct link to Types" title="Direct link to Types">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="APPLICATION_COMMAND_OPTION_TYPE"><code style="text-decoration:none">APPLICATION_COMMAND_OPTION_TYPE</code><a href="#APPLICATION_COMMAND_OPTION_TYPE" class="hash-link" aria-label="Direct link to APPLICATION_COMMAND_OPTION_TYPE" title="Direct link to APPLICATION_COMMAND_OPTION_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L21"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>APPLICATION_COMMAND_OPTION_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>SUB_COMMAND<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Subcommand option type</p>
+</span></span></div><div><code>SUB_COMMAND_GROUP<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Subcommand group option type</p>
+</span></span></div><div><code>STRING<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>String option type</p>
+</span></span></div><div><code>INTEGER<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Integer option type</p>
+</span></span></div><div><code>BOOLEAN<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Boolean option type</p>
+</span></span></div><div><code>USER<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>User option type</p>
+</span></span></div><div><code>CHANNEL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Channel option type</p>
+</span></span></div><div><code>ROLE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Role option type</p>
+</span></span></div><div><code>MENTIONABLE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Mentionable option type</p>
+</span></span></div><div><code>NUMBER<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Number option type</p>
+</span></span></div><div><code>ATTACHMENT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Attachment option type</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="CHANNEL_TYPE"><code style="text-decoration:none">CHANNEL_TYPE</code><a href="#CHANNEL_TYPE" class="hash-link" aria-label="Direct link to CHANNEL_TYPE" title="Direct link to CHANNEL_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L39"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>CHANNEL_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>GUILD_TEXT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Text channel</p>
+</span></span></div><div><code>DM<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>DM channel</p>
+</span></span></div><div><code>GUILD_VOICE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Voice channel</p>
+</span></span></div><div><code>GROUP_DM<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Group DM channel</p>
+</span></span></div><div><code>GUILD_CATEGORY<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Category channel</p>
+</span></span></div><div><code>GUILD_ANNOUNCEMENT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Announcement channel</p>
+</span></span></div><div><code>ANNOUNCEMENT_THREAD<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Announcement thread</p>
+</span></span></div><div><code>PUBLIC_THREAD<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Public thread</p>
+</span></span></div><div><code>PRIVATE_THREAD<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Private thread</p>
+</span></span></div><div><code>GUILD_STAGE_VOICE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Stage voice channel</p>
+</span></span></div><div><code>GUILD_DIRECTORY<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Directory channel</p>
+</span></span></div><div><code>GUILD_FORUM<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Forum channel</p>
+</span></span></div><div><code>GUILD_MEDIA<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Media channel</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="INTERACTION_TYPE"><code style="text-decoration:none">INTERACTION_TYPE</code><a href="#INTERACTION_TYPE" class="hash-link" aria-label="Direct link to INTERACTION_TYPE" title="Direct link to INTERACTION_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L49"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>INTERACTION_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>PING<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Ping interaction</p>
+</span></span></div><div><code>APPLICATION_COMMAND<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Application command interaction</p>
+</span></span></div><div><code>MESSAGE_COMPONENT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message component interaction</p>
+</span></span></div><div><code>APPLICATION_COMMAND_AUTOCOMPLETE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Application command autocomplete interaction</p>
+</span></span></div><div><code>MODAL_SUBMIT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Modal submit interaction</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="INTERACTION_CALLBACK_TYPE"><code style="text-decoration:none">INTERACTION_CALLBACK_TYPE</code><a href="#INTERACTION_CALLBACK_TYPE" class="hash-link" aria-label="Direct link to INTERACTION_CALLBACK_TYPE" title="Direct link to INTERACTION_CALLBACK_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L63"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>INTERACTION_CALLBACK_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>PONG<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Pong response</p>
+</span></span></div><div><code>CHANNEL_MESSAGE_WITH_SOURCE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Channel message with source</p>
+</span></span></div><div><code>DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Deferred channel message with source</p>
+</span></span></div><div><code>DEFERRED_UPDATE_MESSAGE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Deferred message update</p>
+</span></span></div><div><code>UPDATE_MESSAGE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message update</p>
+</span></span></div><div><code>APPLICATION_COMMAND_AUTOCOMPLETE_RESULT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Autocomplete result</p>
+</span></span></div><div><code>MODAL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Modal response</p>
+</span></span></div><div><code>PREMIUM_REQUIRED<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Premium required response</p>
+</span></span></div><div><code>LAUNCH_ACTIVITY<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Launch activity response</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="INTERACTION_CONTEXT_TYPE"><code style="text-decoration:none">INTERACTION_CONTEXT_TYPE</code><a href="#INTERACTION_CONTEXT_TYPE" class="hash-link" aria-label="Direct link to INTERACTION_CONTEXT_TYPE" title="Direct link to INTERACTION_CONTEXT_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L71"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>INTERACTION_CONTEXT_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>GUILD<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Guild context</p>
+</span></span></div><div><code>BOT_DM<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Bot DM context</p>
+</span></span></div><div><code>PRIVATE_CHANNEL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Private channel context</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="APPLICATION_INTEGRATION_TYPE"><code style="text-decoration:none">APPLICATION_INTEGRATION_TYPE</code><a href="#APPLICATION_INTEGRATION_TYPE" class="hash-link" aria-label="Direct link to APPLICATION_INTEGRATION_TYPE" title="Direct link to APPLICATION_INTEGRATION_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L78"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>APPLICATION_INTEGRATION_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>GUILD_INSTALL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Guild installation</p>
+</span></span></div><div><code>USER_INSTALL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>User installation</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="APPLICATION_COMMAND_TYPE"><code style="text-decoration:none">APPLICATION_COMMAND_TYPE</code><a href="#APPLICATION_COMMAND_TYPE" class="hash-link" aria-label="Direct link to APPLICATION_COMMAND_TYPE" title="Direct link to APPLICATION_COMMAND_TYPE">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L87"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>APPLICATION_COMMAND_TYPE<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>CHAT_INPUT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Chat input command</p>
+</span></span></div><div><code>USER<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>User command</p>
+</span></span></div><div><code>MESSAGE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message command</p>
+</span></span></div><div><code>PRIMARY_ENTRY_POINT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Primary entry point command</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="APPLICATION_COMMAND_HANDLER"><code style="text-decoration:none">APPLICATION_COMMAND_HANDLER</code><a href="#APPLICATION_COMMAND_HANDLER" class="hash-link" aria-label="Direct link to APPLICATION_COMMAND_HANDLER" title="Direct link to APPLICATION_COMMAND_HANDLER">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L94"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>APPLICATION_COMMAND_HANDLER<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>APP_HANDLER<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>App handler</p>
+</span></span></div><div><code>DISCORD_LAUNCH_ACTIVITY<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Discord launch activity</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="MESSAGE_FLAGS"><code style="text-decoration:none">MESSAGE_FLAGS</code><a href="#MESSAGE_FLAGS" class="hash-link" aria-label="Direct link to MESSAGE_FLAGS" title="Direct link to MESSAGE_FLAGS">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L110"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>MESSAGE_FLAGS<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>CROSSPOST<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message is crossposted</p>
+</span></span></div><div><code>IS_CROSSPOST<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message is a crosspost</p>
+</span></span></div><div><code>SUPPRESS_EMBEDS<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message embeds are suppressed</p>
+</span></span></div><div><code>SOURCE_MESSAGE_DELETED<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Source message was deleted</p>
+</span></span></div><div><code>URGENT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message is urgent</p>
+</span></span></div><div><code>HAS_THREAD<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message has a thread</p>
+</span></span></div><div><code>EPHEMERAL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message is ephemeral</p>
+</span></span></div><div><code>LOADING<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message is loading</p>
+</span></span></div><div><code>FAILED_TO_MENTION_SOME_ROLES_IN_THREAD<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Failed to mention some roles in thread</p>
+</span></span></div><div><code>SUPPRESS_NOTIFICATIONS<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Notifications are suppressed</p>
+</span></span></div><div><code>IS_VOICE_MESSAGE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Message is a voice message</p>
+</span></span></div></div><code>}</code></div><div></div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="INTENTS"><code style="text-decoration:none">INTENTS</code><a href="#INTENTS" class="hash-link" aria-label="Direct link to INTENTS" title="Direct link to INTENTS">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Enum.luau#L118"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>INTENTS<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>DEFAULT<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Default intents</p>
+</span></span></div><div><code>NONE<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>No intents</p>
+</span></span></div><div><code>ALL<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>All intents</p>
+</span></span></div></div><code>}</code></div><div></div></div></article></div><details><summary>Show raw api</summary><pre style="max-width:100%;white-space:pre-wrap">{
+    &quot;functions&quot;: [],
+    &quot;properties&quot;: [],
+    &quot;types&quot;: [
+        {
+            &quot;name&quot;: &quot;APPLICATION_COMMAND_OPTION_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;SUB_COMMAND&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Subcommand option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;SUB_COMMAND_GROUP&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Subcommand group option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;STRING&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;String option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;INTEGER&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Integer option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;BOOLEAN&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Boolean option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;USER&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;User option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;CHANNEL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Channel option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;ROLE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Role option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;MENTIONABLE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Mentionable option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;NUMBER&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Number option type&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;ATTACHMENT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Attachment option type&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 21,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;CHANNEL_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;GUILD_TEXT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Text channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;DM&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;DM channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_VOICE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Voice channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GROUP_DM&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Group DM channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_CATEGORY&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Category channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_ANNOUNCEMENT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Announcement channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;ANNOUNCEMENT_THREAD&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Announcement thread&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;PUBLIC_THREAD&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Public thread&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;PRIVATE_THREAD&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Private thread&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_STAGE_VOICE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Stage voice channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_DIRECTORY&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Directory channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_FORUM&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Forum channel&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;GUILD_MEDIA&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Media channel&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 39,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;INTERACTION_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;PING&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Ping interaction&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;APPLICATION_COMMAND&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Application command interaction&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;MESSAGE_COMPONENT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message component interaction&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;APPLICATION_COMMAND_AUTOCOMPLETE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Application command autocomplete interaction&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;MODAL_SUBMIT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Modal submit interaction&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 49,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;INTERACTION_CALLBACK_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;PONG&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Pong response&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;CHANNEL_MESSAGE_WITH_SOURCE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Channel message with source&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Deferred channel message with source&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;DEFERRED_UPDATE_MESSAGE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Deferred message update&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;UPDATE_MESSAGE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message update&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;APPLICATION_COMMAND_AUTOCOMPLETE_RESULT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Autocomplete result&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;MODAL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Modal response&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;PREMIUM_REQUIRED&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Premium required response&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;LAUNCH_ACTIVITY&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Launch activity response&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 63,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;INTERACTION_CONTEXT_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;GUILD&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Guild context&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;BOT_DM&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Bot DM context&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;PRIVATE_CHANNEL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Private channel context&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 71,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;APPLICATION_INTEGRATION_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;GUILD_INSTALL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Guild installation&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;USER_INSTALL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;User installation&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 78,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;APPLICATION_COMMAND_TYPE&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;CHAT_INPUT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Chat input command&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;USER&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;User command&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;MESSAGE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message command&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;PRIMARY_ENTRY_POINT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Primary entry point command&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 87,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;APPLICATION_COMMAND_HANDLER&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;APP_HANDLER&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;App handler&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;DISCORD_LAUNCH_ACTIVITY&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Discord launch activity&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 94,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;MESSAGE_FLAGS&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;CROSSPOST&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message is crossposted&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;IS_CROSSPOST&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message is a crosspost&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;SUPPRESS_EMBEDS&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message embeds are suppressed&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;SOURCE_MESSAGE_DELETED&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Source message was deleted&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;URGENT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message is urgent&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;HAS_THREAD&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message has a thread&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;EPHEMERAL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message is ephemeral&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;LOADING&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message is loading&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;FAILED_TO_MENTION_SOME_ROLES_IN_THREAD&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Failed to mention some roles in thread&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;SUPPRESS_NOTIFICATIONS&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Notifications are suppressed&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;IS_VOICE_MESSAGE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Message is a voice message&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 110,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;INTENTS&quot;,
+            &quot;desc&quot;: &quot;&quot;,
+            &quot;fields&quot;: [
+                {
+                    &quot;name&quot;: &quot;DEFAULT&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;Default intents&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;NONE&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;No intents&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;ALL&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;,
+                    &quot;desc&quot;: &quot;All intents&quot;
+                }
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 118,
+                &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+            }
+        }
+    ],
+    &quot;name&quot;: &quot;Enum&quot;,
+    &quot;desc&quot;: &quot;Enums used throughout the library&quot;,
+    &quot;source&quot;: {
+        &quot;line&quot;: 5,
+        &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Enum.luau&quot;
+    }
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a><ul><li><a href="#APPLICATION_COMMAND_HANDLER" class="table-of-contents__link toc-highlight">APPLICATION_COMMAND_HANDLER</a></li><li><a href="#APPLICATION_COMMAND_OPTION_TYPE" class="table-of-contents__link toc-highlight">APPLICATION_COMMAND_OPTION_TYPE</a></li><li><a href="#APPLICATION_COMMAND_TYPE" class="table-of-contents__link toc-highlight">APPLICATION_COMMAND_TYPE</a></li><li><a href="#APPLICATION_INTEGRATION_TYPE" class="table-of-contents__link toc-highlight">APPLICATION_INTEGRATION_TYPE</a></li><li><a href="#CHANNEL_TYPE" class="table-of-contents__link toc-highlight">CHANNEL_TYPE</a></li><li><a href="#INTENTS" class="table-of-contents__link toc-highlight">INTENTS</a></li><li><a href="#INTERACTION_CALLBACK_TYPE" class="table-of-contents__link toc-highlight">INTERACTION_CALLBACK_TYPE</a></li><li><a href="#INTERACTION_CONTEXT_TYPE" class="table-of-contents__link toc-highlight">INTERACTION_CONTEXT_TYPE</a></li><li><a href="#INTERACTION_TYPE" class="table-of-contents__link toc-highlight">INTERACTION_TYPE</a></li><li><a href="#MESSAGE_FLAGS" class="table-of-contents__link toc-highlight">MESSAGE_FLAGS</a></li></ul></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Galaxy Development, LLC. Built with Moonwave and Docusaurus</div></div></div></footer></div>
+<script src="/Aloha/assets/js/runtime~main.2e15e94e.js"></script>
+<script src="/Aloha/assets/js/main.626ae6f3.js"></script>
+</body>
+</html>
