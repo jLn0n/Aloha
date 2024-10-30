@@ -424,9 +424,17 @@ function Interaction.new(data: DiscordTypes.InteractionData) : Interaction
 	return self
 end
 
+--[=[
+	@within Interaction
+	@param type number -- The type of response to send
+	@param data DiscordTypes.InteractionCallbackData -- The data to send in the response
+	@param with_response boolean? -- Whether to wait for a response
+	@return boolean -- Whether the response was sent
+	Responds to an interaction.
+]=]
 function Interaction:Respond(type: number, data: DiscordTypes.InteractionCallbackData, with_response: boolean?)	
 	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(self.id, self.token)}`
-	
+
 	local success, response = Network.Request({
 		endpoint = endpoint,
 		method = "POST",
