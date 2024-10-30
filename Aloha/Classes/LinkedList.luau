@@ -52,7 +52,9 @@ export type LinkedList<T> = {
 	PopRight: (self: LinkedList<T>) -> T?,
 	PushLeft: (self: LinkedList<T>, Value: T) -> (),
 	PushRight: (self: LinkedList<T>, Value: T) -> (),
-	iter: (self: LinkedList<T>) -> (() -> (number?, T?))
+	iter: (self: LinkedList<T>) -> (() -> (number?, T?)),
+	Remove: (self: LinkedList<T>, value: T) -> boolean,
+	RemoveIndex: (self: LinkedList<T>, index: number) -> boolean
 }
 
 --- @ignore
@@ -95,6 +97,84 @@ function LinkedList.new<T>(...: T): LinkedList<T>
 	end
 
 	return self
+end
+
+--[=[
+@within LinkedList
+@param Value T
+Removes a value from the linked list.
+]=]
+function LinkedList:Remove<T>(value: T): boolean
+	local current = self.Head
+
+	while current do
+		if current.Value == value then
+			if current.Prev then
+				current.Prev.Next = current.Next
+			else
+				self.Head = current.Next
+			end
+
+			if current.Next then
+				current.Next.Prev = current.Prev
+			else
+				self.Tail = current.Prev
+			end
+
+			self.Length = self.Length - 1
+
+			return true  
+		end
+
+		current = current.Next
+	end
+
+	return false
+end
+
+--[=[
+@within LinkedList
+@param index number
+Removes a value from the linked list by index.
+]=]
+function LinkedList:RemoveIndex<T>(index: number): boolean
+	if index < 1 or index > self.Length then
+		return false
+	end
+
+	local current = self.Head
+	local count = 1
+
+	while current and count < index do
+		current = current.Next
+		count += 1
+	end
+
+	if current then
+		if current.Prev then
+			current.Prev.Next = current.Next
+		else
+			self.Head = current.Next
+		end
+
+		if current.Next then
+			current.Next.Prev = current.Prev
+		else
+			self.Tail = current.Prev
+		end
+
+		self.Length = self.Length - 1
+
+		local node = current.Next
+		while node do
+			node.Index -= 1
+			node = node.Next
+		end
+
+		return true
+	end
+
+	return false
 end
 
 --[=[

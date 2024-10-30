@@ -14,7 +14,7 @@ local Mutex = require("../Util/Mutex")
 	@within Network
 	Response type from net.request()
 ]=]
-type Response = net.FetchResponse
+export type Response = net.FetchResponse
 
 --[=[
 	@type ServeRequest net.ServeRequest
@@ -125,7 +125,7 @@ Network.TotalRequests = 0
 	@param data {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?} -- Request data
 	@return boolean, Response -- Returns success status and response
 ]=]
-function Network.Request(data: {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?}) : (boolean, Response)
+function Network.Request(data: {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?, query: {[string]: any?}?, headers: {[string]: string}?}) : (boolean, Response)
 	local _, current = coroutine.running()
 
 	if current then
@@ -151,6 +151,23 @@ function Network.Request(data: {method: string, endpoint: string, body: {[string
 		['Authorization'] = `Bot {Bot.TOKEN}`,
 		['User-Agent'] = `Aloha/{Bot.ALOHA_VERSION}`
 	}
+
+	if data.headers then
+		for k, v in pairs(data.headers) do
+			headers[k] = v
+		end
+	end
+
+	if data.query and next(data.query) then
+		local buf = {url}
+		for k, v in pairs(data.query) do
+			table.insert(buf, #buf == 1 and '?' or '&')
+			table.insert(buf, Network.UrlEncode(k))
+			table.insert(buf, '=')
+			table.insert(buf, Network.UrlEncode(v))
+		end
+		url = table.concat(buf)
+	end
 
 	local body = data.body
 

@@ -229,6 +229,34 @@ end
 
 --[=[
 	@within Objects
+	@param id string -- The user ID
+	@return User? -- The user object if found
+	Gets a user by ID.
+]=]
+local function GetUserById(id: string, noFetch: boolean?) : User?
+	for i,v in Cache.Users:iter() do
+		if v.id == id then
+			return v
+		end
+	end
+
+	if noFetch then return end
+
+	local url = `{Endpoints.GET_USER:format(id)}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+
+	if success then
+		return GetUser(response)
+	end
+
+	return nil
+end
+
+--[=[
+	@within Objects
 	@param data DiscordTypes.MessageData -- The message data
 	@return Message -- The message object
 	Gets a message by ID.
@@ -329,11 +357,23 @@ end
 	@return (Member? | boolean, {any}?) -- The member object if found
 	Gets a member by ID in a guild.
 ]=]
-local function GetMember(userId: string, guildId: string, noFetch: boolean?) : (Member? | boolean, {any}?)
+local function GetMember(userId: string, guildId: string, forceData: DiscordTypes.MemberData?, noFetch: boolean?) : (Member? | boolean, {any}?)
 	for i,v in Cache.Members:iter() do
 		if v.user_id == userId and v.guild_id == guildId then
 			return v
 		end
+	end
+
+	if forceData then
+		local member = Member.new(forceData, guildId)
+
+		Cache.Members:PushRight(member)
+
+		if Cache.Members.Length > 100 then
+			Cache.Members:PopLeft()
+		end
+
+		return member
 	end
 
 	if noFetch then return end
@@ -486,6 +526,20 @@ end
 
 --[=[
 	@within Message
+	@return boolean -- Whether the message was pinned
+	Pins the message.
+]=]
+function Message:Pin()
+	local url = `{Endpoints.PIN_MESSAGE:format(self.channel_id, self.id)}`
+
+	return Network.Request({
+		method = "PUT",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Message
 	@return boolean -- Whether all reactions were removed
 	Removes all reactions from the message.
 ]=]
@@ -563,6 +617,194 @@ function Channel:GetMessage(id: string) : Message
 	local msg = GetMessageInChannel(self.id, id)
 
 	return msg
+end
+
+--[=[
+	@within Channel
+	@param message_id string -- The message ID
+	@return boolean -- Whether the message was crossposted
+	Crossposts a message in an announcement channel to other channels.
+]=]
+function Channel:CrossPost(message_id: string)
+	local url = `{Endpoints.CROSSPOST_MESSAGE:format(self.id, message_id)}`
+
+	return Network.Request({
+		method = "POST",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Channel
+	@param message_ids {string} -- The message IDs
+	@param reason string? -- Optional reason for the bulk delete in audit logs
+	@return boolean -- Whether the messages were deleted
+	Bulk deletes messages in the channel.
+]=]
+function Channel:BulkDelete(message_ids: {string}, reason: string?)
+	local url = `{Endpoints.BULK_DELETE_MESSAGES:format(self.id)}`
+
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = {messages = message_ids},
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Channel
+	@return ({DiscordTypes.InviteData} | boolean, {any}?) -- The invites
+	Gets the invites in the channel.
+]=]
+function Channel:GetInvites()
+	local url = `{Endpoints.GET_CHANNEL_INVITES:format(self.id)}`
+
+	return Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Channel
+	@param data {max_age: number?, max_uses: number?, temporary: boolean?, unique: boolean?, target_type: number?, target_user_id: string?, target_application_id: string?} -- The invite data
+	@param reason string? -- Optional reason for the invite in audit logs
+	@return (boolean, {any}?) -- Whether the invite was created and any response data
+	Creates an invite in the channel.
+]=]
+function Channel:CreateInvite(data: {max_age: number?, max_uses: number?, temporary: boolean?, unique: boolean?, target_type: number?, target_user_id: string?, target_application_id: string?}, reason: string?)
+	local url = `{Endpoints.CREATE_CHANNEL_INVITE:format(self.id)}`
+
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = data,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Channel
+	@param overwrite_id string -- The overwrite ID
+	@param reason string? -- Optional reason for the overwrite deletion in audit logs
+	@return (boolean, Response) -- Whether the overwrite was deleted
+	Deletes a permission overwrite in the channel.
+]=]
+function Channel:DeletePermission(overwrite_id: string , reason: string?) : (boolean, Network.Response)
+	local url = `{Endpoints.DELETE_CHANNEL_PERMISSION:format(self.id, overwrite_id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Channel
+	@return boolean -- Whether the typing indicator was triggered
+	Triggers a typing indicator in the channel.
+]=]
+function Channel:TriggerTypingIndicator()
+	local url = `{Endpoints.TRIGGER_TYPING_INDICATOR:format(self.id)}`
+
+	return Network.Request({
+		method = "POST",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Channel
+	@return ({Message} | boolean, {any}?) -- The pinned messages
+	Gets the pinned messages in the channel.
+]=]
+function Channel:GetPinnedMessages()
+	local url = `{Endpoints.GET_PINNED_MESSAGES:format(self.id)}`
+
+	return Network.Request({
+		method = "GET",
+		endpoint = url,
+	})
+end
+
+--[=[
+	@within Channel
+	@param message_id string -- The message ID
+	@return boolean -- Whether the message was pinned
+	Pins a message in the channel.
+]=]
+function Channel:PinMessage(message_id: string, reason: string?)
+	local url = `{Endpoints.PIN_MESSAGE:format(self.id, message_id)}`
+
+	return Network.Request({
+		method = "PUT",
+		endpoint = url,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Channel
+	@param data {name: string, avatar: string?} -- The webhook data
+	@param reason string? -- Optional reason for the webhook creation in audit logs
+	@return (boolean, {any}?) -- Whether the webhook was created and any response data
+	Creates a webhook in the channel.
+]=]
+function Channel:CreateWebhook(data: {name: string, avatar: string?}, reason: string?)
+	local url = `{Endpoints.CREATE_WEBHOOK:format(self.id)}`
+
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = body,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Channel
+	@return ({Webhook} | {string: Webhook}) -- The webhooks
+	Gets the webhooks in the channel.
+]=]
+function Channel:GetWebhooks()
+	local url = `{Endpoints.GET_CHANNEL_WEBHOOKS:format(self.id)}`
+
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+
+	return success and response or {}
+end
+
+
+
+--[=[
+	@within Channel
+	@param message_id string -- The message ID
+	@return boolean -- Whether the message was unpinned
+	Unpins a message in the channel.
+]=]
+function Channel:UnpinMessage(message_id: string)
+	local url = `{Endpoints.UNPIN_MESSAGE:format(self.id, message_id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
+	})
 end
 
 --[=[
@@ -661,13 +903,16 @@ end
 	@return boolean -- Whether the member was banned
 	Bans the member from the guild.
 ]=]
-function Member:Ban(delete_message_seconds: number?)
+function Member:Ban(delete_message_seconds: number?, reason: string?)
 	local url = `{Endpoints.CREATE_GUILD_BAN:format(self.guild.id, self.user.id)}`
 
 	return Network.Request({
 		method = "PUT",
 		endpoint = url,
-		body = {delete_message_seconds = delete_message_seconds}
+		body = {delete_message_seconds = delete_message_seconds},
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
 	})
 end
 ------------------------------ Guild
@@ -716,12 +961,30 @@ end
 
 --[=[
 	@within Guild
+	@param userId string -- The user ID
+	@param data {access_token: string, nick: string?, roles: {string}?, mute: boolean?, deaf: boolean?} -- The member data
+	@return boolean -- Whether the member was added
+	Adds a member to the guild.
+]=]
+function Guild:AddMember(userId: string, data: {access_token: string, nick: string?, roles: {string}?, mute: boolean?, deaf: boolean?})
+	local url = `{Endpoints.ADD_GUILD_MEMBER:format(self.id, userId)}`
+
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "PUT",
+		endpoint = url,
+		body = body
+	})
+end
+
+--[=[
+	@within Guild
 	@param userIds {string} -- Array of user IDs to ban
 	@param delete_message_seconds number? -- Optional number of seconds of messages to delete
 	@return boolean -- Whether the users were banned
 	Bulk bans users from the guild.
 ]=]
-function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
+function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?, reason: string?)
 	local url = `{Endpoints.BULK_GUILD_BAN:format(self.id)}`
 
 	return Network.Request({
@@ -730,8 +993,96 @@ function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?)
 		body = {
 			user_ids = userIds,
 			delete_message_seconds = delete_message_seconds
+		},
+		headers = {
+			["X-Audit-Log-Reason"] = reason
 		}
 	})
+end
+
+--[=[
+	@within Guild
+	@param userId string -- The user ID
+	@return boolean -- Whether the user was unbanned
+	Unbans a user from the guild.
+]=]
+function Guild:Unban(userId: string, reason:string?)
+	local url = `{Endpoints.REMOVE_GUILD_BAN:format(self.id, userId)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Guild
+	@param data DiscordTypes.GuildData -- The guild data to modify
+	@return (boolean, {any}?) -- Whether the guild was modified and the response data
+	Modifies the guild.
+]=]
+function Guild:Modify(data: DiscordTypes.GuildData)
+	local url = `{Endpoints.MODIFY_GUILD:format(self.id)}`
+
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = body
+	})
+end
+
+--[=[
+	@within Guild
+	@return boolean -- Whether the guild was deleted
+	Deletes the guild.
+]=]
+function Guild:Delete()
+	local url = `{Endpoints.DELETE_GUILD:format(self.id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Guild
+	@param noFetch boolean? -- Whether to fetch from the API or use the cache
+	@return ({Channel} | {string: Channel}) -- The channels
+	Gets the channels in the guild.
+]=]
+function Guild:GetChannels(noFetch: boolean?)
+	if noFetch then
+		local t = {}
+		for id, channel in Cache.Channels do
+			if channel.guild_id == self.id then
+				t[id] = channel
+			end
+		end
+
+		return t
+	end
+
+	local url = `{Endpoints.GET_GUILD_CHANNELS:format(self.id)}`
+
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+
+	if success then
+		local t = {}
+		for _, channel in response do
+			t[channel.id] = GetChannel(channel.id, channel)
+		end
+
+		return t
+	end
+	return response
 end
 
 --[=[
@@ -746,7 +1097,7 @@ end
 	@return (boolean, {any}?) -- Whether the role was created and the response data
 	Creates a new role in the guild.
 ]=]
-function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean)
+function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean, reason: string?)
 	local url = `{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
 
 	local success, response = Network.Request({
@@ -760,6 +1111,9 @@ function Guild:CreateRole(name: string, permissions: string, color: number, hois
 			icon = icon,
 			unicode_emoji = unicode_emoji,
 			mentionable = mentionable
+		},
+		headers = {
+			["X-Audit-Log-Reason"] = reason
 		}
 	})
 
@@ -888,6 +1242,50 @@ function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Chann
 
 	return Channel.new(response)
 end
+
+
+--[=[
+	@within Guild
+	@param noFetch boolean? -- Whether to fetch from the API or use the cache
+	@param limit number? -- The maximum number of members to return
+	@param after string? -- The member ID to start after
+	@return ({Member} | {string: Member}) -- The members
+	Gets the members in the guild.
+]=]
+function Guild:GetMembers(noFetch: boolean?, limit: number?, after: string?)
+	if noFetch then
+		local t = {}
+		for id, member in Cache.Members:iter() do
+			if member.guild_id == self.id then
+				t[id] = member
+			end
+		end
+
+		return t
+	end
+
+	local url = `{Endpoints.GET_GUILD_MEMBERS:format(self.id)}`
+
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url,
+		query = {
+			limit = limit,
+			after = after
+		}
+	})
+
+	if success then
+		local t = {}
+		for _, memberData in response do
+			t[#t + 1] = GetMember(memberData.user.id, self.id, memberData)
+		end
+
+		return t
+	end
+
+	return response
+end
 ------------------------------
 return {
 	Message = Message,
@@ -899,7 +1297,9 @@ return {
 
 	GetChannel = GetChannel,
 	GetUser = GetUser,
+	GetUserById = GetUserById,
 	GetMessage = GetMessage,
+	GetMessageInChannel = GetMessageInChannel,
 	GetGuild = GetGuild,
 	GetMember = GetMember
 }

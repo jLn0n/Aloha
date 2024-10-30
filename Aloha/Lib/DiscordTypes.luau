@@ -35,6 +35,39 @@ export type UserData = {
 	avatar_decoration_data: AvatarDecorationData?
 }
 
+
+--[=[
+    @type AllowedMentionData {parse: {string}?, roles: {snowflake}?, users: {snowflake}?}
+    @within DiscordTypes
+    Allowed mention data
+]=]
+export type AllowedMentionData = {
+	parse: {string}?,
+	roles: {snowflake}?,
+	users: {snowflake}?
+}
+
+--[=[
+    @type ExecuteWebhookData {content: string?, username: string?, avatar_url: string?, tts: boolean?, embeds: {EmbedData}?, allowed_mentions: {AllowedMentionData}?, components: {ComponentData}?, files: {string}?, payload_json: string?, attachments: {AttachmentData}?, flags: number?, thread_name: string?, applied_tags: {string}?, poll: {PollData}?}
+    @within DiscordTypes
+    Data for executing a webhook
+]=]
+export type ExecuteWebhookData = {
+	content: string?,
+	username: string?,
+	avatar_url: string?,
+	tts: boolean?,
+	embeds: {EmbedData}?,
+	allowed_mentions: {AllowedMentionData}?,
+	components: {ComponentData}?,
+	payload_json: string?,
+	attachments: {AttachmentData}?,
+	flags: number?,
+	thread_name: string?,
+	applied_tags: {string}?,
+	poll: {PollData}?
+}
+
 --[=[
     @type CreateGuildChannelData {name: string, type: number, topic: string?, bitrate: number?, user_limit: number?, rate_limit_per_user: number?, permission_overwrites: {PermissionOverwriteData}?, parent_id: snowflake?, nsfw: boolean?, rtc_region: string?, video_quality_mode: number?, default_auto_archive_duration: number?, default_reaction_emoji: {ReactionData}?, available_tags: {ForumTagData}?, default_sort_order: number?, default_forum_layout: number?, default_thread_rate_limit_per_user: number?}
     @within DiscordTypes

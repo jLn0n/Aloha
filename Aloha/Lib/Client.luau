@@ -4,7 +4,8 @@
 ]=]
 
 local Event = require("../Classes/Event")
-
+local Endpoints = require("./Endpoints")
+local Network = require("./Network")
 local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")
 local Enum = require("./Enum")
@@ -24,385 +25,15 @@ type Payload = DiscordTypes.Payload
 
 --[=[
 	@private
-	@type EventCallbacks {[string]: {callback: (Payload, number?) -> any, aliases: {string}, event: Event}}
+	@type EventCallbacks {[string]: {callback: (Payload, number?) -> any, event: Event}}
 	@within Client
 	Table of event callbacks and their associated data.
 ]=]
-local eventCallbacks = {	
-	["READY"] = {
-		callback = function(payload: Payload, shard_id: number)
-			Bot.Shards[shard_id].ResumeURL = payload.d.resume_gateway_url
-			Bot.Shards[shard_id].SessionID = payload.d.session_id
-		end,
-
-		aliases = {"ready", "Ready"},
-
-		event = Event.new()
-	},
-
-	-- MESSAGE EVENTS
-	["MESSAGE_CREATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetMessage(payload.d)
-		end,
-
-		aliases = {"message_create", "MessageCreate"},
-
-		event = Event.new()
-	},
-
-	["MESSAGE_UPDATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetMessage(payload.d)
-		end,
-
-		aliases = {"message_update", "MessageUpdate"},
-
-		event = Event.new()
-	},
-
-	["MESSAGE_DELETE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetMessage(payload.d)
-		end,
-
-		aliases = {"message_delete", "MessageDelete"},
-
-		event = Event.new()
-	},
-
-	["MESSAGE_REACTION_ADD"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"message_reaction_add", "MessageReactionAdd"},
-
-		event = Event.new()
-	},
-
-	["MESSAGE_REACTION_REMOVE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"message_reaction_remove", "MessageReactionRemove"},
-
-		event = Event.new()
-	},
-
-	["MESSAGE_REACTION_REMOVE_ALL"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"message_reaction_remove_all", "MessageReactionRemoveAll"},
-
-		event = Event.new()
-	},
-
-	["MESSAGE_REACTION_REMOVE_EMOJI"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"message_reaction_remove_emoji", "MessageReactionRemoveEmoji"},
-
-		event = Event.new()
-	},
-
-	-- CHANNEL EVENTS
-	["CHANNEL_CREATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetChannel(payload.d.id)
-		end,
-
-		aliases = {"channel_create", "ChannelCreate"},
-
-		event = Event.new()
-	},
-
-	["CHANNEL_UPDATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetChannel(payload.d.id)
-		end,
-
-		aliases = {"channel_update", "ChannelUpdate"},
-
-		event = Event.new()
-	},
-
-	["CHANNEL_DELETE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"channel_delete", "ChannelDelete"},
-
-		event = Event.new()
-	},
-
-	["CHANNEL_PINS_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"channel_pins_update", "ChannelPinsUpdate"},
-
-		event = Event.new()
-	},
-
-	-- GUILD EVENTS
-	["GUILD_CREATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetGuild(payload.d.id, payload.d)
-		end,
-
-		aliases = {"guild_create", "GuildCreate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_UPDATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetGuild(payload.d.id, payload.d)
-		end,
-
-		aliases = {"guild_update", "GuildUpdate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_DELETE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_delete", "GuildDelete"},
-
-		event = Event.new()
-	},
-
-	["GUILD_ROLE_CREATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_role_create", "GuildRoleCreate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_ROLE_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_role_update", "GuildRoleUpdate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_ROLE_DELETE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_role_delete", "GuildRoleDelete"},
-
-		event = Event.new()
-	},
-
-	["GUILD_MEMBER_ADD"] = {
-		callback = function(payload: Payload)
-			return Objects.GetMember(payload.d.user.id, payload.d.guild_id)
-		end,
-
-		aliases = {"guild_member_add", "GuildMemberAdd"},
-
-		event = Event.new()
-	},
-
-	["GUILD_MEMBER_UPDATE"] = {
-		callback = function(payload: Payload)
-			return Objects.GetMember(payload.d.user.id, payload.d.guild_id)
-		end,
-
-		aliases = {"guild_member_update", "GuildMemberUpdate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_MEMBER_REMOVE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_member_remove", "GuildMemberRemove"},
-
-		event = Event.new()
-	},
-
-	["USER_UPDATE"] = {
-		callback = function(payload: Payload)
-			return Bot.Client
-		end,
-
-		aliases = {"user_update", "UserUpdate"},
-
-		event = Event.new()
-	},
-
-	-- MISC
-
-	["PRESENCE_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"presence_update", "PresenceUpdate"},
-
-		event = Event.new()
-	},
-
-	["VOICE_STATE_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"voice_state_update", "VoiceStateUpdate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_SCHEDULED_EVENT_CREATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_scheduled_event_create", "GuildScheduledEventCreate"},	
-
-		event = Event.new()
-	},
-
-	["GUILD_SCHEDULED_EVENT_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_scheduled_event_update", "GuildScheduledEventUpdate"},	
-
-		event = Event.new()
-	},	
-
-	["GUILD_SCHEDULED_EVENT_DELETE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_scheduled_event_delete", "GuildScheduledEventDelete"},	
-
-		event = Event.new()
-	},
-
-	-- THREAD EVENTS
-
-	["THREAD_CREATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"thread_create", "ThreadCreate"},
-
-		event = Event.new()
-	},
-
-	["THREAD_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"thread_update", "ThreadUpdate"},
-
-		event = Event.new()
-	},
-
-	["THREAD_DELETE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"thread_delete", "ThreadDelete"},
-
-		event = Event.new()
-	},
-
-	["THREAD_LIST_SYNC"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"thread_list_sync", "ThreadListSync"},
-
-		event = Event.new()
-	},
-
-	["THREAD_MEMBER_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"thread_member_update", "ThreadMemberUpdate"},
-
-		event = Event.new()
-	},
-
-	["THREAD_MEMBERS_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"thread_members_update", "ThreadMembersUpdate"},
-
-		event = Event.new()
-	},
-
-	["INTERACTION_CREATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"interaction_create", "InteractionCreate"},
-
-		event = Event.new()
-	},
-
-	["GUILD_INTEGRATIONS_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"guild_integrations_update", "GuildIntegrationsUpdate"},	
-
-		event = Event.new()
-	},
-
+local eventCallbacks = {
 	["APPLICATION_COMMAND_CREATE"] = {
 		callback = function(payload: Payload)
 			return payload.d
 		end,
-
-		aliases = {"application_command_create", "ApplicationCommandCreate"},
-
-		event = Event.new()
-	},
-
-	["APPLICATION_COMMAND_UPDATE"] = {
-		callback = function(payload: Payload)
-			return payload.d
-		end,
-
-		aliases = {"application_command_update", "ApplicationCommandUpdate"},
 
 		event = Event.new()
 	},
@@ -412,17 +43,294 @@ local eventCallbacks = {
 			return payload.d
 		end,
 
-		aliases = {"application_command_delete", "ApplicationCommandDelete"},
-
 		event = Event.new()
 	},
 
-	["WEBHOOKS_UPDATE"] = {
+	["APPLICATION_COMMAND_UPDATE"] = {
 		callback = function(payload: Payload)
 			return payload.d
 		end,
 
-		aliases = {"webhooks_update", "WebhooksUpdate"},
+		event = Event.new()
+	},
+
+	["AUTO_MODERATION_ACTION_EXECUTION"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["AUTO_MODERATION_RULE_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["AUTO_MODERATION_RULE_DELETE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["AUTO_MODERATION_RULE_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["CHANNEL_CREATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetChannel(payload.d.id)
+		end,
+
+		event = Event.new()
+	},
+
+	["CHANNEL_DELETE"] = {
+		callback = function(payload: Payload)
+			Cache.Channels[payload.d.id] = nil
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["CHANNEL_PINS_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["CHANNEL_UPDATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetChannel(payload.d.id)
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_AUDIT_LOG_ENTRY_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_CREATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetGuild(payload.d.id, payload.d)
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_DELETE"] = {
+		callback = function(payload: Payload)
+			Cache.Guilds[payload.d.id] = nil
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_EMOJIS_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_INTEGRATIONS_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_MEMBER_ADD"] = {
+		callback = function(payload: Payload)
+			return Objects.GetMember(payload.d.user.id, payload.d.guild_id, payload.d)
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_MEMBER_REMOVE"] = {
+		callback = function(payload: Payload)
+			for index, member in Cache.Members:iter() do
+				if member.user_id == payload.d.user.id and member.guild_id == payload.d.guild_id then
+					Cache.Members:RemoveIndex(index)
+					break
+				end
+			end
+
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_MEMBER_UPDATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetMember(payload.d.user.id, payload.d.guild_id, payload.d)
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_ROLE_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_ROLE_DELETE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_ROLE_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SCHEDULED_EVENT_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SCHEDULED_EVENT_DELETE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SCHEDULED_EVENT_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SCHEDULED_EVENT_USER_ADD"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SCHEDULED_EVENT_USER_REMOVE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SOUNDBOARD_SOUND_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SOUNDBOARD_SOUND_DELETE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_SOUNDBOARD_SOUND_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_STICKERS_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["GUILD_UPDATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetGuild(payload.d.id, payload.d)
+		end,
+
+		event = Event.new()
+	},
+
+	["INTEGRATION_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["INTEGRATION_DELETE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["INTEGRATION_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["INTERACTION_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["INVITE_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
 
 		event = Event.new()
 	},
@@ -432,7 +340,168 @@ local eventCallbacks = {
 			return payload.d
 		end,
 
-		aliases = {"invite_delete", "InviteDelete"},
+		event = Event.new()
+	},
+
+	["MESSAGE_CREATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetMessage(payload.d)
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_DELETE"] = {
+		callback = function(payload: Payload)
+			for index, msg in Cache.Messages:iter() do
+				if msg.id == payload.d.id then
+					Cache.Messages:RemoveIndex(index)
+					break
+				end
+			end
+
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_DELETE_BULK"] = {
+		callback = function(payload: Payload)
+			local ids = payload.d.ids
+
+			for _, id in ids do
+				for index, msg in Cache.Messages:iter() do
+					if msg.id == id then
+						Cache.Messages:RemoveIndex(index)
+						break
+					end
+				end
+			end
+
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_POLL_VOTE_ADD"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_POLL_VOTE_REMOVE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_REACTION_ADD"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_REACTION_REMOVE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_REACTION_REMOVE_ALL"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_REACTION_REMOVE_EMOJI"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["MESSAGE_UPDATE"] = {
+		callback = function(payload: Payload)
+			return Objects.GetMessage(payload.d)
+		end,
+
+		event = Event.new()
+	},
+
+	["PRESENCE_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["READY"] = {
+		callback = function(payload: Payload, shard_id: number)
+			Bot.Shards[shard_id].ResumeURL = payload.d.resume_gateway_url
+			Bot.Shards[shard_id].SessionID = payload.d.session_id
+		end,
+
+		event = Event.new()
+	},
+
+	["THREAD_CREATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["THREAD_DELETE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["THREAD_LIST_SYNC"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["THREAD_MEMBER_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["THREAD_MEMBERS_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["THREAD_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
 
 		event = Event.new()
 	},
@@ -442,13 +511,49 @@ local eventCallbacks = {
 			return payload.d
 		end,
 
-		aliases = {"typing_start", "TypingStart"},
+		event = Event.new()
+	},
+
+	["USER_UPDATE"] = {
+		callback = function(payload: Payload)
+			return Bot.Client
+		end,
+
+		event = Event.new()
+	},
+
+	["VOICE_CHANNEL_EFFECT_SEND"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["VOICE_STATE_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
+
+		event = Event.new()
+	},
+
+	["WEBHOOKS_UPDATE"] = {
+		callback = function(payload: Payload)
+			return payload.d
+		end,
 
 		event = Event.new()
 	},
 }
 
-type EventString = "READY" | "MESSAGE_CREATE" | "MESSAGE_UPDATE" | "MESSAGE_DELETE" | "MESSAGE_REACTION_ADD" | "MESSAGE_REACTION_REMOVE" | "MESSAGE_REACTION_REMOVE_ALL" | "MESSAGE_REACTION_REMOVE_EMOJI" | "CHANNEL_CREATE" | "CHANNEL_UPDATE" | "CHANNEL_DELETE" | "CHANNEL_PINS_UPDATE" | "GUILD_CREATE" | "GUILD_UPDATE" | "GUILD_DELETE" | "GUILD_ROLE_CREATE" | "GUILD_ROLE_UPDATE" | "GUILD_ROLE_DELETE" | "GUILD_MEMBER_ADD" | "GUILD_MEMBER_UPDATE" | "GUILD_MEMBER_REMOVE" | "USER_UPDATE" | "PRESENCE_UPDATE" | "VOICE_STATE_UPDATE" | "GUILD_SCHEDULED_EVENT_CREATE" | "GUILD_SCHEDULED_EVENT_UPDATE" | "APPLICATION_COMMAND_DELETE" | "WEBHOOKS_UPDATE" | "INVITE_DELETE" | "TYPING_START"
+type EventString = "READY" | "MESSAGE_CREATE" | "MESSAGE_UPDATE" | "MESSAGE_DELETE" | "MESSAGE_REACTION_ADD" | "MESSAGE_REACTION_REMOVE" 
+| "MESSAGE_REACTION_REMOVE_ALL" | "MESSAGE_REACTION_REMOVE_EMOJI" | "CHANNEL_CREATE" | "CHANNEL_UPDATE" | "CHANNEL_DELETE" | "CHANNEL_PINS_UPDATE" 
+| "GUILD_CREATE" | "GUILD_UPDATE" | "GUILD_DELETE" | "GUILD_ROLE_CREATE" | "GUILD_ROLE_UPDATE" | "GUILD_ROLE_DELETE" | "GUILD_MEMBER_ADD" | "GUILD_MEMBER_UPDATE" 
+| "GUILD_MEMBER_REMOVE" | "USER_UPDATE" | "PRESENCE_UPDATE" | "VOICE_STATE_UPDATE" | "GUILD_SCHEDULED_EVENT_CREATE" | "GUILD_SCHEDULED_EVENT_UPDATE" | "APPLICATION_COMMAND_DELETE" 
+| "WEBHOOKS_UPDATE" | "INVITE_DELETE" | "TYPING_START" | "VOICE_CHANNEL_EFFECT_SEND" | "MESSAGE_DELETE_BULK" | "AUTO_MODERATION_RULE_CREATE" | "AUTO_MODERATION_RULE_UPDATE" 
+| "AUTO_MODERATION_RULE_DELETE" | "AUTO_MODERATION_ACTION_EXECUTION" | "MESSAGE_POLL_VOTE_ADD" | "MESSAGE_POLL_VOTE_REMOVE" | "GUILD_AUDIT_LOG_ENTRY_CREATE" | "THREAD_CREATE" 
+| "THREAD_UPDATE" | "THREAD_DELETE" | "THREAD_LIST_SYNC" | "THREAD_MEMBER_UPDATE"
 
 --[=[
 	@function On
@@ -462,20 +567,7 @@ type EventString = "READY" | "MESSAGE_CREATE" | "MESSAGE_UPDATE" | "MESSAGE_DELE
 function Client.On(event: EventString, callback: (...any) -> any) : Event.Connection?
 	local callbackInfo = eventCallbacks[event]
 
-	if not callbackInfo then
-		for _, info in eventCallbacks do
-			if table.find(info.aliases, event) then
-				callbackInfo = info
-
-				break
-			end
-		end
-
-		if not callbackInfo then 
-			return
-		end
-	end
-
+	assert(callbackInfo, `No callback info found for event: {event}`)
 
 	return callbackInfo.event:Connect(callback)
 end
@@ -505,6 +597,261 @@ function Client.Fire(event: string, payload: Payload, shard_id: number?)
 	callbackInfo.event:Fire(callbackInfo.callback(payload, shard_id))
 end
 
+function Client.Modify(data: {username: string, avatar: string?, banner: string?})
+	local url = `{Endpoints.MODIFY_CURRENT_USER}`
+	local success, response = Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = data
+	})
 
+	if success then
+		Client.User = Objects.User.new(response)
+	end
+end
+
+function Client.GetGuilds(fetch: boolean?)
+	if not fetch then return Cache.Guilds end
+
+	local url = `{Endpoints.GET_USER_GUILDS}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+
+	if success then
+		local t = {}
+
+		for _, guild in response do
+			t[guild.id] = Objects.GetGuild(guild.id, guild)
+		end
+
+		return t
+	end
+
+	return {}
+end
+
+function Client.LeaveGuild(guild_id: string)
+	local url = `{Endpoints.LEAVE_GUILD:format(guild_id)}`
+	local success, _ = Network.Request({
+		method = "DELETE",
+		endpoint = url
+	})
+
+	return success
+end
+
+function Client.CreateGuild(data: DiscordTypes.GuildData)
+	local url = `{Endpoints.CREATE_GUILD}`
+	local success, response = Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = data
+	})
+
+	if success then
+		return Objects.GetGuild(response.id, response)
+	end
+
+	return nil
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@return Webhook -- The webhook object
+	Gets a webhook.
+]=]
+function Client.GetWebhook(id: string)
+	local url = `{Endpoints.GET_WEBHOOK:format(id)}`
+
+	return Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@return Webhook -- The webhook object
+	Gets a webhook with a token.
+]=]
+function Client.GetWebhookWithToken(id: string, token: string)
+	local url = `{Endpoints.GET_WEBHOOK_WITH_TOKEN:format(id, token)}`
+
+	return Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param data {name: string, avatar: string?} -- The webhook data
+	@param reason string? -- Optional reason for the webhook modification in audit logs
+	@return (boolean, {any}?) -- Whether the webhook was modified and any response data
+	Modifies a webhook.
+]=]
+function Client.ModifyWebhook(id: string, data: {name: string, avatar: string?}, reason: string?)
+	local url = `{Endpoints.MODIFY_WEBHOOK:format(id)}`
+
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = body,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@param data {name: string, avatar: string?} -- The webhook data
+	@param reason string? -- Optional reason for the webhook modification in audit logs
+	@return (boolean, {any}?) -- Whether the webhook was modified and any response data
+	Modifies a webhook with a token.
+]=]
+function Client.ModifyWebhookWithToken(id: string, token: string, data: {name: string, avatar: string?}, reason: string?)
+	local url = `{Endpoints.MODIFY_WEBHOOK_WITH_TOKEN:format(id, token)}`
+
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = body,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param reason string? -- Optional reason for the webhook deletion in audit logs
+	@return boolean -- Whether the webhook was deleted
+	Deletes a webhook.
+]=]
+function Client.DeleteWebhook(id: string, reason: string?)
+	local url = `{Endpoints.DELETE_WEBHOOK:format(id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@param reason string? -- Optional reason for the webhook deletion in audit logs
+	@return boolean -- Whether the webhook was deleted
+	Deletes a webhook with a token.
+]=]
+function Client.DeleteWebhookWithToken(id: string, token: string, reason: string?)
+	local url = `{Endpoints.DELETE_WEBHOOK_WITH_TOKEN:format(id, token)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@param wait boolean? -- Whether to wait for the webhook to execute
+	@param thread_id string? -- The thread ID
+	@param data DiscordTypes.ExecuteWebhookData -- The webhook data
+	@param files {string}? -- The files to send
+	@return (boolean, {any}?) -- Whether the webhook was executed and any response data
+	Executes a webhook.
+]=]
+function Client.ExecuteWebhook(id: string, token: string, wait: boolean?, thread_id: string?, data: DiscordTypes.ExecuteWebhookData, files: {string}?)
+	local url = `{Endpoints.EXECUTE_WEBHOOK:format(id, token)}`
+
+	local body = data :: {[string]: any}
+
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		files = files,
+		query = {
+			wait = wait,
+			thread_id = thread_id
+		},
+		body = body
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@param message_id string -- The message ID
+	@return (boolean, {any}?) -- Whether the message was fetched and any response data
+	Gets a webhook message.
+]=]
+function Client.GetWebhookMessage(id: string, token: string, message_id: string)
+	local url = `{Endpoints.GET_WEBHOOK_MESSAGE:format(id, token, message_id)}`
+
+	return Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@param message_id string -- The message ID
+	@param data DiscordTypes.ExecuteWebhookData -- The webhook data
+	@return (boolean, {any}?) -- Whether the message was edited and any response data
+	Edits a webhook message.
+]=]
+function Client.EditWebhookMessage(id: string, token: string, message_id: string, data: DiscordTypes.ExecuteWebhookData)
+	local url = `{Endpoints.EDIT_WEBHOOK_MESSAGE:format(id, token, message_id)}`
+
+	local body = data :: {[string]: any}
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = body
+	})
+end
+
+--[=[
+	@within Client
+	@param id string -- The webhook ID
+	@param token string -- The webhook token
+	@param message_id string -- The message ID
+	@return boolean -- Whether the message was deleted
+	Deletes a webhook message.
+]=]
+function Client.DeleteWebhookMessage(id: string, token: string, message_id: string)
+	local url = `{Endpoints.DELETE_WEBHOOK_MESSAGE:format(id, token, message_id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
+	})
+end
 
 return Client
