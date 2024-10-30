@@ -35,6 +35,10 @@ export type UserData = {
 	avatar_decoration_data: AvatarDecorationData?
 }
 
+export type InteractionResponseData = {
+	type: number,
+	data: InteractionCallbackData
+}
 
 --[=[
     @type AllowedMentionData {parse: {string}?, roles: {snowflake}?, users: {snowflake}?}

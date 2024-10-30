@@ -11,6 +11,7 @@ local Event = require("../Classes/Event")
 local Bot = require("Bot")
 local task = require("@lune/task")
 local Objects = require("../Classes/Objects")
+local Network = require("./Network")
 
 --[=[
     @type GlobalCommand {name: string, name_localizations: {[string]: string}?, description: string?, description_localizations: {[string]: string}?, options: {CommandOptionData}?, default_member_permissions: string?, integration_types: {number}?, contexts: {number}?, type: number, nsfw: boolean?}
@@ -68,12 +69,14 @@ Commands.RateLimit = {}
 local Command = {}
 Command.__index = Command
 
+type ExecutedEvent = Event.Event<DiscordTypes.ApplicationCommandInteractionDataOptionData>
+
 --[=[
     @type Command ApplicationCommandData & {Executed: Event, Response: {type: number, data: InteractionCallbackData}?}
     @within Commands
     A Discord application command instance.
 ]=]
-export type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {Executed: Event.Event, Response: {type: number, data: DiscordTypes.InteractionCallbackData}?}
+export type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {Executed: ExecutedEvent, Response: {type: number, data: DiscordTypes.InteractionCallbackData}?}
 
 --[=[
     @function new
@@ -94,7 +97,6 @@ function Command.new(data: DiscordTypes.ApplicationCommandData) : Command
 
 	return self
 end
-
 --[=[
     @method SetResponse
     @within Command
@@ -175,9 +177,10 @@ end
     @within Commands
     @param int InteractionData -- The interaction data from Discord
     @param shard_id number? -- Optional shard ID
-    Handles an incoming command interaction.
+	@return Network.Response? -- The response from the interaction, if successful
+    Handles an incoming command interaction. Returns nothing if the command is ratelimited.
 ]=]
-function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?)
+function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?) : Network.Response?
 	local interaction = Objects.Interaction.new(int)
 
 	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
@@ -195,17 +198,17 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 
 	if not command.Response then return end
 
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
+	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
 	
-	net.request({
-		url = url,
+	local success, response = Network.Request({
+		endpoint = endpoint,
 		method = "POST",
-		body = net.jsonEncode(command.Response(interaction)),
-		headers = {
-			["Authorization"] = `BOT {Bot.TOKEN}`,
-			["Content-Type"] = "application/json"
-		}
+		body = command.Response(interaction),
 	})
+
+	if not success then
+		return response
+	end
 
 	if applicationData.target_id and Bot.RATE_LIMIT > 0 then
 		Commands.RateLimit[applicationData.target_id] = true
@@ -219,6 +222,8 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 			Commands.RateLimit[interaction.member.user.id] = nil
 		end)
 	end
+
+	return response
 end
 
 return Commands

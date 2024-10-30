@@ -423,6 +423,24 @@ function Interaction.new(data: DiscordTypes.InteractionData) : Interaction
 
 	return self
 end
+
+function Interaction:Respond(type: number, data: DiscordTypes.InteractionCallbackData, with_response: boolean?)	
+	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(self.id, self.token)}`
+	
+	local success, response = Network.Request({
+		endpoint = endpoint,
+		method = "POST",
+		query = {
+			with_response = with_response
+		},
+		body = {
+			type = type,
+			data = data
+		}
+	})
+
+	return success, response
+end
 ------------------------------ Message
 --[=[
 	@within Message

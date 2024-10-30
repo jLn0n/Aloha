@@ -10,6 +10,7 @@ local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")
 local Enum = require("./Enum")
 local Bot = require("./Bot")
+local Components = require("./Components")
 local Cache = require("../Util/Cache")
 local Client = {}
 
@@ -585,6 +586,10 @@ function Client.Fire(event: string, payload: Payload, shard_id: number?)
 	if payload.t == "INTERACTION_CREATE" then
 		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND then
 			Commands.HandleInteraction(payload.d, shard_id)
+		end
+
+		if payload.d.type == Enum.INTERACTION_TYPE.MESSAGE_COMPONENT then
+			Components.HandleInteraction(payload.d, shard_id)
 		end
 	end
 

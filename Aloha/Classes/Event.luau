@@ -8,12 +8,12 @@ local Event = {}
 Event.__index = Event
 Event.__class = "Event"
 
-export type Event = {
-	Callbacks : {};
-	Waiting : {};
-	Connect : (Event, func : () -> nil) -> Connection,
-	Fire : (Event, ...any) -> nil,
-	Wait : (Event) -> any
+export type Event<T...> = {
+	Callbacks : {[(T...)->any]: any};
+	Waiting : {thread};
+	Connect : (Event<T...>, func : (T...)->any) -> Connection,
+	Fire : (Event<T...>, T...) -> nil,
+	Wait : (Event<T...>, number?) -> T...
 }
 export type Connection = {
 	Connected : boolean,
@@ -25,7 +25,7 @@ export type Connection = {
 	@within Event
 	@return Event
 ]=]
-function Event.new() : Event
+function Event.new<T...>() : Event<T...>
 	local self = setmetatable({}, Event)
 	self.Callbacks = {}
 	self.Waiting = {}
@@ -39,7 +39,7 @@ end
 	@param func (any)->any
 	@return Connection?
 ]=]
-function Event:Connect(func: (any)->any) : Connection?
+function Event:Connect<T...>(func: (T...)->any) : Connection?
 	local connection = {}
 	connection.Connected = true
 
@@ -58,7 +58,7 @@ end
 	@within Event
 	@param ... any
 ]=]
-function Event:Fire(...:any)
+function Event:Fire<T...>(...: T...)
 	for func in pairs(self.Callbacks) do
 		coroutine.wrap(func)(...)
 	end
@@ -75,7 +75,7 @@ end
 	@param timeout number?
 	@return any
 ]=]
-function Event:Wait(timeout: number?)
+function Event:Wait<T...>(timeout: number?) : T...
 	local thread = coroutine.running()
 	table.insert(self.Waiting, thread)
 

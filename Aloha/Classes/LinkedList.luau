@@ -57,8 +57,15 @@ export type LinkedList<T> = {
 	RemoveIndex: (self: LinkedList<T>, index: number) -> boolean
 }
 
---- @ignore
---- @function toNode
+
+--[=[
+@within LinkedList
+@ignore
+@param value T
+@param index number
+@return LinkedListNode<T>
+Creates a node for the linked list.
+]=]
 local function toNode<T>(value: T, index: number): LinkedListNode<T>
 	return {
 		Next = nil,
@@ -104,11 +111,11 @@ end
 @param Value T
 Removes a value from the linked list.
 ]=]
-function LinkedList:Remove<T>(value: T): boolean
+function LinkedList:Remove<T>(Value: T): boolean
 	local current = self.Head
 
 	while current do
-		if current.Value == value then
+		if current.Value == Value then
 			if current.Prev then
 				current.Prev.Next = current.Next
 			else
@@ -134,18 +141,18 @@ end
 
 --[=[
 @within LinkedList
-@param index number
+@param Index number
 Removes a value from the linked list by index.
 ]=]
-function LinkedList:RemoveIndex<T>(index: number): boolean
-	if index < 1 or index > self.Length then
+function LinkedList:RemoveIndex<T>(Index: number): boolean
+	if Index < 1 or Index > self.Length then
 		return false
 	end
 
 	local current = self.Head
 	local count = 1
 
-	while current and count < index do
+	while current and count < Index do
 		current = current.Next
 		count += 1
 	end
