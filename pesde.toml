@@ -1,0 +1,24 @@
+name = "thegalaxydev/Aloha"
+version = "0.4.1"
+license = "GPL-3.0"
+
+description = "Aloha is a Discord API library written in Luau using Lune. This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau."
+authors = ["thegalaxydev"]
+repository = "https://github.com/thegalaxydev/Aloha"
+
+includes = [
+  "pesde.toml",
+  "README.md",
+  "LICENSE",
+  "Aloha/",
+  "install.ps1",
+  "install.sh",
+  "selene.toml"
+]
+
+[target]
+environment = "luau"
+lib = "Aloha/init.luau"
+
+[indices]
+default = "https://github.com/daimond113/pesde-index"

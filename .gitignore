@@ -3,7 +3,8 @@
 bot.luau
 
 Aloha/temp/
-
+External/
+ApplicationCommands/
 ChatCommands/
 api/
 gateway/

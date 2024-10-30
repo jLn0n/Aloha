@@ -173,12 +173,12 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 end
 
 --[=[
-    @function HandleInteraction
-    @within Commands
-    @param int InteractionData -- The interaction data from Discord
-    @param shard_id number? -- Optional shard ID
+	@function HandleInteraction
+	@within Commands
+	@param int InteractionData -- The interaction data from Discord
+	@param shard_id number? -- Optional shard ID
 	@return Network.Response? -- The response from the interaction, if successful
-    Handles an incoming command interaction. Returns nothing if the command is ratelimited.
+	Handles an incoming command interaction. Returns nothing if the command is ratelimited.
 ]=]
 function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?) : Network.Response?
 	local interaction = Objects.Interaction.new(int)

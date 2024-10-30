@@ -13,12 +13,11 @@ local Timer = require("./Timer")
 local Network = require("../Lib/Network")
 
 type NetSocket = Network.WebSocket
-type Event = Event.Event
 
 type Payload = {op: number?, d: {[string]:any}, s: number?, t: string?}
 export type DiscordWebSocket = {
-	OnMessage: Event,
-	OnClose: Event,
+	OnMessage: Event.Event<string>,
+	OnClose: Event.Event<number, string>,
 	Closed: boolean
 } & typeof(DiscordWebSocket)
 
@@ -77,13 +76,6 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					local initial_delay = (payload.d.heartbeat_interval * math.random()) / 1000
 					self._last_heartbeat_interval = payload.d.heartbeat_interval
 
-					local function heartbeat_interval_callback()
-						if self._socket.getCloseCode() then
-							print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`)
-							self._heartbeat_timer:Stop()
-						end
-					end
-
 					local function heartbeat_end_callback()
 						if self._socket.getCloseCode() then
 							print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`)
@@ -106,13 +98,16 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 						self:Send(heartbeat_payload)
 						print(`[Shard {self.shard_id}] 💖 Heartbeat sent.`, heartbeat_payload)
 
-						self._heartbeat_timer = Timer.new(payload.d.heartbeat_interval / 1000, 1, heartbeat_interval_callback, heartbeat_end_callback)
+						task.delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
 
 						heartbeat_ack = false
 					end
 
-					self._heartbeat_timer = Timer.new(initial_delay, 1, heartbeat_interval_callback, heartbeat_end_callback)
+					task.delay(initial_delay, function()
+						print(`[Shard {self.shard_id}] 💖 Heartbeat started. (Next in: {Misc.FormatTime(self._last_heartbeat_interval / 1000)})`)
 
+						heartbeat_end_callback()
+					end)
 
 					self:Send(Bot.OP.IDENTIFY(self.token, self.shard_id, self.shards, initial_delay))
 

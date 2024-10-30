@@ -1,6 +1,6 @@
 --[=[
-	@class Components
-	Module for handling Discord components.
+@class Components
+Module for handling Discord components.
 ]=]
 local Components = {}
 local DiscordTypes = require("./DiscordTypes")
@@ -20,20 +20,20 @@ for _, componentType in Enum.COMPONENT do
 end
 
 --[=[
-	@function GetInteractionSignal
-	@within Components
-	@param componentType number -- The type of component to get the signal for
-	@return Event<(Objects.Interaction, number?)> -- The event for the component type
+@function GetInteractionSignal
+@within Components
+@param componentType number -- The type of component to get the signal for
+@return Event<(Objects.Interaction, number?)> -- The event for the component type
 ]=]
 function Components.GetInteractionSignal(componentType: number) : InteractionEvent
 	return eventCallbacks[componentType].event
 end
 
 --[=[
-	@function HandleInteraction
-	@within Components
-	@param int DiscordTypes.InteractionData -- The interaction data
-	@param shard_id number? -- The shard ID
+@function HandleInteraction
+@within Components
+@param int DiscordTypes.InteractionData -- The interaction data
+@param shard_id number? -- The shard ID
 ]=]
 function Components.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?)
 	local interaction = Objects.Interaction.new(int)

@@ -230,7 +230,10 @@ function Network.Commit(method: string, url: string, headers: {[any]: any}, body
 
 	if response.statusCode < 300 then
 		if type(data) == "string" then
-			data = net.jsonDecode(data)
+			local s,d = pcall(net.jsonDecode, data)
+			if s then
+				data = d
+			end
 		end
 		return data, delay
 	end

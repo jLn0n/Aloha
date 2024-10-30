@@ -2,20 +2,48 @@
 	@class Aloha
 	The main entry point for the Aloha Discord bot framework
 ]=]
-local Aloha = {}
+local Aloha = {
+	Lib = {
+		Bot = require("./Lib/Bot"),
+		Commands = require("./Lib/Commands"),
+		Endpoints = require("./Lib/Endpoints"),
+		Enum = require("./Lib/Enum"),
+		Network = require("./Lib/Network"),
+		Components = require("./Lib/Components"),
+		Debug = require("./Lib/Debug"),
+		DiscordTypes = require("./Lib/DiscordTypes")
+	},
 
-local Endpoints = require("./Lib/Endpoints")
-local Bot = require("./Lib/Bot")
-local Objects = require("./Classes/Objects")
-local Commands = require("./Lib/Commands")
+	Classes = {
+		Embed = require("./Classes/Embed"),
+		Color3 = require("./Classes/Color3"),
+		DiscordWebSocket = require("./Classes/DiscordWebSocket"),
+		LinkedList = require("./Classes/LinkedList"),
+		Objects = require("./Classes/Objects"),
+		Sweeper = require("./Classes/Sweeper"),
+		Timer = require("./Classes/Timer")
+	},
+
+	Util = {
+		Base64 = require("./Util/Base64"),
+		Cache = require("./Util/Cache"),
+		Misc = require("./Util/Misc"),
+		Mutex = require("./Util/Mutex"),
+		sha1 = require("./Util/sha1")
+	}
+}
+
+
+local Endpoints = Aloha.Lib.Endpoints
+local Bot = Aloha.Lib.Bot
+local Objects = Aloha.Classes.Objects
+local Commands = Aloha.Lib.Commands
 local User = Objects.User
-local Client = require("./Lib/Client")
-local task = require("@lune/task")
-local Timer = require("./Classes/Timer")
-local lfs = require("@lune/fs")
-local Network = require("./Lib/Network")
-local DiscordWebSocket = require("./Classes/DiscordWebSocket")
-local Enum = require("./Lib/Enum")
+local Network = Aloha.Lib.Network
+local DiscordWebSocket = Aloha.Classes.DiscordWebSocket
+local Enum = Aloha.Lib.Enum
+
+local fs = require("@lune/fs")
 local process = require("@lune/process")
 
 --[=[
@@ -24,10 +52,10 @@ local process = require("@lune/process")
 	Clears the temporary directory used by Aloha
 ]=]
 function Aloha.ClearTemp()
-	if lfs.isDir("./Aloha/temp") then
-		lfs.removeDir("./Aloha/temp")
+	if fs.isDir("./Aloha/temp") then
+		fs.removeDir("./Aloha/temp")
 	end
-	lfs.writeDir("./Aloha/temp")
+	fs.writeDir("./Aloha/temp")
 end
 
 --[=[
@@ -86,48 +114,13 @@ function Aloha.Run(token: string, intents: number?)
 end
 
 --[=[
-	@type DefaultCommandOptions {rateLimit: number?}
-	@within Aloha
-]=]
-type DefaultCommandOptions = {
-	rateLimit: number?
-}
-
---[=[
-	@function RegisterDefaultCommands
-	@within Aloha
-	@param options DefaultCommandOptions? -- Optional configuration for default commands
-	@return {Commands.Command} -- Array of registered commands
-	Registers the default commands included with Aloha
-]=]
-function Aloha.RegisterDefaultCommands(options: DefaultCommandOptions?) : {Commands.Command}
-	local commands = {}
-
-	if options and options.rateLimit then
-		Bot.RATE_LIMIT = options.rateLimit
-	end
-
-
-	for _, file in lfs.readDir("Aloha/DefaultCommands") do
-		local command = require(`./DefaultCommands/{file}`)
-
-		local cmd = Commands.RegisterGlobal(command.Data)
-		cmd:SetResponse(command.Response)
-
-		table.insert(commands, Commands.Cache[cmd.id])
-	end
-	
-	return commands
-end
-
---[=[
 	@function RegisterCommandsIn
 	@within Aloha
 	@param directory string -- Directory containing command modules
 	Registers all commands in the specified directory
 ]=]
 function Aloha.RegisterCommandsIn(directory: string)
-	for _, file in lfs.readDir(directory) do
+	for _, file in fs.readDir(directory) do
 		local command = require(`{directory}/{file}`)
 
 		local newCommand = Commands.RegisterGlobal(command.Data)
