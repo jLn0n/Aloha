@@ -9,6 +9,7 @@ local Objects = require("../Classes/Objects")
 local Commands = require("./Commands")
 local Enum = require("./Enum")
 local Bot = require("./Bot")
+local Cache = require("../Util/Cache")
 local Client = {}
 
 --[=[
@@ -154,7 +155,7 @@ local eventCallbacks = {
 	-- GUILD EVENTS
 	["GUILD_CREATE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetGuild(payload.d.id)
+			return Objects.GetGuild(payload.d.id, payload.d)
 		end,
 
 		aliases = {"guild_create", "GuildCreate"},
@@ -164,7 +165,7 @@ local eventCallbacks = {
 
 	["GUILD_UPDATE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetGuild(payload.d.id)
+			return Objects.GetGuild(payload.d.id, payload.d)
 		end,
 
 		aliases = {"guild_update", "GuildUpdate"},

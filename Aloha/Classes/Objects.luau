@@ -47,10 +47,9 @@ Interaction.__index = Interaction
 -----------------------------
 
 local DiscordTypes = require("../Lib/DiscordTypes")
-local Bot = require("../Lib/Bot")
 local Endpoints = require("../Lib/Endpoints")
 local Network = require("../Lib/Network")
-local task = require("@lune/task")
+local Cache = require("../Util/Cache")
 
 --[=[
 	@within Guild
@@ -58,7 +57,7 @@ local task = require("@lune/task")
 	A guild object.
 ]=]
 export type Guild = DiscordTypes.GuildData & {
-
+	new: (data: DiscordTypes.GuildData) -> Guild
 } & typeof(Guild)
 
 --[=[
@@ -67,6 +66,7 @@ export type Guild = DiscordTypes.GuildData & {
 	A user object.
 ]=]
 export type User = DiscordTypes.UserData & {
+	new: (data: DiscordTypes.UserData) -> User
 } & typeof(User)
 
 --[=[
@@ -75,7 +75,8 @@ export type User = DiscordTypes.UserData & {
 	A channel object.
 ]=]
 export type Channel = DiscordTypes.ChannelData & {
-	guild: Guild
+	guild: Guild,
+	new: (data: DiscordTypes.ChannelData) -> Channel
 } & typeof(Channel)
 
 --[=[
@@ -147,11 +148,12 @@ export type Message = typeof(Message) & {
 	role_subscription_data: DiscordTypes.RoleSubscriptionData?,
 	resolved: DiscordTypes.ResolvedData?,
 	poll: DiscordTypes.PollData?,
-	call: DiscordTypes.CallData?
+	call: DiscordTypes.CallData?,
+	new: (data: DiscordTypes.MessageData) -> Message
 }
 
 --[=[
-	@within Objects
+	@within Member
 	@type Member {user: User?, nick: string?, avatar: string?, banner: string?, roles: {number}?, joined_at: string, premium_since: string?, deaf: boolean, mute: boolean, pending: boolean?, permissions: string?, communication_disabled_until: string?, avatar_decoration_data: DiscordTypes.AvatarDecorationData?}
 	A member object.
 ]=]
@@ -177,14 +179,28 @@ export type Member = {
 	@return Channel -- The channel object
 	Gets a channel by ID.
 ]=]
-local function GetChannel(id: string) : Channel
+local function GetChannel(id: string, forceData: DiscordTypes.ChannelData?, noFetch: boolean?) : Channel?
+	if Cache.Channels[id] then
+		if forceData then
+			Cache.Channels[id] = Channel.new(forceData)
+		end
+		return Cache.Channels[id]
+	end
+
+	if noFetch then return end
+
 	local url = `{Endpoints.GET_CHANNEL:format(id)}`
 	local success, response = Network.Request({
 		method = "GET",
 		endpoint = url
 	})
 
-	return Channel.new(response)
+	if success then
+		Cache.Channels[id] = Channel.new(response)
+		return Cache.Channels[id]
+	end
+
+	return nil
 end
 
 --[=[
@@ -194,7 +210,21 @@ end
 	Gets a user by ID.
 ]=]
 local function GetUser(data: DiscordTypes.UserData) : User
-	return User.new(data)
+	for i,v in Cache.Users:iter() do
+		if v.id == data.id then
+			return v
+		end
+	end
+
+	local user = User.new(data)
+
+	Cache.Users:PushRight(user)
+
+	if Cache.Users.Length > 100 then
+		Cache.Users:PopLeft()
+	end
+
+	return user
 end
 
 --[=[
@@ -204,7 +234,21 @@ end
 	Gets a message by ID.
 ]=]
 local function GetMessage(data: DiscordTypes.MessageData) : Message
-	return Message.new(data)
+	for i,v in Cache.Messages:iter() do
+		if v.id == data.id then
+			return v
+		end
+	end
+
+	local msg = Message.new(data)
+
+	Cache.Messages:PushRight(msg)
+
+	if Cache.Messages.Length > 100 then
+		Cache.Messages:PopLeft()
+	end
+
+	return msg
 end
 
 --[=[
@@ -214,7 +258,15 @@ end
 	@return Message? -- The message object if found
 	Gets a message by ID in a channel.
 ]=]
-local function GetMessageInChannel(channelId: string, messageId: string) : Message?
+local function GetMessageInChannel(channelId: string, messageId: string, noFetch: boolean?) : Message?
+	for i,v in Cache.Messages:iter() do
+		if v.channel_id == channelId and v.id == messageId then
+			return v
+		end
+	end
+
+	if noFetch then return end
+
 	local url = `{Endpoints.GET_CHANNEL_MESSAGE:format(channelId, messageId)}`
 	local success, response = Network.Request({
 		method = "GET",
@@ -222,7 +274,15 @@ local function GetMessageInChannel(channelId: string, messageId: string) : Messa
 	})
 
 	if success then
-		return Message.new(response)
+		local msg = Message.new(response)
+
+		Cache.Messages:PushRight(msg)
+
+		if Cache.Messages.Length > 100 then
+			Cache.Messages:PopLeft()
+		end
+
+		return msg
 	end
 
 	return nil
@@ -234,8 +294,22 @@ end
 	@return Guild? -- The guild object if found
 	Gets a guild by ID.
 ]=]
-local function GetGuild(id: string) : Guild?
+local function GetGuild(id: string, forceData: DiscordTypes.GuildData?, noFetch: boolean?) : Guild?
 	if not id then return end
+
+	if forceData and forceData["unavailable"] then
+		Cache.Guilds[id] = nil
+		return nil
+	end
+
+	if Cache.Guilds[id] then
+		if forceData then
+			Cache.Guilds[id] = Guild.new(forceData)
+		end
+		return Cache.Guilds[id]
+	end
+
+	if noFetch then return end
 
 	local url = `{Endpoints.GET_GUILD:format(id)}`
 	local success, response = Network.Request({
@@ -243,7 +317,9 @@ local function GetGuild(id: string) : Guild?
 		endpoint = url
 	})
 
-	return Guild.new(response)
+	Cache.Guilds[id] = Guild.new(response)
+
+	return Cache.Guilds[id]
 end
 
 --[=[
@@ -253,7 +329,15 @@ end
 	@return (Member? | boolean, {any}?) -- The member object if found
 	Gets a member by ID in a guild.
 ]=]
-local function GetMember(userId: string, guildId: string) : (Member? | boolean, {any}?)
+local function GetMember(userId: string, guildId: string, noFetch: boolean?) : (Member? | boolean, {any}?)
+	for i,v in Cache.Members:iter() do
+		if v.user_id == userId and v.guild_id == guildId then
+			return v
+		end
+	end
+
+	if noFetch then return end
+
 	local url = `{Endpoints.GET_GUILD_MEMBER:format(guildId, userId)}`
 
 	local success, response = Network.Request({
@@ -261,7 +345,15 @@ local function GetMember(userId: string, guildId: string) : (Member? | boolean, 
 		endpoint = url
 	})
 
-	return Member.new(response, guildId)
+	local member = Member.new(response, guildId)
+
+	Cache.Members:PushRight(member)
+
+	if Cache.Members.Length > 100 then
+		Cache.Members:PopLeft()
+	end
+
+	return member
 end
 ------------------------------ Interaction
 --[=[
@@ -601,7 +693,7 @@ end
 	@return Channel -- The channel object
 	Gets a channel in the guild.
 ]=]
-function Guild:GetChannel(id: string) : Channel
+function Guild:GetChannel(id: string) : Channel?
 	return GetChannel(id)
 end
 

@@ -3,9 +3,28 @@
 A linked list implementation.
 ]=]
 local LinkedList = {}
-LinkedList.__Index = LinkedList
+LinkedList.__index = function(self, key)
+	if type(key) == "number" then
+		local current = self.Head
+		for _ = 1, key - 1 do
+			if not current then return nil end
+			current = current.Next
+		end
+		return current
+	end
+	return LinkedList[key]
+end
 LinkedList.__len = function(self)
 	return self.Length
+end
+
+LinkedList.__tostring = function(self)
+	local t = {}
+	for i,v in self:iter() do
+		t[i] = v
+	end
+
+	return `LinkedList<{self.Length}> \{{table.concat(t, ", ")}\}`
 end
 
 --[=[
@@ -28,8 +47,24 @@ A linked list.
 export type LinkedList<T> = {
 	Head: LinkedListNode<T>?,
 	Tail: LinkedListNode<T>?,
-	Length: number
+	Length: number,
+	PopLeft: (self: LinkedList<T>) -> T?,
+	PopRight: (self: LinkedList<T>) -> T?,
+	PushLeft: (self: LinkedList<T>, Value: T) -> (),
+	PushRight: (self: LinkedList<T>, Value: T) -> (),
+	iter: (self: LinkedList<T>) -> (() -> (number?, T?))
 }
+
+--- @ignore
+--- @function toNode
+local function toNode<T>(value: T, index: number): LinkedListNode<T>
+	return {
+		Next = nil,
+		Prev = nil,
+		Value = value,
+		Index = index
+	}
+end
 
 --[=[
 @within LinkedList
@@ -40,6 +75,10 @@ Creates a new linked list.
 function LinkedList.new<T>(...: T): LinkedList<T>
 	local self = setmetatable({}, LinkedList)
 	local elements = {...} 
+
+	for i, value in ipairs(elements) do
+		elements[i] = toNode(value, i)
+	end
 
 	self.Length = #elements
 	self.Head = elements[1]
@@ -56,6 +95,22 @@ function LinkedList.new<T>(...: T): LinkedList<T>
 	end
 
 	return self
+end
+
+--[=[
+@within LinkedList
+An iterator for the linked list, allowing for `for` loops.
+]=]
+function LinkedList.iter<T>(self: LinkedList<T>)
+	local current = self.Head
+	return function()
+		if current then
+			local node = current
+			current = current.Next
+			return node.Index, node.Value
+		end
+		return nil
+	end
 end
 
 --[=[

@@ -177,7 +177,7 @@ end
 --[=[
 	@function Commit
 	@within Network
-	@param method -- HTTP method
+	@param method string -- HTTP method
 	@param url string -- Request URL
 	@param headers {[any]: any} -- Request headers
 	@param body string? -- Request body
