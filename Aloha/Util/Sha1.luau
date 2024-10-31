@@ -1,5 +1,5 @@
 --[=[
-    @class sha1
+    @class Sha1
     SHA-1 hashing implementation. Credit to Dekkonot - https://github.com/Dekkonot/lua-hashing
 ]=]
 
@@ -12,7 +12,7 @@ local BLOCK = table.create(80)
 
 --[=[
     @function processBlocks
-    @within sha1
+    @within Sha1
     @param digest {number} -- The digest array to update
     @param message string -- The message to process
     @param start number -- Starting byte position
@@ -37,7 +37,7 @@ local function processBlocks(digest: { number }, message: string, start: number,
 			block[t] = bit32.lrotate(bit32.bxor(block[t - 3], block[t - 8], block[t - 14], block[t - 16]), 1)
 		end
 
-		-- Standard SHA1 rounds
+		-- Standard Sha1 rounds
 		local a, b, c, d, e = d1, d2, d3, d4, d5
 		local temp
 		for t = 1, 20 do
@@ -87,13 +87,13 @@ local function processBlocks(digest: { number }, message: string, start: number,
 end
 
 --[=[
-    @function sha1
-    @within sha1
+    @function Sha1
+    @within Sha1
     @param message string -- The payload to compute the SHA-1 hash of
     @return buffer -- The computed SHA-1 hash as a buffer
     Computes the SHA-1 hash for the given message and returns it as a buffer
 ]=]
-local function sha1(message: string): buffer
+local function Sha1(message: string): buffer
 	local digest = {
 		0x67452301,
 		0xEFCDAB89,
@@ -130,4 +130,4 @@ local function sha1(message: string): buffer
 	return newBuffer
 end
 
-return sha1
+return Sha1

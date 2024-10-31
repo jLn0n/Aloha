@@ -29,7 +29,7 @@ local Aloha = {
 		Cache = require("./Util/Cache"),
 		Misc = require("./Util/Misc"),
 		Mutex = require("./Util/Mutex"),
-		sha1 = require("./Util/sha1")
+		Sha1 = require("./Util/Sha1")
 	}
 }
 
