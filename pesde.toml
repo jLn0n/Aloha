@@ -1,6 +1,6 @@
 name = "thegalaxydev/aloha"
-version = "0.4.1"
-license = "GPL-3.0"
+version = "0.4.2"
+license = "MIT"
 
 description = "Aloha is a Discord API library written in Luau using Lune. This is an attempt to make a more up-to-date form of Discordia for people who want to make Discord bots in Luau."
 authors = ["thegalaxydev"]

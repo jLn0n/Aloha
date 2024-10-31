@@ -39,8 +39,6 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 	self.token = token
 	self.shard_id = shard_id
 	self.shards = shards
-	self._last_heartbeat_interval = 0
-	self._heartbeat_timer = nil
 
 	self.Closed = false
 
@@ -79,7 +77,6 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					local function heartbeat_end_callback()
 						if self._socket.getCloseCode() then
 							print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`)
-							self._heartbeat_timer:Stop()
 							return
 						end
 
@@ -90,13 +87,11 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 							self._socket.Close(4000)
 							self._socket = Network.WebSocket(self._url)
 
-							self._heartbeat_timer:Stop()
 							return
 						end
 
 						local heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
 						self:Send(heartbeat_payload)
-						print(`[Shard {self.shard_id}] 💖 Heartbeat sent.`, heartbeat_payload)
 
 						task.delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
 
@@ -104,14 +99,12 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					end
 
 					task.delay(initial_delay, function()
-						print(`[Shard {self.shard_id}] 💖 Heartbeat started. (Next in: {Misc.FormatTime(self._last_heartbeat_interval / 1000)})`)
+						print(`[Shard {self.shard_id}] 💖 Heartbeat started.`)
 
 						heartbeat_end_callback()
 					end)
 
 					self:Send(Bot.OP.IDENTIFY(self.token, self.shard_id, self.shards, initial_delay))
-
-					continue
 				end
 
 				if payload.op == 7 then
@@ -120,7 +113,6 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					self._socket.Close(4000)
 					self._socket = Network.WebSocket(Bot.Shards[self.shard_id].ResumeURL)
 					self:Send(Bot.OP.RESUME(self.token, self._last_payload.s, self.shard_id))
-					continue
 				end
 
 				if payload.op == 9 then
@@ -131,7 +123,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 				end
 
 				if payload.op == 11 then
-					print(`[Shard {self.shard_id}] 💜 Heartbeat received. Uptime: {Misc.FormatTime(os.time() - Bot.STARTED_AT)} (Next in: {Misc.FormatTime(self._last_heartbeat_interval / 1000)})`)
+					print(`[Shard {self.shard_id}] 💜 Heartbeat received. Uptime: {Misc.FormatTime(os.time() - Bot.STARTED_AT)}`)
 					heartbeat_ack = true
 				end
 
