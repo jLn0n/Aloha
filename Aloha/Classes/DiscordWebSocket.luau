@@ -98,15 +98,19 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					local heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
 					self:Send(heartbeat_payload)
 
-					task.delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
+					if self.heartbeat_task then
+						if coroutine.status(self.heartbeat_task) == "suspended" then
+							task.cancel(self.heartbeat_task)
+						end
+					end
+					self.heartbeat_task = task.delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
 
 					heartbeat_ack = false
 				end
 
 				task.delay(initial_delay, function()
-					print(`[Shard {self.shard_id}] 💖 Heartbeat started.`)
-
 					heartbeat_end_callback()
+					print(`[Shard {self.shard_id}] 💖 Heartbeat started.`)
 				end)
 
 				self:Send(Bot.OP.IDENTIFY(self.token, self.shard_id, self.shards, initial_delay))
@@ -150,6 +154,10 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 		self._socket = Network.WebSocket(self._url)
 
 		connect()
+	end
+
+	if self.heartbeat_task then
+		task.cancel(self.heartbeat_task)
 	end
 
 	task.spawn(connect)
