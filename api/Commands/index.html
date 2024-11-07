@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v2.3.1">
 <title data-rh="true">Commands | Aloha</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://thegalaxydev.github.io/Aloha/api/Commands"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Commands | Aloha"><meta data-rh="true" name="description" content="Handles Discord application command registration and interaction responses."><meta data-rh="true" property="og:description" content="Handles Discord application command registration and interaction responses."><link data-rh="true" rel="canonical" href="https://thegalaxydev.github.io/Aloha/api/Commands"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Commands" hreflang="en"><link data-rh="true" rel="alternate" href="https://thegalaxydev.github.io/Aloha/api/Commands" hreflang="x-default"><link rel="stylesheet" href="/Aloha/assets/css/styles.19a5646f.css">
-<link rel="preload" href="/Aloha/assets/js/runtime~main.eceb43a8.js" as="script">
-<link rel="preload" href="/Aloha/assets/js/main.440ec258.js" as="script">
+<link rel="preload" href="/Aloha/assets/js/runtime~main.87218e10.js" as="script">
+<link rel="preload" href="/Aloha/assets/js/main.6c226566.js" as="script">
 </head>
 <body class="navigation-with-keyboard">
 <script>!function(){function e(e){document.documentElement.setAttribute("data-theme",e)}var t=function(){var e=null;try{e=localStorage.getItem("theme")}catch(e){}return e}();null!==t?e(t):window.matchMedia("(prefers-color-scheme: dark)").matches?e("dark"):(window.matchMedia("(prefers-color-scheme: light)").matches,e("light"))}()</script><div id="__docusaurus">
@@ -21,13 +21,13 @@
 <p>Cache of registered commands indexed by ID.</p>
 </div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="RateLimit"><code style="text-decoration:none">RateLimit</code><a href="#RateLimit" class="hash-link" aria-label="Direct link to RateLimit" title="Direct link to RateLimit">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L63"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.<!-- -->RateLimit<!-- -->:<!-- --> </code> <code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">string</code><code>]</code></span><code>: </code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">}</code></div><div>
 <p>Rate limit tracking for command usage.</p>
-</div><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="RegisterGlobal"><code style="text-decoration:none">RegisterGlobal</code><a href="#RegisterGlobal" class="hash-link" aria-label="Direct link to RegisterGlobal" title="Direct link to RegisterGlobal">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L117"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.</code><code class="green_DgR4">RegisterGlobal</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Commands#GlobalCommand">GlobalCommand</a></code><span class="inlineDescription_G7Er">-- <span>
+</div><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="RegisterGlobal"><code style="text-decoration:none">RegisterGlobal</code><a href="#RegisterGlobal" class="hash-link" aria-label="Direct link to RegisterGlobal" title="Direct link to RegisterGlobal">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L135"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.</code><code class="green_DgR4">RegisterGlobal</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Commands#GlobalCommand">GlobalCommand</a></code><span class="inlineDescription_G7Er">-- <span>
 <p>The command data to register</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Commands#Command">Command,</a></code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
 <p>The registered command and status message</p>
 </span></span></div><div>
 <p>Registers a global application command.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="RegisterGuild"><code style="text-decoration:none">RegisterGuild</code><a href="#RegisterGuild" class="hash-link" aria-label="Direct link to RegisterGuild" title="Direct link to RegisterGuild">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L150"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.</code><code class="green_DgR4">RegisterGuild</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Commands#GuildCommand">GuildCommand</a></code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="RegisterGuild"><code style="text-decoration:none">RegisterGuild</code><a href="#RegisterGuild" class="hash-link" aria-label="Direct link to RegisterGuild" title="Direct link to RegisterGuild">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L188"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.</code><code class="green_DgR4">RegisterGuild</code><code>(</code><div class="inset_uKQm"><div><code>data<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/Commands#GuildCommand">GuildCommand</a></code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>The command data to register</p>
 </span></span></div><div><code>guild_id<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
 <p>The ID of the guild to register the command in</p>
@@ -35,7 +35,7 @@
 <p>The registered command and status message</p>
 </span></span></div><div>
 <p>Registers a guild-specific application command.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="HandleInteraction"><code style="text-decoration:none">HandleInteraction</code><a href="#HandleInteraction" class="hash-link" aria-label="Direct link to HandleInteraction" title="Direct link to HandleInteraction">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L183"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.</code><code class="green_DgR4">HandleInteraction</code><code>(</code><div class="inset_uKQm"><div><code>int<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/DiscordTypes#InteractionData">InteractionData</a></code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="HandleInteraction"><code style="text-decoration:none">HandleInteraction</code><a href="#HandleInteraction" class="hash-link" aria-label="Direct link to HandleInteraction" title="Direct link to HandleInteraction">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/thegalaxydev/Aloha/blob/main/../Aloha/Aloha/Lib/Commands.luau#L220"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Commands<!-- -->.</code><code class="green_DgR4">HandleInteraction</code><code>(</code><div class="inset_uKQm"><div><code>int<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/Aloha/api/DiscordTypes#InteractionData">InteractionData</a></code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>The interaction data from Discord</p>
 </span></span></div><div><code>shard_id<!-- -->: </code><code class="blue_P4bS">number?</code><span class="inlineDescription_G7Er">-- <span>
 <p>Optional shard ID</p>
@@ -63,7 +63,7 @@
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 117,
+                &quot;line&quot;: 135,
                 &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Commands.luau&quot;
             }
         },
@@ -90,7 +90,7 @@
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 150,
+                &quot;line&quot;: 188,
                 &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Commands.luau&quot;
             }
         },
@@ -117,7 +117,7 @@
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 183,
+                &quot;line&quot;: 220,
                 &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Commands.luau&quot;
             }
         }
@@ -178,7 +178,7 @@
         &quot;path&quot;: &quot;../Aloha/Aloha/Lib/Commands.luau&quot;
     }
 }</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a><ul><li><a href="#Command" class="table-of-contents__link toc-highlight">Command</a></li><li><a href="#GlobalCommand" class="table-of-contents__link toc-highlight">GlobalCommand</a></li><li><a href="#GuildCommand" class="table-of-contents__link toc-highlight">GuildCommand</a></li></ul></li><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#Cache" class="table-of-contents__link toc-highlight">Cache</a></li><li><a href="#RateLimit" class="table-of-contents__link toc-highlight">RateLimit</a></li></ul></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#HandleInteraction" class="table-of-contents__link toc-highlight">.HandleInteraction</a></li><li><a href="#RegisterGlobal" class="table-of-contents__link toc-highlight">.RegisterGlobal</a></li><li><a href="#RegisterGuild" class="table-of-contents__link toc-highlight">.RegisterGuild</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Galaxy Development, LLC. Built with Moonwave and Docusaurus</div></div></div></footer></div>
-<script src="/Aloha/assets/js/runtime~main.eceb43a8.js"></script>
-<script src="/Aloha/assets/js/main.440ec258.js"></script>
+<script src="/Aloha/assets/js/runtime~main.87218e10.js"></script>
+<script src="/Aloha/assets/js/main.6c226566.js"></script>
 </body>
 </html>
