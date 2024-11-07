@@ -88,7 +88,9 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 						-- close and reconnect
 						print(`[Shard {self.shard_id}] 🧟 Heartbeat not acknowledged. Reconnecting...`)
 						retry = true
-						self._socket.Close(4000)
+						if not self._socket.getCloseCode() then
+							self._socket.Close(4000)
+						end
 						self._socket = Network.WebSocket(self._url)
 						self.Closed = true
 
@@ -96,7 +98,18 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					end
 
 					local heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
-					self:Send(heartbeat_payload)
+					local success, err = pcall(function(...)  
+						self:Send(heartbeat_payload)
+					end)
+					
+					if not success then
+						print(`[Shard {self.shard_id}] 🔴 Heartbeat failed to send: {err}`)
+						self._socket = Network.WebSocket(self._url)
+						self:Send(heartbeat_payload)
+						self.Closed = true
+						retry = true
+						return
+					end
 
 					if self.heartbeat_task then
 						if coroutine.status(self.heartbeat_task) == "suspended" then

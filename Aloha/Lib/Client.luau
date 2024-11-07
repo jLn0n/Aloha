@@ -588,10 +588,16 @@ function Client.Fire(event: string, payload: Payload, shard_id: number?)
 			Commands.HandleInteraction(payload.d, shard_id)
 		end
 
+		if payload.d.type == Enum.INTERACTION_TYPE.APPLICATION_COMMAND_AUTOCOMPLETE then
+			print("Test")
+		end
+
 		if payload.d.type == Enum.INTERACTION_TYPE.MESSAGE_COMPONENT then
 			Components.HandleInteraction(payload.d, shard_id)
 		end
 	end
+
+	print(event)
 
 	local callbackInfo = eventCallbacks[event]
 

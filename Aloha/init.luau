@@ -5,6 +5,7 @@
 local Aloha = {
 	Lib = {
 		Bot = require("./Lib/Bot"),
+		Client = require("./Lib/Client"),
 		Commands = require("./Lib/Commands"),
 		Endpoints = require("./Lib/Endpoints"),
 		Enum = require("./Lib/Enum"),
@@ -120,14 +121,10 @@ end
 	Registers all commands in the specified directory
 ]=]
 function Aloha.RegisterCommandsIn(directory: string)
-	for _, file in fs.readDir(directory) do
-		local command = require(`{directory}/{file}`)
-
-		local newCommand = Commands.RegisterGlobal(command.Data)
-
-		if command.Response then
-			newCommand:SetResponse(command.Response(newCommand.Response))
-		end
+	for _, file in fs.readDir("Aloha/DefaultCommands") do
+		local command = require(`./DefaultCommands/{file}`)
+		local cmd = Commands.RegisterGlobal(command.Data)
+		cmd:SetResponse(command.Response)
 	end
 end
 

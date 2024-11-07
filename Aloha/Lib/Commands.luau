@@ -107,6 +107,24 @@ function Command:SetResponse(callback: (DiscordTypes.ApplicationCommandInteracti
 	self.Response = callback
 end
 
+function Commands.Clear()
+	Commands.Cache = {}
+
+	local s, r = Network.Request({
+		endpoint = Endpoints.GET_GLOBAL_APPLICATION_COMMANDS:format(Bot.Client.id),
+		method = "GET",
+	})
+
+	if s then
+		for _, command in r.body or {} do
+			Network.Request({
+				endpoint = Endpoints.DELETE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id, command.id),
+				method = "DELETE",
+			})
+		end
+	end
+end
+
 --[=[
     @function RegisterGlobal
     @within Commands
@@ -120,19 +138,39 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
 
-	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
-
-	local response = net.request({
-		url = url,
-		method = "POST",
-		body = net.jsonEncode(data),
-		headers = {
-			["Authorization"] = `Bot {Bot.TOKEN}`,
-			["Content-Type"] = "application/json"
-		}
+	local s, r = Network.Request({
+		endpoint = Endpoints.GET_GLOBAL_APPLICATION_COMMANDS:format(Bot.Client.id),
+		method = "GET",
 	})
 
-	local command = Command.new(net.jsonDecode(response.body))
+	local oldCommand = nil
+	if s then
+		for _, command in r.body or {} do
+			if command.name == data.name then
+				Network.Request({
+					endpoint = Endpoints.EDIT_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id, command.id),
+					method = "PATCH",
+					body = data,
+				})
+			end
+		end
+	end
+
+	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
+	local command
+	if not oldCommand then
+		local success, response = Network.Request({
+			endpoint = url,
+			method = "POST",
+			body = data,
+		})
+
+		print(response)
+
+		command = Command.new(response)
+	else
+		command = Command.new(oldCommand)
+	end
 
 	Commands.Cache[command.id] = command
 
@@ -152,7 +190,6 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 	if data.type == Enum.APPLICATION_COMMAND_TYPE.CHAT_INPUT and not data.description then
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
-
 	local url = `{Endpoints.BASE_URL}{Endpoints.CREATE_GUILD_APPLICATION_COMMAND:format(Bot.Client.id, guild_id)}`
 
 	local response = net.request({
@@ -199,6 +236,7 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 	if not command.Response then return end
 
 	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
+
 	
 	local success, response = Network.Request({
 		endpoint = endpoint,
