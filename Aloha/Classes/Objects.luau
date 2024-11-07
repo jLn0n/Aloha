@@ -970,6 +970,50 @@ end
 
 --[=[
 	@within Guild
+	@param days number -- The number of days to prune
+	@return (number | boolean, {any}?) -- The prune count if successful
+	Gets the prune count for the guild.
+]=]
+function Guild:GetPruneCount(days: number, roles: {string}?)
+	local url = `{Endpoints.GUILD_PRUNE:format(self.id)}`
+
+	return Network.Request({
+		method = "GET",
+		endpoint = url,
+		query = {days = days, include_roles = roles}
+	})
+end
+
+--[=[
+	@within Guild
+	@param days number -- The number of days to prune
+	@param compute_prune_count boolean -- Whether to compute the prune count
+	@param roles {string}? -- Optional array of role IDs to prune
+	@param reason string? -- Optional reason for the prune in audit logs
+	@return (number | boolean, {any}?) -- The prune count if successful
+	Prunes the guild.
+]=]
+function Guild:Prune(days: number, compute_prune_count: boolean, roles: {string}?, reason: string?)
+	local url = `{Endpoints.GUILD_PRUNE:format(self.id)}`
+
+	local body = {
+		days = days,
+		compute_prune_count = compute_prune_count,
+		include_roles = roles
+	}
+
+	return Network.Request({
+		method = "POST",
+		endpoint = url,
+		body = body,
+		headers = {
+			["X-Audit-Log-Reason"] = reason
+		}
+	})
+end
+
+--[=[
+	@within Guild
 	@param userId string -- The user ID
 	@return (Member? | boolean, {any}?) -- The member object if found
 	Gets a member in the guild.

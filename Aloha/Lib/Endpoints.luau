@@ -42,6 +42,7 @@ return {
 	GET_GUILD_INTEGRATIONS = "/guilds/%s/integrations",
 	GET_GUILD_VANITY_URL = "/guilds/%s/vanity-url",
 	BULK_GUILD_BAN = "/guilds/%s/bulk-ban",
+	GUILD_PRUNE = "/guilds/%s/prune",
 
 	-- Channels
 	GET_CHANNEL = "/channels/%s",
