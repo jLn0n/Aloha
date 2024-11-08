@@ -53,7 +53,7 @@ function Mutex:Lock(prepend: boolean)
 end
 
 --[=[
-    @method Unlock
+    @method Unlock	
     @within Mutex
     @return boolean? -- Returns true if a coroutine was resumed, nil otherwise
     Unlocks the mutex and resumes the next waiting coroutine if any

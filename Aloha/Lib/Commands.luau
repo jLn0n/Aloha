@@ -165,8 +165,6 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 			body = data,
 		})
 
-		print(response)
-
 		command = Command.new(response)
 	else
 		command = Command.new(oldCommand)
