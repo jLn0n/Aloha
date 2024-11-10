@@ -126,9 +126,9 @@ Network.TotalRequests = 0
 	@return boolean, Response -- Returns success status and response
 ]=]
 function Network.Request(data: {method: string, endpoint: string, body: {[string]: any?}?, files: {[any]: any}?, query: {[string]: any?}?, headers: {[string]: string}?}) : (boolean, Response)
-	local _, current = coroutine.running()
+	local current = coroutine.running()
 
-	if current then
+	if not current then
 		return error("Network requests must be made from a non-main thread.")
 	end
 
@@ -183,14 +183,15 @@ function Network.Request(data: {method: string, endpoint: string, body: {[string
 		headers['Content-Length'] = tostring(#body)
 	end
 
+
 	local mutex = mutexes[route(data.method, data.endpoint)]
+	mutex:Lock()
 	local response, delay = Network.Commit(data.method, url, headers, body, 0)
 	mutex:UnlockAfter(delay)
 
 	-- this is gross im sorry
 	return not not response, response
 end
-
 --[=[
 	@function Commit
 	@within Network

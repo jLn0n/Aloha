@@ -3,6 +3,8 @@
     A mutex (mutual exclusion) implementation for coroutine synchronization. Based on SinisterRectus's implementation in Discordia.
 ]=]
 
+local task = require("@lune/task")
+
 local Mutex = {}
 Mutex.__index = Mutex
 Mutex.__len = function(self)
@@ -44,12 +46,16 @@ function Mutex:Lock(prepend: boolean)
 		self._active = true
 		return
 	end	
-
+	
 	if prepend then
-		return coroutine.yield(self:PushLeft(coroutine.running()))
+		self:PushLeft(coroutine.running())
+	else
+		self:PushRight(coroutine.running())
 	end
 
-	return coroutine.yield(self:PushRight(coroutine.running()))
+	while self._active do
+		task.wait()
+	end
 end
 
 --[=[

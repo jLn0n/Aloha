@@ -25,7 +25,7 @@ Bot.DISCORD_API_VERSION = "10"
 	@within Bot
 	The current version of Aloha.
 ]=]
-Bot.ALOHA_VERSION = "0.3.5"
+Bot.ALOHA_VERSION = "0.4.4"
 
 --[=[
 	@prop PROCESS_ID number

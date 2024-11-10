@@ -107,6 +107,18 @@ function Command:SetResponse(callback: (DiscordTypes.ApplicationCommandInteracti
 	self.Response = callback
 end
 
+function Commands.Delete(id: string)
+	Network.Request({
+		endpoint = Endpoints.DELETE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id, id),
+		method = "DELETE",
+	})
+end
+
+--[=[
+    @function Clear
+    @within Commands
+    Clears the command cache and removes all registered commands.
+]=]
 function Commands.Clear()
 	Commands.Cache = {}
 
@@ -138,37 +150,16 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
 
-	local s, r = Network.Request({
-		endpoint = Endpoints.GET_GLOBAL_APPLICATION_COMMANDS:format(Bot.Client.id),
-		method = "GET",
+	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
+
+
+	local success, response = Network.Request({
+		endpoint = url,
+		method = "POST",
+		body = data,
 	})
 
-	local oldCommand = nil
-	if s then
-		for _, command in r.body or {} do
-			if command.name == data.name then
-				Network.Request({
-					endpoint = Endpoints.EDIT_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id, command.id),
-					method = "PATCH",
-					body = data,
-				})
-			end
-		end
-	end
-
-	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
-	local command
-	if not oldCommand then
-		local success, response = Network.Request({
-			endpoint = url,
-			method = "POST",
-			body = data,
-		})
-
-		command = Command.new(response)
-	else
-		command = Command.new(oldCommand)
-	end
+	command = Command.new(response)
 
 	Commands.Cache[command.id] = command
 
@@ -216,6 +207,7 @@ end
 	Handles an incoming command interaction. Returns nothing if the command is ratelimited.
 ]=]
 function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?) : Network.Response?
+
 	local interaction = Objects.Interaction.new(int)
 
 	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
@@ -228,14 +220,16 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 	end
 
 	local command = Commands.Cache[applicationData.id]
-	if not command then return end
+	if not command then
+		return
+	end
 	command.Executed:Fire(applicationData.options)
 
 	if not command.Response then return end
 
 	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
 
-	
+
 	local success, response = Network.Request({
 		endpoint = endpoint,
 		method = "POST",
