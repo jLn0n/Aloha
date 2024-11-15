@@ -152,14 +152,17 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 
 	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
 
-
+	
 	local success, response = Network.Request({
 		endpoint = url,
 		method = "POST",
 		body = data,
 	})
 
-	command = Command.new(response)
+	if not success then
+	end
+
+	local command = Command.new(response)
 
 	Commands.Cache[command.id] = command
 
@@ -220,6 +223,7 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 	end
 
 	local command = Commands.Cache[applicationData.id]
+
 	if not command then
 		return
 	end
@@ -236,7 +240,9 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 		body = command.Response(interaction),
 	})
 
+
 	if not success then
+
 		return response
 	end
 

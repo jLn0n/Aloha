@@ -185,7 +185,7 @@ function Network.Request(data: {method: string, endpoint: string, body: {[string
 
 
 	local mutex = mutexes[route(data.method, data.endpoint)]
-	mutex:Lock()
+	--mutex:Lock()
 	local response, delay = Network.Commit(data.method, url, headers, body, 0)
 	mutex:UnlockAfter(delay)
 

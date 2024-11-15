@@ -45,7 +45,7 @@ function Mutex:Lock(prepend: boolean)
 	if not self._active then
 		self._active = true
 		return
-	end	
+	end
 	
 	if prepend then
 		self:PushLeft(coroutine.running())

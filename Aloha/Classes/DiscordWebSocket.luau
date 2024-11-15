@@ -116,6 +116,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 							task.cancel(self.heartbeat_task)
 						end
 					end
+
 					self.heartbeat_task = task.delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
 
 					heartbeat_ack = false

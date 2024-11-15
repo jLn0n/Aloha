@@ -876,7 +876,7 @@ function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
 
 	if (self :: User).bot then return false, {message = "Bots cannot DM bots!"} end
 
-	local response = Network.Request({
+	local success,response = Network.Request({
 		method = "POST",
 		endpoint = url,
 		body = {recipient_id = self.id}
@@ -940,6 +940,25 @@ function Member:Ban(delete_message_seconds: number?, reason: string?)
 			["X-Audit-Log-Reason"] = reason
 		}
 	})
+end
+
+function Member:IsBoosting()
+	self = self :: Member
+	if not self.premium_since then return false end
+
+	local year, month, day, hour, min, sec = self.premium_since:match("(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)")
+	if not (year and month and day and hour and min and sec) then return false end
+
+	local premiumTime = os.time({
+		year = tonumber(year),
+		month = tonumber(month),
+		day = tonumber(day),
+		hour = tonumber(hour),
+		min = tonumber(min),
+		sec = tonumber(sec)
+	})
+
+	return os.time() - premiumTime < 2592000
 end
 ------------------------------ Guild
 --[=[
@@ -1021,7 +1040,7 @@ end
 function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
 	local url = `{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
 
-	local response = Network.Request({
+	local success, response = Network.Request({
 		method = "GET",
 		endpoint = url
 	})
@@ -1286,7 +1305,7 @@ end
 function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?)
 	local url = `{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
 
-	local response = Network.Request({
+	local success, response = Network.Request({
 		method = "GET",
 		endpoint = url
 	})
@@ -1304,7 +1323,7 @@ function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Chann
 	local url = `{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
 
 	local body = data :: {[string]: any}
-	local response = Network.Request({
+	local success, response = Network.Request({
 		method = "POST",
 		endpoint = url,
 		body = body
