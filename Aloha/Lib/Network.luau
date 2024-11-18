@@ -267,7 +267,7 @@ end
 	@param headers {[string]: string} -- Request headers
 	@return boolean, string -- Returns success status and response
 ]=]
-function Network.Get(url: string, headers: {[string]: string}) : (boolean, string)
+function Network.Get(url: string, headers: {[string]: string}?) : (boolean, string)
 	local success, response = pcall(function()
 		return net.request({
 			url = url,
@@ -369,7 +369,6 @@ end
 ]=]
 function Network.WebSocket(url: string) : WebSocket
 	local newSocket = net.socket(url)
-
 
 	return {
 		Close = newSocket.close,

@@ -149,7 +149,7 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 	if data.type == Enum.APPLICATION_COMMAND_TYPE.CHAT_INPUT and not data.description then
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
-
+	
 	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
 
 	

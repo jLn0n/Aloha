@@ -45,6 +45,8 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 	self.OnMessage = Event.new()
 	self.OnClose = Event.new()
 
+	Bot.Shards[shard_id] = {Socket = self, ResumeURL = "", SessionID = ""}
+
 	local connect 
 	connect = function()
 		local retry = false
@@ -58,14 +60,19 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 				return self._socket.Next()
 			end, function(err)
 				print("[WebSocket] Error retrieving next message: " .. err)
+				self._socket.Close(4000)
+				self.Closed = true
+				retry = true
 			end)
 
 			if not success then
-				retry = true
+				print("[WebSocket] Error retrieving next message: " .. message)
+				task.wait()
 				continue
 			end
 			
 			if not message then 
+				print("[WebSocket] No message received.")
 				task.wait() 
 				continue 
 			end
@@ -91,6 +98,9 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 						if not self._socket.getCloseCode() then
 							self._socket.Close(4000)
 						end
+
+						task.wait(1)
+
 						self._socket = Network.WebSocket(self._url)
 						self.Closed = true
 
@@ -99,13 +109,17 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 
 					local heartbeat_payload = Bot.OP.HEARTBEAT(self._last_payload.s)
 					local success, err = pcall(function(...)  
+						if self._socket.getCloseCode() then
+							return
+						end
+
 						self:Send(heartbeat_payload)
 					end)
 					
-					if not success then
+					if not success or self._socket.getCloseCode() then
 						print(`[Shard {self.shard_id}] 🔴 Heartbeat failed to send: {err}`)
+						self._socket.Close(4000)
 						self._socket = Network.WebSocket(self._url)
-						self:Send(heartbeat_payload)
 						self.Closed = true
 						retry = true
 						return
@@ -128,6 +142,7 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 				end)
 
 				self:Send(Bot.OP.IDENTIFY(self.token, self.shard_id, self.shards, initial_delay))
+				print(`[Shard {self.shard_id}] 🔑 Identify sent.`)
 			end
 
 			if payload.op == 7 then
@@ -159,22 +174,33 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 			self._last_payload = payload
 
 			task.wait()
+
+			if retry or self._socket.getCloseCode() then
+				print(`[Shard {self.shard_id}] 🔄 Reconnecting WebSocket.`)
+				self.Closed = true
+				self._socket.Close(4000)
+				task.wait(1)
+				self._socket = Network.WebSocket(self._url)
+				heartbeat_ack = true
+				self._last_payload = nil
+			end
 		end
 
 		self.Closed = true
 		print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`, self._socket.getCloseCode())
-		self.OnClose:Fire(self._socket.getCloseCode(), Bot.CLOSE_REASONS[self._socket.getCloseCode()] or "Unknown")
-
 		self._socket = Network.WebSocket(self._url)
-
-		connect()
+		self.OnClose:Fire(self._socket.getCloseCode(), Bot.CLOSE_REASONS[self._socket.getCloseCode()] or "Unknown")
 	end
+
+	self.OnClose:Connect(function(code, reason)
+		task.defer(connect)
+	end)
 
 	if self.heartbeat_task then
 		task.cancel(self.heartbeat_task)
 	end
 
-	task.spawn(connect)
+	connect()
 
 	local proxy = setmetatable({}, {	
 		__newindex = function(_, index, value)
@@ -203,6 +229,7 @@ end
 	@within DiscordWebSocket
 ]=]
 function DiscordWebSocket:Send(data: Payload) : ()
+	print("[WebSocket] Sending payload: ", data)
 	self._socket.Send(Network.JsonEncode(data))
 end
 return DiscordWebSocket

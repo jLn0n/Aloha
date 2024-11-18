@@ -6,6 +6,34 @@ local Misc = {}
 local Bot = require("../Lib/Bot")
 local fs = require("@lune/fs")
 local DiscordTypes = require("../Lib/DiscordTypes")
+local Network = require("../Lib/Network")
+
+--[=[
+    @function FetchThumbnailPNG
+    @within Misc
+    @param decal string -- Decal to fetch the thumbnail for
+    @return string | nil -- URL of the thumbnail or nil if an error occurred
+]=]
+Misc.FetchThumbnailPNG = function(decal: string): (string | nil)
+	local success, result = pcall(function()
+		local assetId = decal:match("rbxassetid://(%d+)") or decal:match("https?://.+/asset/?id=(%d+)")
+		if not assetId then
+			error("Invalid asset ID format.")
+		end
+		local url = "https://thumbnails.roproxy.com/v1/assets?assetIds="..assetId.."&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false"
+		local success, response = Network.Get(url)
+
+		local data = Network.JsonDecode(response.body)
+		return data.data[1].imageUrl
+	end)
+
+	if success then
+		return result
+	else
+		warn("An error occurred: " .. result)
+		return nil
+	end
+end
 
 --[=[
     @function AddLineNumbers

@@ -44,8 +44,10 @@ local Network = Aloha.Lib.Network
 local DiscordWebSocket = Aloha.Classes.DiscordWebSocket
 local Enum = Aloha.Lib.Enum
 
+
 local fs = require("@lune/fs")
 local process = require("@lune/process")
+local task = require("@lune/task")
 
 --[=[
 	@function ClearTemp
@@ -65,7 +67,7 @@ end
 	@param token string -- The Discord bot token
 	@param intents number? -- Optional gateway intents bitmask
 	@return {[number]: {Socket: DiscordWebSocket, ResumeURL: string, SessionID: string}} -- Table of shards
-	Starts the Discord bot with the given token and intents
+	Starts the Discord bot with the given token and intents. Must be called last.
 ]=]
 function Aloha.Run(token: string, intents: number?)
 	Bot.INTENTS = intents or Enum.INTENTS.DEFAULT
@@ -97,15 +99,10 @@ function Aloha.Run(token: string, intents: number?)
 		error("Failed to fetch client user data")
 	end
 
-
 	Bot.STARTED_AT = os.time()
-
 	for shard_id = 0, shards - 1 do
-		local socket = DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)
-		Bot.Shards[shard_id] = {Socket = socket, ResumeURL = "", SessionID = ""}
-
-		socket.OnClose:Connect(function(code, reason)
-			print(`[Shard {shard_id}] DISCONNECTED: {code} - {reason}`)
+		task.defer(function()
+			DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)
 		end)
 	end
 
@@ -113,20 +110,5 @@ function Aloha.Run(token: string, intents: number?)
 
 	return Bot.Shards
 end
-
---[=[
-	@function RegisterCommandsIn
-	@within Aloha
-	@param directory string -- Directory containing command modules
-	Registers all commands in the specified directory
-]=]
-function Aloha.RegisterCommandsIn(directory: string)
-	for _, file in fs.readDir("Aloha/DefaultCommands") do
-		local command = require(`./DefaultCommands/{file}`)
-		local cmd = Commands.RegisterGlobal(command.Data)
-		cmd:SetResponse(command.Response)
-	end
-end
-
 
 return Aloha
