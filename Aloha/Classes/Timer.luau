@@ -4,7 +4,6 @@
 ]=]
 local Timer = {}
 Timer.__index = Timer
-local task = require("@lune/task")
 
 export type Timer = typeof(Timer)
 
@@ -17,27 +16,49 @@ export type Timer = typeof(Timer)
     Creates a new Timer that runs for the specified duration.
 ]=]
 function Timer.new(time: number, interval: number, interval_callback: (totalTime: number) -> ()?, end_callback: () -> ()?) : Timer
-	local self = setmetatable({}, Timer)
+    local self = setmetatable({}, Timer)
 
-	self._interval = interval
-	self._started = os.time()
-	self._closed = false
-	self._interval_callback = interval_callback
-	self._end_callback = end_callback
+    self._interval = interval
+    self._started = os.time()
+    self._closed = false
+    self._interval_callback = interval_callback
+    self._end_callback = end_callback
+    self._thread = coroutine.create(function()
+        self:Run(time)
+    end)
 
-	self._task = task.spawn(function()
-		while self._started + time > os.time() and not self._closed do
-			task.wait(self._interval)
-			if not self._interval_callback then continue end
-			self._interval_callback(os.time() - self._started)
-		end
+    coroutine.resume(self._thread) 
+    return self
+end
 
-		if self._end_callback then
-			self._end_callback()
-		end
-	end)
+--[=[
+    @private
+    The main run loop for the timer.
+]=]
+function Timer:Run(time: number)
+    local startTime = os.time()
+    while os.time() - startTime < time and not self._closed do
+        local elapsed = os.time() - startTime
+        self:Yield(self._interval)
 
-	return self
+        if self._interval_callback and not self._closed then
+            self._interval_callback(elapsed)
+        end
+    end
+
+    if self._end_callback and not self._closed then
+        self._end_callback()
+    end
+end
+
+--[=[
+    @private
+]=]
+function Timer:Yield(duration: number)
+    local start = os.clock()
+    while os.clock() - start < duration do
+        coroutine.yield()
+    end
 end
 
 --[=[
@@ -45,11 +66,10 @@ end
     Stops the timer and cancels any pending callbacks.
 ]=]
 function Timer:Stop()
-	self._closed = true
-
-	if coroutine.status(self._task) == "suspended" then
-		task.cancel(self._task)
-	end
+    self._closed = true
+    if coroutine.status(self._thread) == "suspended" then
+        coroutine.resume(self._thread) 
+    end
 end
 
 return Timer

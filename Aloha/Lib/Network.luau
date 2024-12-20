@@ -6,7 +6,7 @@ local Network = {}
 local net = require("@lune/net")
 local Bot = require("./Bot")
 local Endpoints = require("./Endpoints")
-local task = require("@lune/task")
+local Task = require("../Util/Task")
 local Mutex = require("../Util/Mutex")
 
 --[=[
@@ -137,10 +137,10 @@ function Network.Request(data: {method: string, endpoint: string, body: {[string
 
 		if Network.TotalRequests >= 50 then
 			print("Rate limited, deferring to the next cycle.")
-			task.wait(1)
+			Task.Wait(1)
 		end
 
-		task.delay(1, function()
+		Task.Delay(1, function()
 			Network.TotalRequests = 0
 		end)
 	end
@@ -253,7 +253,7 @@ function Network.Commit(method: string, url: string, headers: {[any]: any}, body
 	end
 
 	if retry and delay then
-		task.wait(delay / 1000)
+		Task.Wait(delay / 1000)
 		return Network.Commit(method, url, headers, body, retries + 1)
 	end
 

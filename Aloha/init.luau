@@ -30,7 +30,8 @@ local Aloha = {
 		Cache = require("./Util/Cache"),
 		Misc = require("./Util/Misc"),
 		Mutex = require("./Util/Mutex"),
-		Sha1 = require("./Util/Sha1")
+		Sha1 = require("./Util/Sha1"),
+		Task = require("./Util/Task")
 	}
 }
 
@@ -101,7 +102,7 @@ function Aloha.Run(token: string, intents: number?)
 
 	Bot.STARTED_AT = os.time()
 	for shard_id = 0, shards - 1 do
-		task.defer(function()
+		Aloha.Util.Task.Defer(function()
 			DiscordWebSocket.new(gateway_url, `Bot {token}`, shard_id, shards)
 		end)
 	end

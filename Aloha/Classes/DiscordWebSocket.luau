@@ -6,7 +6,7 @@ local DiscordWebSocket = {}
 DiscordWebSocket.__index = DiscordWebSocket
 local Event = require("./Event")
 local Bot = require("../Lib/Bot")
-local task = require("@lune/task")
+local Task = require("../Util/Task")
 local Client = require("../Lib/Client")
 local Misc = require("../Util/Misc")
 local Timer = require("./Timer")
@@ -62,24 +62,38 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 				print("[WebSocket] Error retrieving next message: " .. err)
 				self._socket.Close(4000)
 				self.Closed = true
-				retry = true
 			end)
 
 			if not success then
 				print("[WebSocket] Error retrieving next message: " .. message)
-				task.wait()
+				Task.Wait()
 				continue
 			end
 			
 			if not message then 
 				print("[WebSocket] No message received.")
-				task.wait() 
-				continue 
+
+				print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`, self._socket.getCloseCode())
+				pcall(function()
+					self._socket.Close(4000)
+				end)
+				Task.Wait()
+				self._socket = Network.WebSocket(Bot.Shards[self.shard_id].ResumeURL)
+				self.OnClose:Fire(self._socket.getCloseCode(), Bot.CLOSE_REASONS[self._socket.getCloseCode()] or "Unknown")
+				break
 			end
 
 			self.OnMessage:Fire(message)
 		
-			local payload = Network.JsonDecode(message)
+			local s, payload = pcall(function()
+				return Network.JsonDecode(message)
+			end)
+
+			if not s then
+				print(`[Shard {self.shard_id}] 🔴 Error decoding message: {payload}`)
+				Task.Wait()
+				continue
+			end
 			
 			if payload.op == 10 then	
 				local initial_delay = (payload.d.heartbeat_interval * math.random()) / 1000
@@ -92,18 +106,8 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					end
 
 					if not heartbeat_ack then
-						-- close and reconnect
 						print(`[Shard {self.shard_id}] 🧟 Heartbeat not acknowledged. Reconnecting...`)
-						retry = true
-						if not self._socket.getCloseCode() then
-							self._socket.Close(4000)
-						end
-
-						task.wait(1)
-
-						self._socket = Network.WebSocket(self._url)
 						self.Closed = true
-
 						return
 					end
 
@@ -118,7 +122,9 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 					
 					if not success or self._socket.getCloseCode() then
 						print(`[Shard {self.shard_id}] 🔴 Heartbeat failed to send: {err}`)
-						self._socket.Close(4000)
+						pcall(function()
+							self._socket.Close(4000)
+						end)
 						self._socket = Network.WebSocket(self._url)
 						self.Closed = true
 						retry = true
@@ -127,16 +133,16 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 
 					if self.heartbeat_task then
 						if coroutine.status(self.heartbeat_task) == "suspended" then
-							task.cancel(self.heartbeat_task)
+							Task.Cancel(self.heartbeat_task)
 						end
 					end
 
-					self.heartbeat_task = task.delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
+					self.heartbeat_task = Task.Delay(payload.d.heartbeat_interval / 1000, heartbeat_end_callback)
 
 					heartbeat_ack = false
 				end
 
-				task.delay(initial_delay, function()
+				Task.Delay(initial_delay, function()
 					heartbeat_end_callback()
 					print(`[Shard {self.shard_id}] 💖 Heartbeat started.`)
 				end)
@@ -173,13 +179,13 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 
 			self._last_payload = payload
 
-			task.wait()
+			Task.Wait()
 
 			if retry or self._socket.getCloseCode() then
 				print(`[Shard {self.shard_id}] 🔄 Reconnecting WebSocket.`)
 				self.Closed = true
 				self._socket.Close(4000)
-				task.wait(1)
+				Task.Wait(1)
 				self._socket = Network.WebSocket(self._url)
 				heartbeat_ack = true
 				self._last_payload = nil
@@ -188,16 +194,18 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 
 		self.Closed = true
 		print(`[Shard {self.shard_id}] 🔴 WebSocket closed.`, self._socket.getCloseCode())
-		self._socket = Network.WebSocket(self._url)
+		self._socket.Close(4000)
+		self._socket = Network.WebSocket(Bot.Shards[self.shard_id].ResumeURL)
 		self.OnClose:Fire(self._socket.getCloseCode(), Bot.CLOSE_REASONS[self._socket.getCloseCode()] or "Unknown")
 	end
 
 	self.OnClose:Connect(function(code, reason)
-		task.defer(connect)
+		self.Closed = false
+		Task.Defer(connect)
 	end)
 
 	if self.heartbeat_task then
-		task.cancel(self.heartbeat_task)
+		Task.Cancel(self.heartbeat_task)
 	end
 
 	connect()

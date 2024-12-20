@@ -9,7 +9,7 @@ local Enum = require("Enum")
 local DiscordTypes = require("DiscordTypes")
 local Event = require("../Classes/Event")
 local Bot = require("Bot")
-local task = require("@lune/task")
+local Task = require("../Util/Task")
 local Objects = require("../Classes/Objects")
 local Network = require("./Network")
 
@@ -144,7 +144,7 @@ end
     @return Command, string -- The registered command and status message
     Registers a global application command.
 ]=]
-function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
+function Commands.RegisterGlobal(data: GlobalCommand) : (Command?, string)
 	local returnStr = "SUCCESS"
 	if data.type == Enum.APPLICATION_COMMAND_TYPE.CHAT_INPUT and not data.description then
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
@@ -160,6 +160,12 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command, string)
 	})
 
 	if not success then
+		print(response)
+		return nil, returnStr
+	end
+
+	if response.code then
+		return nil, response.code
 	end
 
 	local command = Command.new(response)
@@ -248,13 +254,13 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 
 	if applicationData.target_id and Bot.RATE_LIMIT > 0 then
 		Commands.RateLimit[applicationData.target_id] = true
-		task.delay(Bot.RATE_LIMIT, function()
+		Task.Delay(Bot.RATE_LIMIT, function()
 			Commands.RateLimit[applicationData.target_id] = nil
 		end)
 	elseif interaction.member and interaction.member.user and interaction.member.user.id then
 		if Bot.RATE_LIMIT <= 0 then return end
 		Commands.RateLimit[interaction.member.user.id] = true
-		task.delay(Bot.RATE_LIMIT, function()
+		Task.Delay(Bot.RATE_LIMIT, function()
 			Commands.RateLimit[interaction.member.user.id] = nil
 		end)
 	end

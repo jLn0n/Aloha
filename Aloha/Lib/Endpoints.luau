@@ -43,6 +43,9 @@ return {
 	GET_GUILD_VANITY_URL = "/guilds/%s/vanity-url",
 	BULK_GUILD_BAN = "/guilds/%s/bulk-ban",
 	GUILD_PRUNE = "/guilds/%s/prune",
+	GET_GUILD_EMOJI = "/guilds/%s/emojis/%s",
+	LIST_GUILD_EMOJIS = "/guilds/%s/emojis",
+	CREATE_GUILD_EMOJI = "/guilds/%s/emojis",
 
 	-- Channels
 	GET_CHANNEL = "/channels/%s",

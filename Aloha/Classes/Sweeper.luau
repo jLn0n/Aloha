@@ -4,7 +4,7 @@
 ]=]
 
 local Bot = require("../Lib/Bot")
-local task = require("@lune/task")
+local Task = require("../Util/Task")
 
 local Sweeper = {}
 Sweeper.__index = Sweeper
@@ -118,7 +118,7 @@ function Sweeper:Remove(index: any) : ()
 		end
 
 		if typeof(data.object) == "thread" then
-			task.cancel(data.object)
+			Task.Cancel(data.object)
 		end
 	end
 end

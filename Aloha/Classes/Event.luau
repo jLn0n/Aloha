@@ -2,7 +2,6 @@
 	@class Event
 	Class to create events.
 ]=]
-local task = require("@lune/task")
 
 local Event = {}
 Event.__index = Event
@@ -63,10 +62,11 @@ function Event:Fire<T...>(...: T...)
 		coroutine.wrap(func)(...)
 	end
 
-	for _, thread in pairs(self.Waiting) do
-		table.remove(self.Waiting, thread)
-		coroutine.resume(thread , ...)
-	end
+	local waitingThreads = self.Waiting
+    self.Waiting = {}
+    for _, thread in ipairs(waitingThreads) do
+        coroutine.resume(thread, ...)
+    end
 end
 
 --[=[
@@ -75,20 +75,27 @@ end
 	@param timeout number?
 	@return any
 ]=]
-function Event:Wait<T...>(timeout: number?) : T...
-	local thread = coroutine.running()
-	table.insert(self.Waiting, thread)
+function Event:Wait(timeout)
+    local thread = coroutine.running()
+    table.insert(self.Waiting, thread)
 
-	if timeout then
-		task.delay(timeout, function()
-			if coroutine.status(thread) == "suspended" then
-				table.remove(self.Waiting, thread)
-				coroutine.resume(thread)
-			end
-		end)
-	end
+    if timeout then
+        coroutine.wrap(function()
+            local startTime = os.clock()
+            while os.clock() - startTime < timeout do
+                coroutine.yield() 
+            end
+            for i, t in ipairs(self.Waiting) do
+                if t == thread then
+                    table.remove(self.Waiting, i)
+                    coroutine.resume(thread)
+                    break
+                end
+            end
+        end)()
+    end
 
-	return coroutine.yield()
+    return coroutine.yield()
 end
 
 return Event

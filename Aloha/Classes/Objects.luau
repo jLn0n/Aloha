@@ -50,6 +50,7 @@ local DiscordTypes = require("../Lib/DiscordTypes")
 local Endpoints = require("../Lib/Endpoints")
 local Network = require("../Lib/Network")
 local Cache = require("../Util/Cache")
+local Enum = require("../Lib/Enum")
 
 --[=[
 	@within Guild
@@ -195,7 +196,12 @@ local function GetChannel(id: string, forceData: DiscordTypes.ChannelData?, noFe
 		endpoint = url
 	})
 
+
 	if success then
+		if type(response) ~= "table" then
+			return nil
+		end
+
 		Cache.Channels[id] = Channel.new(response)
 		return Cache.Channels[id]
 	end
@@ -584,8 +590,12 @@ end
 	@return Channel -- The channel object
 	Creates a new channel object.
 ]=]
-function Channel.new(data: DiscordTypes.ChannelData) : Channel
+function Channel.new(data: DiscordTypes.ChannelData) : Channel?
 	local self = setmetatable({}, Channel)
+
+	if type(data) ~= "table" then
+		return nil
+	end
 
 	for key, value in data do
 		self[key] = value
@@ -604,7 +614,7 @@ end
 	@return boolean -- Whether the message was sent
 	Sends a message to the channel.
 ]=]
-function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?)
+function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?, allowed_mentions: {[string]: {string}}?, flags: number?)
 	local url = `{Endpoints.CREATE_MESSAGE:format(self.id)}`
 
 	return Network.Request({
@@ -613,7 +623,9 @@ function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, refere
 		body = {
 			content = content,
 			embeds = embeds,
-			message_reference = reference 
+			message_reference = reference,
+			allowed_mentions = allowed_mentions,
+			flags = flags
 		}
 	})
 end
@@ -942,23 +954,45 @@ function Member:Ban(delete_message_seconds: number?, reason: string?)
 	})
 end
 
+--[=[
+	@within Member
+	@param permission string -- The permission to check
+	@return boolean -- Whether the member has the permission
+	Checks if the member has a permission.
+]=]
+function Member:HasPermission(permission: number)
+	local n = tonumber(self.permissions)
+
+	return bit32.band(n, permission) ~= 0
+end
+
+--[=[
+	@within Member
+	@param roleId string -- The role ID
+	@return boolean -- Whether the member has the role
+	Checks if the member has a role.
+]=]
+function Member:HasRole(roleId: string)
+	local roles = self.roles
+
+	for _, role in roles do
+		if role == roleId then
+			return true
+		end
+	end
+
+	return false
+end
+
+--[=[
+	@within Member
+	@return boolean -- Whether the member is boosting
+	Checks if the member is boosting.
+]=]
 function Member:IsBoosting()
 	self = self :: Member
-	if not self.premium_since then return false end
-
-	local year, month, day, hour, min, sec = self.premium_since:match("(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)")
-	if not (year and month and day and hour and min and sec) then return false end
-
-	local premiumTime = os.time({
-		year = tonumber(year),
-		month = tonumber(month),
-		day = tonumber(day),
-		hour = tonumber(hour),
-		min = tonumber(min),
-		sec = tonumber(sec)
-	})
-
-	return os.time() - premiumTime < 2592000
+	
+	return self.premium_since ~= nil
 end
 ------------------------------ Guild
 --[=[
@@ -1000,6 +1034,52 @@ function Guild:GetPruneCount(days: number, roles: {string}?)
 		method = "GET",
 		endpoint = url,
 		query = {days = days, include_roles = roles}
+	})
+end
+
+--[=[
+	@within Guild
+	@param id string -- The emoji ID
+	@return (DiscordTypes.EmojiData? | boolean, {any}?) -- The emoji data if found
+	Gets an emoji in the guild.
+]=]
+function Guild:GetEmoji(id: string)
+	local url = `{Endpoints.GET_GUILD_EMOJI:format(self.id, id)}`
+	local success, response = Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+
+	return success and response
+end
+
+--[=[
+	@within Guild
+	@return ({DiscordTypes.EmojiData} | boolean, {any}?) -- The emojis if successful
+	Gets all emojis in the guild.
+]=]
+function Guild:ListEmojis()
+	local url = `{Endpoints.LIST_GUILD_EMOJIS:format(self.id)}`
+
+	local success, response = 	Network.Request({
+		method = "GET",
+		endpoint = url
+	})
+
+	return success and response or {}
+end
+
+--[=[
+	@within Guild
+	@return boolean -- Whether the guild was left
+	Leaves the guild.
+]=]
+function Guild:Leave()
+	local url = `{Endpoints.LEAVE_GUILD:format(self.id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
 	})
 end
 

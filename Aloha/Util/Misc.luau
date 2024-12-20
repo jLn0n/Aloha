@@ -20,19 +20,25 @@ Misc.FetchThumbnailPNG = function(decal: string): (string | nil)
 		if not assetId then
 			error("Invalid asset ID format.")
 		end
-		local url = "https://thumbnails.roproxy.com/v1/assets?assetIds="..assetId.."&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false"
+		local url = "https://thumbnails.roproxy.com/v1/assets?assetIds="..assetId.."&returnPolicy=PlaceHolder&size=50x50&format=Png&isCircular=false"
 		local success, response = Network.Get(url)
 
-		local data = Network.JsonDecode(response.body)
+		local s, data = pcall(function()
+			return Network.JsonDecode(response.body)
+		end)
+
+		if not s then
+			return ""
+		end
+
 		return data.data[1].imageUrl
 	end)
 
 	if success then
 		return result
-	else
-		warn("An error occurred: " .. result)
-		return nil
 	end
+
+    return nil
 end
 
 --[=[

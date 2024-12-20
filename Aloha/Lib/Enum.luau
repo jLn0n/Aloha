@@ -109,6 +109,52 @@
 ]=]
 
 --[=[
+    @interface PERMISSIONS
+    @within Enum
+    @field CREATE_INSTANT_INVITE number -- Create instant invite
+    @field KICK_MEMBERS number -- Kick members
+    @field BAN_MEMBERS number -- Ban members
+    @field ADMINISTRATOR number -- Administrator
+    @field MANAGE_CHANNELS number -- Manage channels
+    @field MANAGE_GUILD number -- Manage guild
+    @field ADD_REACTIONS number -- Add reactions
+    @field VIEW_AUDIT_LOG number -- View audit log
+    @field PRIORITY_SPEAKER number -- Priority speaker
+    @field STREAM number -- Stream
+    @field VIEW_CHANNEL number -- View channel
+    @field SEND_MESSAGES number -- Send messages
+    @field SEND_TTS_MESSAGES number -- Send TTS messages
+    @field MANAGE_MESSAGES number -- Manage messages
+    @field EMBED_LINKS number -- Embed links
+    @field ATTACH_FILES number -- Attach files
+    @field READ_MESSAGE_HISTORY number -- Read message history
+    @field MENTION_EVERYONE number -- Mention everyone
+    @field USE_EXTERNAL_EMOJIS number -- Use external emojis
+    @field VIEW_GUILD_INSIGHTS number -- View guild insights
+    @field CONNECT number -- Connect
+    @field SPEAK number -- Speak
+    @field MUTE_MEMBERS number -- Mute members
+    @field DEAFEN_MEMBERS number -- Deafen members
+    @field MOVE_MEMBERS number -- Move members
+    @field USE_VAD number -- Use voice activity detection
+    @field CHANGE_NICKNAME number -- Change nickname
+    @field MANAGE_NICKNAMES number -- Manage nicknames
+    @field MANAGE_ROLES number -- Manage roles
+    @field MANAGE_WEBHOOKS number -- Manage webhooks
+    @field MANAGE_EMOJIS_AND_STICKERS number -- Manage emojis and stickers
+    @field USE_APPLICATION_COMMANDS number -- Use application commands
+    @field REQUEST_TO_SPEAK number -- Request to speak
+    @field MANAGE_EVENTS number -- Manage events
+    @field MANAGE_THREADS number -- Manage threads
+    @field CREATE_PUBLIC_THREADS number -- Create public threads
+    @field CREATE_PRIVATE_THREADS number -- Create private threads
+    @field USE_EXTERNAL_STICKERS number -- Use external stickers
+    @field SEND_MESSAGES_IN_THREADS number -- Send messages in threads
+    @field USE_EMBEDDED_ACTIVITIES number -- Use embedded activities
+    @field MODERATE_MEMBERS number -- Moderate members
+]=]
+
+--[=[
     @interface INTENTS
     @within Enum
     @field DEFAULT number -- Default intents
@@ -213,6 +259,58 @@ return {
 		FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = bit32.lshift(1, 8),
 		SUPPRESS_NOTIFICATIONS = bit32.lshift(1, 12),
 		IS_VOICE_MESSAGE = bit32.lshift(1, 13)
+	},
+
+	PERMISSIONS = {
+		CREATE_INSTANT_INVITE = bit32.lshift(1, 0),
+		KICK_MEMBERS = bit32.lshift(1, 1),
+		BAN_MEMBERS = bit32.lshift(1, 2),
+		ADMINISTRATOR = bit32.lshift(1, 3),
+		MANAGE_CHANNELS = bit32.lshift(1, 4),
+		MANAGE_GUILD = bit32.lshift(1, 5),
+		ADD_REACTIONS = bit32.lshift(1, 6),
+		VIEW_AUDIT_LOG = bit32.lshift(1, 7),
+		PRIORITY_SPEAKER = bit32.lshift(1, 8),
+		STREAM = bit32.lshift(1, 9),
+		VIEW_CHANNEL = bit32.lshift(1, 10),
+		SEND_MESSAGES = bit32.lshift(1, 11),
+		SEND_TTS_MESSAGES = bit32.lshift(1, 12),
+		MANAGE_MESSAGES = bit32.lshift(1, 13),
+		EMBED_LINKS = bit32.lshift(1, 14),
+		ATTACH_FILES = bit32.lshift(1, 15),
+		READ_MESSAGE_HISTORY = bit32.lshift(1, 16),
+		MENTION_EVERYONE = bit32.lshift(1, 17),
+		USE_EXTERNAL_EMOJIS = bit32.lshift(1, 18),
+		VIEW_GUILD_INSIGHTS = bit32.lshift(1, 19),
+		CONNECT = bit32.lshift(1, 20),
+		SPEAK = bit32.lshift(1, 21),
+		MUTE_MEMBERS = bit32.lshift(1, 22),
+		DEAFEN_MEMBERS = bit32.lshift(1, 23),
+		MOVE_MEMBERS = bit32.lshift(1, 24),
+		USE_VAD = bit32.lshift(1, 25),
+		CHANGE_NICKNAME = bit32.lshift(1, 26),
+		MANAGE_NICKNAMES = bit32.lshift(1, 27),
+		MANAGE_ROLES = bit32.lshift(1, 28),
+		MANAGE_WEBHOOKS = bit32.lshift(1, 29),
+		MANAGE_GUILD_EXPRESSIONS = bit32.lshift(1, 30),
+		USE_APPLICATION_COMMANDS = bit32.lshift(1, 31),
+		REQUEST_TO_SPEAK = bit32.lshift(1, 32),
+		MANAGE_EVENTS = bit32.lshift(1, 33),
+		MANAGE_THREADS = bit32.lshift(1, 34),
+		CREATE_PUBLIC_THREADS = bit32.lshift(1, 35),
+		CREATE_PRIVATE_THREADS = bit32.lshift(1, 36),
+		USE_EXTERNAL_STICKERS = bit32.lshift(1, 37),
+		SEND_MESSAGES_IN_THREADS = bit32.lshift(1, 38),
+		USE_EMBEDDED_ACTIVITIES = bit32.lshift(1, 39),
+		MODERATE_MEMBERS = bit32.lshift(1, 40),
+		VIEW_CREATOR_MONETIZATION_ANALYTICS = bit32.lshift(1, 41),
+		USE_SOUNDBOARD = bit32.lshift(1, 42),
+		CREATE_GUILD_EXPRESSIONS = bit32.lshift(1, 43),
+		CREATE_EVENTS = bit32.lshift(1, 44),
+		USE_EXTERNAL_SOUNDS = bit32.lshift(1, 45),
+		SEND_VOICE_MESSAGES = bit32.lshift(1, 46),
+		SEND_POLLS = bit32.lshift(1, 49),
+		USE_EXTERNAL_APPS = bit32.lshift(1, 50),
 	},
 
 	INTENTS = {
