@@ -8,7 +8,13 @@
     @within DiscordTypes
     Discord's snowflake ID format
 ]=]
-export type snowflake = string
+export type snowflake = {
+	id: string,
+	timestamp: string,
+	workerId: string,
+	processId: string,
+	increment: string,
+}
 
 --[=[
     @type UserData {id: snowflake, username: string, discriminator: string, global_name: string?, avatar: string?, bot: boolean?, system: boolean?, mfa_enabled: boolean?, banner: string?, accent_color: number?, locale: string?, verified: boolean?, email: string?, flags: number?, premium_type: number?, public_flags: number?, avatar_decoration_data: AvatarDecorationData?}

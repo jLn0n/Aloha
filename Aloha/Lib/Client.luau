@@ -12,6 +12,7 @@ local Enum = require("./Enum")
 local Bot = require("./Bot")
 local Components = require("./Components")
 local Cache = require("../Util/Cache")
+local Snowflake = require("../Classes/Snowflake")
 local Client = {}
 
 --[=[
@@ -89,7 +90,7 @@ local eventCallbacks = {
 
 	["CHANNEL_CREATE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetChannel(payload.d.id)
+			return Objects.GetChannel(Snowflake.new(payload.d.id))
 		end,
 
 		event = Event.new()
@@ -114,7 +115,7 @@ local eventCallbacks = {
 
 	["CHANNEL_UPDATE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetChannel(payload.d.id)
+			return Objects.GetChannel(Snowflake.new(payload.d.id))
 		end,
 
 		event = Event.new()
@@ -130,7 +131,7 @@ local eventCallbacks = {
 
 	["GUILD_CREATE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetGuild(payload.d.id, payload.d)
+			return Objects.GetGuild(Snowflake.new(payload.d.id), payload.d)
 		end,
 
 		event = Event.new()
@@ -290,7 +291,7 @@ local eventCallbacks = {
 
 	["GUILD_UPDATE"] = {
 		callback = function(payload: Payload)
-			return Objects.GetGuild(payload.d.id, payload.d)
+			return Objects.GetGuild(Snowflake.new(payload.d.id), payload.d)
 		end,
 
 		event = Event.new()
@@ -355,7 +356,7 @@ local eventCallbacks = {
 	["MESSAGE_DELETE"] = {
 		callback = function(payload: Payload)
 			for index, msg in Cache.Messages:iter() do
-				if msg.id == payload.d.id then
+				if msg.id.id == payload.d.id then
 					Cache.Messages:RemoveIndex(index)
 					break
 				end
@@ -373,7 +374,7 @@ local eventCallbacks = {
 
 			for _, id in ids do
 				for index, msg in Cache.Messages:iter() do
-					if msg.id == id then
+					if msg.id.id == id then
 						Cache.Messages:RemoveIndex(index)
 						break
 					end

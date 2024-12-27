@@ -17,6 +17,9 @@ return {
 	CREATE_DM = "/users/@me/channels",
 	CREATE_GROUP_DM = "/users/@me/channels",
 
+	ADD_GUILD_MEMBER_ROLE = "/guilds/%s/members/%s/roles/%s",
+	REMOVE_GUILD_MEMBER_ROLE = "/guilds/%s/members/%s/roles/%s",
+
 	-- Guilds
 	CREATE_GUILD = "/guilds",
 	GET_GUILD = "/guilds/%s",

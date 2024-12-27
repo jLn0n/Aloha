@@ -48,7 +48,7 @@ end
 	@return Color3
 ]=]
 function Color3.fromHex(hex: string): Color3
-	local r, g, b = hex:match("#(%x%x)(%x%x)(%x%x)")
+	local r, g, b = hex:match("(%x%x)(%x%x)(%x%x)")
 
 	r = tonumber(r, 16) or 0
 	g = tonumber(g, 16) or 0

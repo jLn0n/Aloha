@@ -51,6 +51,11 @@ local Endpoints = require("../Lib/Endpoints")
 local Network = require("../Lib/Network")
 local Cache = require("../Util/Cache")
 local Enum = require("../Lib/Enum")
+local bit64 = require("../Classes/Bit64")
+local Snowflake = require("../Classes/Snowflake")
+local Vector3 = require("../Classes/Vector3")
+
+type Snowflake = DiscordTypes.snowflake
 
 --[=[
 	@within Guild
@@ -82,18 +87,18 @@ export type Channel = DiscordTypes.ChannelData & {
 
 --[=[
 	@within Interaction
-	@type Interaction {id: DiscordTypes.snowflake, application_id: DiscordTypes.snowflake, type: number, data: (DiscordTypes.ApplicationCommandInteractionData | DiscordTypes.MessageComponentInteractionData)?, guild: Guild?, guild_id: DiscordTypes.snowflake?, channel: Channel?, channel_id: DiscordTypes.snowflake?, member: Member?, user: User?, token: string, version: number, message: Message, app_permissions: string, locale: string, guild_locale: string, entitlements: {DiscordTypes.EntitlementData}?, authorizing_integration_owners: {[number]: DiscordTypes.snowflake}, context: number}
+	@type Interaction {id: Snowflake, application_id: Snowflake, type: number, data: (DiscordTypes.ApplicationCommandInteractionData | DiscordTypes.MessageComponentInteractionData)?, guild: Guild?, guild_id: Snowflake?, channel: Channel?, channel_id: Snowflake?, member: Member?, user: User?, token: string, version: number, message: Message, app_permissions: string, locale: string, guild_locale: string, entitlements: {DiscordTypes.EntitlementData}?, authorizing_integration_owners: {[number]: Snowflake}, context: number}
 	An interaction object.
 ]=]
 export type Interaction = {
-	id: DiscordTypes.snowflake,
-	application_id: DiscordTypes.snowflake,
+	id: Snowflake,
+	application_id: Snowflake,
 	type: number,
 	data: (DiscordTypes.ApplicationCommandInteractionData | DiscordTypes.MessageComponentInteractionData)?,
 	guild: Guild?,
-	guild_id: DiscordTypes.snowflake?,
+	guild_id: Snowflake?,
 	channel: Channel?,
-	channel_id: DiscordTypes.snowflake?,
+	channel_id: Snowflake?,
 	member: Member?,
 	user: User?,
 	token: string,
@@ -103,21 +108,21 @@ export type Interaction = {
 	locale: string,
 	guild_locale: string,
 	entitlements: {DiscordTypes.EntitlementData}?,
-	authorizing_integration_owners: {[number]: DiscordTypes.snowflake},
+	authorizing_integration_owners: {[number]: Snowflake},
 	context: number,
 } & typeof(Interaction)
 
 --[=[
 	@within Message
-	@type Message {channel: Channel, author: User, mentions: {User}, id: DiscordTypes.snowflake, channel_id: DiscordTypes.snowflake, content: string, timestamp: string, edited_timestamp: string?, tts: boolean, mention_everyone: boolean, mention_roles: {number}, mention_channels: {DiscordTypes.ChannelMentionData}, attachments: {DiscordTypes.AttachmentData}, embeds: {DiscordTypes.EmbedData}, reactions: {DiscordTypes.ReactionData}?, nonce: (number | string)?, pinned: boolean, webhook_id: DiscordTypes.snowflake?, type: number, activity: DiscordTypes.ActivityData?, application: DiscordTypes.ApplicationData?, application_id: DiscordTypes.snowflake?, flags: number?, message_reference: DiscordTypes.MessageReferenceData?, message_snapshots: {DiscordTypes.MessageSnapshotData}?, referenced_message: Message?, interaction_metadata: DiscordTypes.InteractionMetadataData?, interaction: DiscordTypes.InteractionData?, thread: DiscordTypes.ChannelData?, components: {DiscordTypes.ComponentData}?, sticker_items: {DiscordTypes.StickerItemData}?, stickers: {DiscordTypes.StickerData}?, position: number?, role_subscription_data: DiscordTypes.RoleSubscriptionData?, resolved: DiscordTypes.ResolvedData?, poll: DiscordTypes.PollData?, call: DiscordTypes.CallData?}
+	@type Message {channel: Channel, author: User, mentions: {User}, id: Snowflake, channel_id: Snowflake, content: string, timestamp: string, edited_timestamp: string?, tts: boolean, mention_everyone: boolean, mention_roles: {number}, mention_channels: {DiscordTypes.ChannelMentionData}, attachments: {DiscordTypes.AttachmentData}, embeds: {DiscordTypes.EmbedData}, reactions: {DiscordTypes.ReactionData}?, nonce: (number | string)?, pinned: boolean, webhook_id: Snowflake?, type: number, activity: DiscordTypes.ActivityData?, application: DiscordTypes.ApplicationData?, application_id: Snowflake?, flags: number?, message_reference: DiscordTypes.MessageReferenceData?, message_snapshots: {DiscordTypes.MessageSnapshotData}?, referenced_message: Message?, interaction_metadata: DiscordTypes.InteractionMetadataData?, interaction: DiscordTypes.InteractionData?, thread: DiscordTypes.ChannelData?, components: {DiscordTypes.ComponentData}?, sticker_items: {DiscordTypes.StickerItemData}?, stickers: {DiscordTypes.StickerData}?, position: number?, role_subscription_data: DiscordTypes.RoleSubscriptionData?, resolved: DiscordTypes.ResolvedData?, poll: DiscordTypes.PollData?, call: DiscordTypes.CallData?}
 	A message object.
 ]=]
 export type Message = typeof(Message) & {
 	channel: Channel,
 	author: User,
 	mentions: {User},
-	id: DiscordTypes.snowflake,
-	channel_id: DiscordTypes.snowflake,
+	id: Snowflake,
+	channel_id: Snowflake,
 	content: string,
 	timestamp: string,
 	edited_timestamp: string?,
@@ -130,11 +135,11 @@ export type Message = typeof(Message) & {
 	reactions: {DiscordTypes.ReactionData}?,
 	nonce: (number | string)?,
 	pinned: boolean,
-	webhook_id: DiscordTypes.snowflake?,
+	webhook_id: Snowflake?,
 	type: number,
 	activity: DiscordTypes.ActivityData?,
 	application: DiscordTypes.ApplicationData?,
-	application_id: DiscordTypes.snowflake?,
+	application_id: Snowflake?,
 	flags: number?,
 	message_reference: DiscordTypes.MessageReferenceData?,
 	message_snapshots: {DiscordTypes.MessageSnapshotData}?,
@@ -176,11 +181,12 @@ export type Member = {
 -- Functions -----------------
 --[=[
 	@within Objects
-	@param id string -- The channel ID
+	@param id Snowflake -- The channel ID
 	@return Channel -- The channel object
 	Gets a channel by ID.
 ]=]
-local function GetChannel(id: string, forceData: DiscordTypes.ChannelData?, noFetch: boolean?) : Channel?
+local function GetChannel(snowflake: Snowflake, forceData: DiscordTypes.ChannelData?, noFetch: boolean?) : Channel?
+	local id = snowflake.id
 	if Cache.Channels[id] then
 		if forceData then
 			Cache.Channels[id] = Channel.new(forceData)
@@ -235,11 +241,11 @@ end
 
 --[=[
 	@within Objects
-	@param id string -- The user ID
+	@param id Snowflake -- The user ID
 	@return User? -- The user object if found
 	Gets a user by ID.
 ]=]
-local function GetUserById(id: string, noFetch: boolean?) : User?
+local function GetUserById(id: Snowflake, noFetch: boolean?) : User?
 	for i,v in Cache.Users:iter() do
 		if v.id == id then
 			return v
@@ -269,7 +275,7 @@ end
 ]=]
 local function GetMessage(data: DiscordTypes.MessageData) : Message
 	for i,v in Cache.Messages:iter() do
-		if v.id == data.id then
+		if v.id.id == data.id then
 			return v
 		end
 	end
@@ -287,14 +293,16 @@ end
 
 --[=[
 	@within Objects
-	@param channelId string -- The channel ID
-	@param messageId string -- The message ID
+	@param channelId Snowflake -- The channel ID
+	@param messageId Snowflake -- The message ID
 	@return Message? -- The message object if found
 	Gets a message by ID in a channel.
 ]=]
-local function GetMessageInChannel(channelId: string, messageId: string, noFetch: boolean?) : Message?
+local function GetMessageInChannel(channelSnowflake: Snowflake, messageSnowflake: Snowflake, noFetch: boolean?) : Message?
+	local channelId = channelSnowflake.id
+	local messageId = messageSnowflake.id
 	for i,v in Cache.Messages:iter() do
-		if v.channel_id == channelId and v.id == messageId then
+		if v.channel_id == channelSnowflake and v.id == messageSnowflake then
 			return v
 		end
 	end
@@ -324,12 +332,14 @@ end
 
 --[=[
 	@within Objects
-	@param id string -- The guild ID
+	@param id Snowflake -- The guild ID
 	@return Guild? -- The guild object if found
 	Gets a guild by ID.
 ]=]
-local function GetGuild(id: string, forceData: DiscordTypes.GuildData?, noFetch: boolean?) : Guild?
-	if not id then return end
+local function GetGuild(snowflake: Snowflake, forceData: DiscordTypes.GuildData?, noFetch: boolean?) : Guild?
+	if not snowflake then return end
+	local id = snowflake.id
+
 
 	if forceData and forceData["unavailable"] then
 		Cache.Guilds[id] = nil
@@ -358,14 +368,18 @@ end
 
 --[=[
 	@within Objects
-	@param userId string -- The user ID
-	@param guildId string -- The guild ID
+	@param userId Snowflake -- The user ID
+	@param guildId Snowflake -- The guild ID
 	@return (Member? | boolean, {any}?) -- The member object if found
 	Gets a member by ID in a guild.
 ]=]
-local function GetMember(userId: string, guildId: string, forceData: DiscordTypes.MemberData?, noFetch: boolean?) : (Member? | boolean, {any}?)
+local function GetMember(userSnowflake: Snowflake, guildSnowflake: Snowflake, forceData: DiscordTypes.MemberData?, noFetch: boolean?) : (Member? | boolean, {any}?)
+
+	local userId = userSnowflake.id
+	local guildId = guildSnowflake.id
+
 	for i,v in Cache.Members:iter() do
-		if v.user_id == userId and v.guild_id == guildId then
+		if v.user_id == userSnowflake and v.guild_id == guildSnowflake then
 			return v
 		end
 	end
@@ -391,7 +405,7 @@ local function GetMember(userId: string, guildId: string, forceData: DiscordType
 		endpoint = url
 	})
 
-	local member = Member.new(response, guildId)
+	local member = Member.new(response, guildSnowflake)
 
 	Cache.Members:PushRight(member)
 
@@ -415,17 +429,20 @@ function Interaction.new(data: DiscordTypes.InteractionData) : Interaction
 		self[key] = value
 	end
 
+	if self.guild_id then
+		self.guild_id = Snowflake.new(self.guild_id)
+		self.guild = GetGuild(self.guild_id)
+	end
+
 	if self.member then
 		self.member = Member.new(self.member, self.guild_id)
 	end
 
 	if self.channel_id then
+		self.channel_id = Snowflake.new(self.channel_id)
 		self.channel = GetChannel(self.channel_id)
 	end
 
-	if self.guild_id then
-		self.guild = GetGuild(self.guild_id)
-	end
 
 	return self
 end
@@ -439,7 +456,7 @@ end
 	Responds to an interaction.
 ]=]
 function Interaction:Respond(type: number, data: DiscordTypes.InteractionCallbackData, with_response: boolean?)	
-	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(self.id, self.token)}`
+	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(self.id.id, self.token)}`
 
 	local success, response = Network.Request({
 		endpoint = endpoint,
@@ -470,6 +487,7 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 	end
 	
 	if self.channel_id then
+		self.channel_id = Snowflake.new(self.channel_id)
 		self.channel = GetChannel(self.channel_id)
 	end
 
@@ -488,7 +506,9 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 	self.mentions = mentions
 
 	if data.referenced_message then
-		self.referenced_message = GetMessageInChannel(data.referenced_message.channel_id, data.referenced_message.id)
+		local channelId = tostring(data.referenced_message.channel_id)
+		local messageId = tostring(data.referenced_message.id)
+		self.referenced_message = GetMessageInChannel(Snowflake.new(channelId), Snowflake.new(messageId))
 	end
 	
 	return self
@@ -531,7 +551,7 @@ end
 	Adds a reaction to the message.
 ]=]
 function Message:AddReaction(emoji: string)
-	local url = `{Endpoints.CREATE_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji))}`
+	local url = `{Endpoints.CREATE_REACTION:format(`{self.channel_id}`, `{self.id}`, Network.UrlEncode(emoji))}`
 
 	return Network.Request({
 		method = "PUT",
@@ -543,11 +563,11 @@ end
 --[=[
 	@within Message
 	@param emoji string -- The emoji to remove
-	@param userId string? -- Optional user ID to remove reaction from
+	@param userId Snowflake? -- Optional user ID to remove reaction from
 	@return boolean -- Whether the reaction was removed
 	Removes a reaction from the message.
 ]=]
-function Message:RemoveReaction(emoji: string, userId: string?)
+function Message:RemoveReaction(emoji: string, userId: Snowflake?)
 	local url = `{Endpoints.DELETE_USER_REACTION:format(self.channel_id, self.id, Network.UrlEncode(emoji), userId or "@me")}`
 
 	return Network.Request({
@@ -600,7 +620,9 @@ function Channel.new(data: DiscordTypes.ChannelData) : Channel?
 	for key, value in data do
 		self[key] = value
 	end
-
+	
+	self.id = Snowflake.new(self.id)
+	self.guild_id = self.guild_id and Snowflake.new(self.guild_id) or nil
 	self.guild = GetGuild(self.guild_id)
 
 	return self
@@ -615,7 +637,7 @@ end
 	Sends a message to the channel.
 ]=]
 function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?, allowed_mentions: {[string]: {string}}?, flags: number?)
-	local url = `{Endpoints.CREATE_MESSAGE:format(self.id)}`
+	local url = `{Endpoints.CREATE_MESSAGE:format(self.id.id)}`
 
 	return Network.Request({
 		method = "POST",
@@ -632,12 +654,12 @@ end
 
 --[=[
 	@within Channel
-	@param message_id string -- The message ID to delete
+	@param message_id Snowflake -- The message ID to delete
 	@return boolean -- Whether the message was deleted
 	Deletes a message in the channel.
 ]=]
-function Channel:Delete(message_id: string)
-	local url = `{Endpoints.DELETE_MESSAGE:format(self.id, message_id)}`
+function Channel:Delete(message_id: Snowflake)
+	local url = `{Endpoints.DELETE_MESSAGE:format(self.id.id, message_id)}`
 
 	return Network.Request({
 		method = "DELETE",
@@ -647,24 +669,24 @@ end
 
 --[=[
 	@within Channel
-	@param id string -- The message ID
+	@param id Snowflake -- The message ID
 	@return Message -- The message object
 	Gets a message in the channel.
 ]=]
-function Channel:GetMessage(id: string) : Message
-	local msg = GetMessageInChannel(self.id, id)
+function Channel:GetMessage(id: Snowflake) : Message
+	local msg = GetMessageInChannel(self.id.id, id)
 
 	return msg
 end
 
 --[=[
 	@within Channel
-	@param message_id string -- The message ID
+	@param message_id Snowflake -- The message ID
 	@return boolean -- Whether the message was crossposted
 	Crossposts a message in an announcement channel to other channels.
 ]=]
-function Channel:CrossPost(message_id: string)
-	local url = `{Endpoints.CROSSPOST_MESSAGE:format(self.id, message_id)}`
+function Channel:CrossPost(message_id: Snowflake)
+	local url = `{Endpoints.CROSSPOST_MESSAGE:format(self.id.id, message_id)}`
 
 	return Network.Request({
 		method = "POST",
@@ -674,18 +696,23 @@ end
 
 --[=[
 	@within Channel
-	@param message_ids {string} -- The message IDs
+	@param message_ids {Snowflake} -- The message IDs
 	@param reason string? -- Optional reason for the bulk delete in audit logs
 	@return boolean -- Whether the messages were deleted
 	Bulk deletes messages in the channel.
 ]=]
-function Channel:BulkDelete(message_ids: {string}, reason: string?)
-	local url = `{Endpoints.BULK_DELETE_MESSAGES:format(self.id)}`
+function Channel:BulkDelete(message_ids: {Snowflake}, reason: string?)
+	local url = `{Endpoints.BULK_DELETE_MESSAGES:format(self.id.id)}`
+
+	local t = {}
+	for _, message in message_ids do
+		table.insert(t, message.id)
+	end
 
 	return Network.Request({
 		method = "POST",
 		endpoint = url,
-		body = {messages = message_ids},
+		body = {messages = t},
 		headers = {
 			["X-Audit-Log-Reason"] = reason
 		}
@@ -698,7 +725,7 @@ end
 	Gets the invites in the channel.
 ]=]
 function Channel:GetInvites()
-	local url = `{Endpoints.GET_CHANNEL_INVITES:format(self.id)}`
+	local url = `{Endpoints.GET_CHANNEL_INVITES:format(self.id.id)}`
 
 	return Network.Request({
 		method = "GET",
@@ -708,13 +735,13 @@ end
 
 --[=[
 	@within Channel
-	@param data {max_age: number?, max_uses: number?, temporary: boolean?, unique: boolean?, target_type: number?, target_user_id: string?, target_application_id: string?} -- The invite data
+	@param data {max_age: number?, max_uses: number?, temporary: boolean?, unique: boolean?, target_type: number?, target_user_id: Snowflake?, target_application_id: Snowflake?} -- The invite data
 	@param reason string? -- Optional reason for the invite in audit logs
 	@return (boolean, {any}?) -- Whether the invite was created and any response data
 	Creates an invite in the channel.
 ]=]
-function Channel:CreateInvite(data: {max_age: number?, max_uses: number?, temporary: boolean?, unique: boolean?, target_type: number?, target_user_id: string?, target_application_id: string?}, reason: string?)
-	local url = `{Endpoints.CREATE_CHANNEL_INVITE:format(self.id)}`
+function Channel:CreateInvite(data: {max_age: number?, max_uses: number?, temporary: boolean?, unique: boolean?, target_type: number?, target_user_id: Snowflake?, target_application_id: Snowflake?}, reason: string?)
+	local url = `{Endpoints.CREATE_CHANNEL_INVITE:format(self.id.id)}`
 
 	return Network.Request({
 		method = "POST",
@@ -728,13 +755,13 @@ end
 
 --[=[
 	@within Channel
-	@param overwrite_id string -- The overwrite ID
+	@param overwrite_id Snowflake -- The overwrite ID
 	@param reason string? -- Optional reason for the overwrite deletion in audit logs
 	@return (boolean, Response) -- Whether the overwrite was deleted
 	Deletes a permission overwrite in the channel.
 ]=]
-function Channel:DeletePermission(overwrite_id: string , reason: string?) : (boolean, Network.Response)
-	local url = `{Endpoints.DELETE_CHANNEL_PERMISSION:format(self.id, overwrite_id)}`
+function Channel:DeletePermission(overwrite_id: Snowflake , reason: string?) : (boolean, Network.Response)
+	local url = `{Endpoints.DELETE_CHANNEL_PERMISSION:format(self.id.id, overwrite_id)}`
 
 	return Network.Request({
 		method = "DELETE",
@@ -751,7 +778,7 @@ end
 	Triggers a typing indicator in the channel.
 ]=]
 function Channel:TriggerTypingIndicator()
-	local url = `{Endpoints.TRIGGER_TYPING_INDICATOR:format(self.id)}`
+	local url = `{Endpoints.TRIGGER_TYPING_INDICATOR:format(self.id.id)}`
 
 	return Network.Request({
 		method = "POST",
@@ -765,7 +792,7 @@ end
 	Gets the pinned messages in the channel.
 ]=]
 function Channel:GetPinnedMessages()
-	local url = `{Endpoints.GET_PINNED_MESSAGES:format(self.id)}`
+	local url = `{Endpoints.GET_PINNED_MESSAGES:format(self.id.id)}`
 
 	return Network.Request({
 		method = "GET",
@@ -775,12 +802,12 @@ end
 
 --[=[
 	@within Channel
-	@param message_id string -- The message ID
+	@param message_id Snowflake -- The message ID
 	@return boolean -- Whether the message was pinned
 	Pins a message in the channel.
 ]=]
-function Channel:PinMessage(message_id: string, reason: string?)
-	local url = `{Endpoints.PIN_MESSAGE:format(self.id, message_id)}`
+function Channel:PinMessage(message_id: Snowflake, reason: string?)
+	local url = `{Endpoints.PIN_MESSAGE:format(self.id.id, message_id)}`
 
 	return Network.Request({
 		method = "PUT",
@@ -799,7 +826,7 @@ end
 	Creates a webhook in the channel.
 ]=]
 function Channel:CreateWebhook(data: {name: string, avatar: string?}, reason: string?)
-	local url = `{Endpoints.CREATE_WEBHOOK:format(self.id)}`
+	local url = `{Endpoints.CREATE_WEBHOOK:format(self.id.id)}`
 
 	local body = data :: {[string]: any}
 	return Network.Request({
@@ -818,7 +845,7 @@ end
 	Gets the webhooks in the channel.
 ]=]
 function Channel:GetWebhooks()
-	local url = `{Endpoints.GET_CHANNEL_WEBHOOKS:format(self.id)}`
+	local url = `{Endpoints.GET_CHANNEL_WEBHOOKS:format(self.id.id)}`
 
 	local success, response = Network.Request({
 		method = "GET",
@@ -832,12 +859,12 @@ end
 
 --[=[
 	@within Channel
-	@param message_id string -- The message ID
+	@param message_id Snowflake -- The message ID
 	@return boolean -- Whether the message was unpinned
 	Unpins a message in the channel.
 ]=]
-function Channel:UnpinMessage(message_id: string)
-	local url = `{Endpoints.UNPIN_MESSAGE:format(self.id, message_id)}`
+function Channel:UnpinMessage(message_id: Snowflake)
+	local url = `{Endpoints.UNPIN_MESSAGE:format(self.id.id, message_id)}`
 
 	return Network.Request({
 		method = "DELETE",
@@ -852,7 +879,7 @@ end
 	Modifies the channel.
 ]=]
 function Channel:Modify(data: DiscordTypes.ChannelData & {icon: string?}) : (boolean, {any}?)
-	local url = `{Endpoints.MODIFY_CHANNEL:format(self.id)}`
+	local url = `{Endpoints.MODIFY_CHANNEL:format(self.id.id)}`
 
 	local body = data :: {[string]: any}
 	return Network.Request({
@@ -875,6 +902,8 @@ function User.new(data: DiscordTypes.UserData) : User
 		self[key] = value
 	end
 
+	self.id = Snowflake.new(self.id)
+
 	return self
 end
 
@@ -891,7 +920,7 @@ function User:GetDirectMessageChannel() : (Channel? | boolean, {any}?)
 	local success,response = Network.Request({
 		method = "POST",
 		endpoint = url,
-		body = {recipient_id = self.id}
+		body = {recipient_id = self.id.id}
 	})
 
 	return Channel.new(response)
@@ -900,11 +929,11 @@ end
 --[=[
 	@within Member
 	@param data DiscordTypes.MemberData -- The member data
-	@param guild Guild? | string? -- The guild object or ID
+	@param guild Guild? | DiscordTypes.snowflake? -- The guild object or ID
 	@return Member -- The member object
 	Creates a new member object.
 ]=]
-function Member.new(data: DiscordTypes.MemberData, guild: Guild? | string?) : Member
+function Member.new(data: DiscordTypes.MemberData, guild: Guild? | DiscordTypes.snowflake?) : Member
 	local self = setmetatable({}, Member)
 
 	for key, value in data do
@@ -916,7 +945,24 @@ function Member.new(data: DiscordTypes.MemberData, guild: Guild? | string?) : Me
 		self.user = GetUser(user)
 	end
 
-	self.guild = guild and (type(guild) == "string" and GetGuild(guild) or guild) or nil
+	if self.user_id then
+		self.user_id = Snowflake.new(self.user_id)
+	end
+
+	if guild then
+		if typeof(guild) == "string" then
+			self.guild = GetGuild(Snowflake.new(guild))
+		elseif typeof(guild) == "table" then
+			self.guild = Guild.new(guild :: Guild)
+		end
+	end
+
+	local roles = {}
+	for _, role in self.roles do
+		table.insert(roles, Snowflake.new(role))
+	end
+
+	self.roles = roles
 
 	return self
 end
@@ -960,19 +1006,19 @@ end
 	@return boolean -- Whether the member has the permission
 	Checks if the member has a permission.
 ]=]
-function Member:HasPermission(permission: number)
+function Member:HasPermission(permission: Vector3.Vector3)
 	local n = tonumber(self.permissions)
 
-	return bit32.band(n, permission) ~= 0
+	return bit64.band(bit64.from_u32(n), permission) ~= Vector3.Zero()
 end
 
 --[=[
 	@within Member
-	@param roleId string -- The role ID
+	@param roleId DiscordTypes.snowflake -- The role ID
 	@return boolean -- Whether the member has the role
 	Checks if the member has a role.
 ]=]
-function Member:HasRole(roleId: string)
+function Member:HasRole(roleId: DiscordTypes.snowflake)
 	local roles = self.roles
 
 	for _, role in roles do
@@ -982,6 +1028,36 @@ function Member:HasRole(roleId: string)
 	end
 
 	return false
+end
+
+--[=[
+	@within Member
+	@param roleId DiscordTypes.snowflake -- The role ID
+	@return boolean -- Whether the role was added
+	Adds a role to the member.
+]=]
+function Member:AddRole(roleId: DiscordTypes.snowflake)
+	local url = `{Endpoints.ADD_GUILD_MEMBER_ROLE:format(self.guild.id.id, self.user.id.id, roleId.id)}`
+
+	return Network.Request({
+		method = "PUT",
+		endpoint = url
+	})
+end
+
+--[=[
+	@within Member
+	@param roleId DiscordTypes.snowflake -- The role ID
+	@return boolean -- Whether the role was removed
+	Removes a role from the member.
+]=]
+function Member:RemoveRole(roleId: DiscordTypes.snowflake)
+	local url = `{Endpoints.REMOVE_GUILD_MEMBER_ROLE:format(self.guild.id.id, self.user.id.id, roleId.id)}`
+
+	return Network.Request({
+		method = "DELETE",
+		endpoint = url
+	})
 end
 
 --[=[
@@ -1008,16 +1084,18 @@ function Guild.new(data: DiscordTypes.GuildData) : Guild
 		self[key] = value
 	end
 
+	self.id = Snowflake.new(self.id)
+
 	return self
 end
 
 --[=[
 	@within Guild
-	@param id string -- The channel ID
+	@param id DiscordTypes.snowflake -- The channel ID
 	@return Channel -- The channel object
 	Gets a channel in the guild.
 ]=]
-function Guild:GetChannel(id: string) : Channel?
+function Guild:GetChannel(id: DiscordTypes.snowflake) : Channel?
 	return GetChannel(id)
 end
 
@@ -1027,8 +1105,8 @@ end
 	@return (number | boolean, {any}?) -- The prune count if successful
 	Gets the prune count for the guild.
 ]=]
-function Guild:GetPruneCount(days: number, roles: {string}?)
-	local url = `{Endpoints.GUILD_PRUNE:format(self.id)}`
+function Guild:GetPruneCount(days: number, roles: {DiscordTypes.snowflake}?)
+	local url = `{Endpoints.GUILD_PRUNE:format(self.id.id)}`
 
 	return Network.Request({
 		method = "GET",
@@ -1039,12 +1117,12 @@ end
 
 --[=[
 	@within Guild
-	@param id string -- The emoji ID
+	@param id DiscordTypes.snowflake -- The emoji ID
 	@return (DiscordTypes.EmojiData? | boolean, {any}?) -- The emoji data if found
 	Gets an emoji in the guild.
 ]=]
-function Guild:GetEmoji(id: string)
-	local url = `{Endpoints.GET_GUILD_EMOJI:format(self.id, id)}`
+function Guild:GetEmoji(id: DiscordTypes.snowflake)
+	local url = `{Endpoints.GET_GUILD_EMOJI:format(self.id.id, id)}`
 	local success, response = Network.Request({
 		method = "GET",
 		endpoint = url
@@ -1059,7 +1137,7 @@ end
 	Gets all emojis in the guild.
 ]=]
 function Guild:ListEmojis()
-	local url = `{Endpoints.LIST_GUILD_EMOJIS:format(self.id)}`
+	local url = `{Endpoints.LIST_GUILD_EMOJIS:format(self.id.id)}`
 
 	local success, response = 	Network.Request({
 		method = "GET",
@@ -1075,7 +1153,7 @@ end
 	Leaves the guild.
 ]=]
 function Guild:Leave()
-	local url = `{Endpoints.LEAVE_GUILD:format(self.id)}`
+	local url = `{Endpoints.LEAVE_GUILD:format(self.id.id)}`
 
 	return Network.Request({
 		method = "DELETE",
@@ -1087,13 +1165,13 @@ end
 	@within Guild
 	@param days number -- The number of days to prune
 	@param compute_prune_count boolean -- Whether to compute the prune count
-	@param roles {string}? -- Optional array of role IDs to prune
+	@param roles {DiscordTypes.snowflake}? -- Optional array of role IDs to prune
 	@param reason string? -- Optional reason for the prune in audit logs
 	@return (number | boolean, {any}?) -- The prune count if successful
 	Prunes the guild.
 ]=]
-function Guild:Prune(days: number, compute_prune_count: boolean, roles: {string}?, reason: string?)
-	local url = `{Endpoints.GUILD_PRUNE:format(self.id)}`
+function Guild:Prune(days: number, compute_prune_count: boolean, roles: {DiscordTypes.snowflake}?, reason: string?)
+	local url = `{Endpoints.GUILD_PRUNE:format(self.id.id)}`
 
 	local body = {
 		days = days,
@@ -1113,12 +1191,12 @@ end
 
 --[=[
 	@within Guild
-	@param userId string -- The user ID
+	@param userId DiscordTypes.snowflake -- The user ID
 	@return (Member? | boolean, {any}?) -- The member object if found
 	Gets a member in the guild.
 ]=]
-function Guild:GetMember(userId: string) : (Member? | boolean, {any}?)
-	local url = `{Endpoints.GET_GUILD_MEMBER:format(self.id, userId)}`
+function Guild:GetMember(userId: DiscordTypes.snowflake) : (Member? | boolean, {any}?)
+	local url = `{Endpoints.GET_GUILD_MEMBER:format(self.id.id, userId)}`
 
 	local success, response = Network.Request({
 		method = "GET",
@@ -1130,13 +1208,13 @@ end
 
 --[=[
 	@within Guild
-	@param userId string -- The user ID
-	@param data {access_token: string, nick: string?, roles: {string}?, mute: boolean?, deaf: boolean?} -- The member data
+	@param userId DiscordTypes.snowflake -- The user ID
+	@param data {access_token: string, nick: string?, roles: {DiscordTypes.snowflake}?, mute: boolean?, deaf: boolean?} -- The member data
 	@return boolean -- Whether the member was added
 	Adds a member to the guild.
 ]=]
-function Guild:AddMember(userId: string, data: {access_token: string, nick: string?, roles: {string}?, mute: boolean?, deaf: boolean?})
-	local url = `{Endpoints.ADD_GUILD_MEMBER:format(self.id, userId)}`
+function Guild:AddMember(userId: DiscordTypes.snowflake, data: {access_token: string, nick: string?, roles: {DiscordTypes.snowflake}?, mute: boolean?, deaf: boolean?})
+	local url = `{Endpoints.ADD_GUILD_MEMBER:format(self.id.id, userId)}`
 
 	local body = data :: {[string]: any}
 	return Network.Request({
@@ -1154,7 +1232,7 @@ end
 	Bulk bans users from the guild.
 ]=]
 function Guild:BulkBan(userIds: {string}, delete_message_seconds: number?, reason: string?)
-	local url = `{Endpoints.BULK_GUILD_BAN:format(self.id)}`
+	local url = `{Endpoints.BULK_GUILD_BAN:format(self.id.id)}`
 
 	return Network.Request({
 		method = "POST",
@@ -1176,7 +1254,7 @@ end
 	Unbans a user from the guild.
 ]=]
 function Guild:Unban(userId: string, reason:string?)
-	local url = `{Endpoints.REMOVE_GUILD_BAN:format(self.id, userId)}`
+	local url = `{Endpoints.REMOVE_GUILD_BAN:format(self.id.id, userId)}`
 
 	return Network.Request({
 		method = "DELETE",
@@ -1194,7 +1272,7 @@ end
 	Modifies the guild.
 ]=]
 function Guild:Modify(data: DiscordTypes.GuildData)
-	local url = `{Endpoints.MODIFY_GUILD:format(self.id)}`
+	local url = `{Endpoints.MODIFY_GUILD:format(self.id.id)}`
 
 	local body = data :: {[string]: any}
 	return Network.Request({
@@ -1210,7 +1288,7 @@ end
 	Deletes the guild.
 ]=]
 function Guild:Delete()
-	local url = `{Endpoints.DELETE_GUILD:format(self.id)}`
+	local url = `{Endpoints.DELETE_GUILD:format(self.id.id)}`
 
 	return Network.Request({
 		method = "DELETE",
@@ -1236,7 +1314,7 @@ function Guild:GetChannels(noFetch: boolean?)
 		return t
 	end
 
-	local url = `{Endpoints.GET_GUILD_CHANNELS:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_CHANNELS:format(self.id.id)}`
 
 	local success, response = Network.Request({
 		method = "GET",
@@ -1267,7 +1345,7 @@ end
 	Creates a new role in the guild.
 ]=]
 function Guild:CreateRole(name: string, permissions: string, color: number, hoist: boolean, icon: string?, unicode_emoji: string?, mentionable: boolean, reason: string?)
-	local url = `{Endpoints.CREATE_GUILD_ROLE:format(self.id)}`
+	local url = `{Endpoints.CREATE_GUILD_ROLE:format(self.id.id)}`
 
 	local success, response = Network.Request({
 		method = "POST",
@@ -1295,7 +1373,7 @@ end
 	Gets all roles in the guild.
 ]=]
 function Guild:GetRoles() : ({DiscordTypes.RoleData} | boolean, {any}?)
-	local url = `{Endpoints.GET_GUILD_ROLES:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_ROLES:format(self.id.id)}`
 	
 	local success, response = Network.Request({
 		method = "GET",
@@ -1312,7 +1390,7 @@ end
 	Gets a role in the guild.
 ]=]
 function Guild:GetRole(id: string) : (DiscordTypes.RoleData? | boolean, {any}?)
-	local url = `{Endpoints.GET_GUILD_ROLE:format(self.id, id)}`
+	local url = `{Endpoints.GET_GUILD_ROLE:format(self.id.id, id)}`
 
 	local success, response = Network.Request({
 		method = "GET",
@@ -1328,7 +1406,7 @@ end
 	Deletes a role from the guild.
 ]=]
 function Guild:DeleteRole(id: string) : (boolean, {any}?)
-	local url = `{Endpoints.DELETE_GUILD_ROLE:format(self.id, id)}`
+	local url = `{Endpoints.DELETE_GUILD_ROLE:format(self.id.id, id)}`
 
 	local success, response = Network.Request({
 		method = "DELETE",
@@ -1346,7 +1424,7 @@ end
 	Modifies a role in the guild.
 ]=]
 function Guild:ModifyRole(id: string, data: {name: string?, permissions: string?, color: number?, hoist: boolean?, icon: string?, unicode_emoji: string?, mentionable: boolean?}) : (boolean, {any}?)
-	local url = `{Endpoints.MODIFY_GUILD_ROLE:format(self.id, id)}`
+	local url = `{Endpoints.MODIFY_GUILD_ROLE:format(self.id.id, id)}`
 
 	local success, response = Network.Request({
 		method = "PATCH",
@@ -1365,7 +1443,7 @@ end
 	Changes a role's position in the guild's role hierarchy.
 ]=]
 function Guild:MoveRole(id: string, position: number) : (boolean, {any}?)
-	local url = `{Endpoints.GET_GUILD_ROLES:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_ROLES:format(self.id.id)}`
 
 	return Network.Request({
 		method = "PATCH",
@@ -1383,7 +1461,7 @@ end
 	Gets the guild's vanity URL if it has one.
 ]=]
 function Guild:GetVanityURL() : ({code: string, uses: number}? | boolean, {any}?)
-	local url = `{Endpoints.GET_GUILD_VANITY_URL:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_VANITY_URL:format(self.id.id)}`
 
 	local success, response = Network.Request({
 		method = "GET",
@@ -1400,7 +1478,7 @@ end
 	Creates a new channel in the guild.
 ]=]
 function Guild:CreateChannel(data: DiscordTypes.CreateGuildChannelData) : (Channel? | boolean, {any}?)
-	local url = `{Endpoints.CREATE_GUILD_CHANNEL:format(self.id)}`
+	local url = `{Endpoints.CREATE_GUILD_CHANNEL:format(self.id.id)}`
 
 	local body = data :: {[string]: any}
 	local success, response = Network.Request({
@@ -1433,7 +1511,7 @@ function Guild:GetMembers(noFetch: boolean?, limit: number?, after: string?)
 		return t
 	end
 
-	local url = `{Endpoints.GET_GUILD_MEMBERS:format(self.id)}`
+	local url = `{Endpoints.GET_GUILD_MEMBERS:format(self.id.id)}`
 
 	local success, response = Network.Request({
 		method = "GET",
@@ -1447,7 +1525,7 @@ function Guild:GetMembers(noFetch: boolean?, limit: number?, after: string?)
 	if success then
 		local t = {}
 		for _, memberData in response do
-			t[#t + 1] = GetMember(memberData.user.id, self.id, memberData)
+			t[#t + 1] = GetMember(Snowflake.new(memberData.user.id), self.id, memberData)
 		end
 
 		return t

@@ -22,7 +22,8 @@ local Aloha = {
 		LinkedList = require("./Classes/LinkedList"),
 		Objects = require("./Classes/Objects"),
 		Sweeper = require("./Classes/Sweeper"),
-		Timer = require("./Classes/Timer")
+		Timer = require("./Classes/Timer"),
+		Snowflake = require("./Classes/Snowflake")
 	},
 
 	Util = {

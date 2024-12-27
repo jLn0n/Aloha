@@ -12,7 +12,7 @@ local Bot = require("Bot")
 local Task = require("../Util/Task")
 local Objects = require("../Classes/Objects")
 local Network = require("./Network")
-
+local Snowflake = require("../Classes/Snowflake")
 --[=[
     @type GlobalCommand {name: string, name_localizations: {[string]: string}?, description: string?, description_localizations: {[string]: string}?, options: {CommandOptionData}?, default_member_permissions: string?, integration_types: {number}?, contexts: {number}?, type: number, nsfw: boolean?}
     @within Commands
@@ -84,11 +84,19 @@ export type Command = DiscordTypes.ApplicationCommandData & typeof(Command) & {E
     @param data ApplicationCommandData -- The command data from Discord
     @return Command -- A new Command instance
 ]=]
-function Command.new(data: DiscordTypes.ApplicationCommandData) : Command
+function Command.new(data: DiscordTypes.ApplicationCommandData) : Command?
 	local self = setmetatable({}, Command)
+
+	if typeof(data) ~= "table" then
+		return
+	end
 
 	for key, value in data do
 		self[key] = value
+	end
+
+	if self.id then
+		self.id = Snowflake.new(self.id)
 	end
 
 	self.Response = nil
@@ -150,7 +158,7 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command?, string)
 		returnStr = "CHAT_INPUT_COMMAND_DESCRIPTION_REQUIRED"
 	end
 	
-	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id)}`
+	local url = `{Endpoints.CREATE_GLOBAL_APPLICATION_COMMAND:format(Bot.Client.id.id)}`
 
 	
 	local success, response = Network.Request({
@@ -160,7 +168,6 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command?, string)
 	})
 
 	if not success then
-		print(response)
 		return nil, returnStr
 	end
 
@@ -170,7 +177,12 @@ function Commands.RegisterGlobal(data: GlobalCommand) : (Command?, string)
 
 	local command = Command.new(response)
 
-	Commands.Cache[command.id] = command
+	if not command then 
+		returnStr = "FAILED_TO_CREATE_COMMAND"
+		return nil, returnStr 
+	end
+
+	Commands.Cache[command.id.id] = command
 
 	return command, returnStr
 end
@@ -202,7 +214,7 @@ function Commands.RegisterGuild(data: GuildCommand, guild_id: string) : (Command
 
 	local command = Command.new(net.jsonDecode(response.body))
 
-	Commands.Cache[command.id] = command
+	Commands.Cache[command.id.id] = command
 
 	return command, returnStr
 end
@@ -218,10 +230,8 @@ end
 function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id: number?) : Network.Response?
 
 	local interaction = Objects.Interaction.new(int)
-
 	local applicationData = interaction.data :: DiscordTypes.ApplicationCommandInteractionData
 	
-
 	if applicationData.target_id and Commands.RateLimit[applicationData.target_id] then
 		return
 	elseif interaction.member and interaction.member.user and interaction.member.user.id and Commands.RateLimit[interaction.member.user.id] then
@@ -239,6 +249,7 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 
 	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
 
+	print(command.Response(interaction))
 
 	local success, response = Network.Request({
 		endpoint = endpoint,
