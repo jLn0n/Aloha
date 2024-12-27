@@ -1,3 +1,8 @@
+--[=[
+	@class Snowflake
+	A utility class for decoding and encoding Discord snowflakes.
+]=]
+
 local Snowflake = {}
 
 export type Snowflake = {
@@ -10,6 +15,12 @@ export type Snowflake = {
 
 local bit64 = require('Bit64')
 
+--[=[
+	@private
+	@param id string -- The snowflake ID
+	@return Snowflake -- The decoded snowflake
+	@within Snowflake
+]=]
 local function decodeSnowflake(id: string)
 	local discordEpoch = 1420070400000
 
@@ -28,6 +39,11 @@ local function decodeSnowflake(id: string)
 	}
 end
 
+--[=[
+	@within Snowflake
+	@param id string -- The snowflake ID
+	@return Snowflake -- The decoded snowflake
+]=]
 function Snowflake.new(id: string)
 	local self = setmetatable({}, {
 		__index = Snowflake,

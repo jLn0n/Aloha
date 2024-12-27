@@ -181,7 +181,7 @@ export type Member = {
 -- Functions -----------------
 --[=[
 	@within Objects
-	@param id Snowflake -- The channel ID
+	@param snowflake Snowflake -- The channel ID
 	@return Channel -- The channel object
 	Gets a channel by ID.
 ]=]
@@ -293,8 +293,8 @@ end
 
 --[=[
 	@within Objects
-	@param channelId Snowflake -- The channel ID
-	@param messageId Snowflake -- The message ID
+	@param channelSnowflake Snowflake -- The channel ID
+	@param messageSnowflake Snowflake -- The message ID
 	@return Message? -- The message object if found
 	Gets a message by ID in a channel.
 ]=]
@@ -332,7 +332,7 @@ end
 
 --[=[
 	@within Objects
-	@param id Snowflake -- The guild ID
+	@param snowflake Snowflake -- The guild ID
 	@return Guild? -- The guild object if found
 	Gets a guild by ID.
 ]=]
@@ -368,8 +368,8 @@ end
 
 --[=[
 	@within Objects
-	@param userId Snowflake -- The user ID
-	@param guildId Snowflake -- The guild ID
+	@param userSnowflake Snowflake -- The user ID
+	@param guildSnowflake Snowflake -- The guild ID
 	@return (Member? | boolean, {any}?) -- The member object if found
 	Gets a member by ID in a guild.
 ]=]
@@ -495,6 +495,10 @@ function Message.new(data: DiscordTypes.MessageData) : Message
 		self.author = GetUser(self.author)
 	end
 
+	if self.id then
+		self.id = Snowflake.new(self.id)
+	end
+
 	local mentions = {}
 
 	if data.mentions then
@@ -520,7 +524,8 @@ end
 	Deletes the message.
 ]=]
 function Message:Delete()
-	local url = `{Endpoints.DELETE_MESSAGE:format(self.channel_id, self.id)}`
+	print(self.channel_id.id, self.id.id)
+	local url = `{Endpoints.DELETE_MESSAGE:format(self.channel_id.id, self.id.id)}`
 
 	return Network.Request({
 		method = "DELETE",
