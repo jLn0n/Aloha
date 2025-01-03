@@ -543,9 +543,9 @@ end
 function Message:Reply(content: string, embeds: {DiscordTypes.EmbedData}?)
 	return self.channel:Send(content, embeds, {
 		type = 0,
-		message_id = self.id,
-		channel_id = self.channel_id,
-		guild_id = self.channel.guild_id
+		message_id = self.id.id,
+		channel_id = self.channel_id.id,
+		guild_id = self.channel.guild_id.id
 	})
 end
 
