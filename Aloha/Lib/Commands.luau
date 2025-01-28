@@ -249,14 +249,11 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 
 	local endpoint = `{Endpoints.CREATE_INTERACTION_RESPONSE:format(interaction.id, interaction.token)}`
 
-	print(command.Response(interaction))
-
 	local success, response = Network.Request({
 		endpoint = endpoint,
 		method = "POST",
 		body = command.Response(interaction),
 	})
-
 
 	if not success then
 

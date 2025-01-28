@@ -41,6 +41,18 @@ Misc.FetchThumbnailPNG = function(decal: string): (string | nil)
     return nil
 end
 
+Misc.GetAvatarThumbnail = function(userId: string): string?
+	local url = `https://thumbnails.roblox.com/v1/users/avatar?userIds={userId}&size=420x420&format=Png&isCircular=true`
+	local success, response = Network.Get(url)
+    
+    if success and response.body then
+        local data = Network.JsonDecode(response.body)
+        return data.data[1].imageUrl
+    end
+
+    return nil
+end
+
 --[=[
     @function AddLineNumbers
     @within Misc
