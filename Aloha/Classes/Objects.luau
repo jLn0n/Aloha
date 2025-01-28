@@ -223,7 +223,7 @@ end
 ]=]
 local function GetUser(data: DiscordTypes.UserData) : User
 	for i,v in Cache.Users:iter() do
-		if v.id == data.id then
+		if v.id.id == data.id then
 			return v
 		end
 	end
@@ -641,7 +641,7 @@ end
 	@return boolean -- Whether the message was sent
 	Sends a message to the channel.
 ]=]
-function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?, allowed_mentions: {[string]: {string}}?, flags: number?)
+function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, reference: DiscordTypes.MessageReferenceData?, allowed_mentions: {[string]: {string}}?, flags: number?, components: {DiscordTypes.ComponentData}?)
 	local url = `{Endpoints.CREATE_MESSAGE:format(self.id.id)}`
 
 	return Network.Request({
@@ -652,7 +652,8 @@ function Channel:Send(content: string, embeds: {DiscordTypes.EmbedData}?, refere
 			embeds = embeds,
 			message_reference = reference,
 			allowed_mentions = allowed_mentions,
-			flags = flags
+			flags = flags, 
+			components = components
 		}
 	})
 end
