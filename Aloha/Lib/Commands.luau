@@ -255,8 +255,8 @@ function Commands.HandleInteraction(int: DiscordTypes.InteractionData, shard_id:
 		body = command.Response(interaction),
 	})
 
-	if not success then
 
+	if not success then
 		return response
 	end
 

@@ -25,7 +25,6 @@ local function decodeSnowflake(id: string)
 	local discordEpoch = 1420070400000
 
 	local snowflake = bit64.from_string(id)
-
 	local timestamp = bit64.add(bit64.rshift(snowflake, 22), bit64.from_u32(discordEpoch))
 	local workerId = bit64.band(bit64.rshift(snowflake, 17), bit64.from_u32(0x1F))
 	local processId = bit64.band(bit64.rshift(snowflake, 12), bit64.from_u32(0x1F))

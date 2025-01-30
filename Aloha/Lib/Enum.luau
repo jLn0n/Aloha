@@ -250,17 +250,17 @@ return {
 	},
 
 	MESSAGE_FLAGS = {
-		CROSSPOST = bit64.lshift(bit64.from_u32(1), 0),
-		IS_CROSSPOST = bit64.lshift(bit64.from_u32(1), 1),
-		SUPPRESS_EMBEDS = bit64.lshift(bit64.from_u32(1), 2),
-		SOURCE_MESSAGE_DELETED = bit64.lshift(bit64.from_u32(1), 3),
-		URGENT = bit64.lshift(bit64.from_u32(1), 4),
-		HAS_THREAD = bit64.lshift(bit64.from_u32(1), 5),
-		EPHEMERAL = bit64.lshift(bit64.from_u32(1), 6),
-		LOADING = bit64.lshift(bit64.from_u32(1), 7),
-		FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = bit64.lshift(bit64.from_u32(1), 8),
-		SUPPRESS_NOTIFICATIONS = bit64.lshift(bit64.from_u32(1), 12),
-		IS_VOICE_MESSAGE = bit64.lshift(bit64.from_u32(1), 13)
+		CROSSPOST = bit32.lshift(1, 0),
+		IS_CROSSPOST = bit32.lshift(1, 1),
+		SUPPRESS_EMBEDS = bit32.lshift(1, 2),
+		SOURCE_MESSAGE_DELETED = bit32.lshift(1, 3),
+		URGENT = bit32.lshift(1, 4),
+		HAS_THREAD = bit32.lshift(1, 5),
+		EPHEMERAL = bit32.lshift(1, 6),
+		LOADING = bit32.lshift(1, 7),
+		FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = bit32.lshift(1, 8),
+		SUPPRESS_NOTIFICATIONS = bit32.lshift(1, 12),
+		IS_VOICE_MESSAGE = bit32.lshift(1, 13)
 	},
 
 	PERMISSIONS = {
