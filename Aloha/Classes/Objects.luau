@@ -187,6 +187,7 @@ export type Member = {
 ]=]
 local function GetChannel(snowflake: Snowflake, forceData: DiscordTypes.ChannelData?, noFetch: boolean?) : Channel?
 	local id = snowflake.id
+
 	if Cache.Channels[id] then
 		if forceData then
 			Cache.Channels[id] = Channel.new(forceData)
@@ -374,10 +375,9 @@ end
 	Gets a member by ID in a guild.
 ]=]
 local function GetMember(userSnowflake: Snowflake, guildSnowflake: Snowflake, forceData: DiscordTypes.MemberData?, noFetch: boolean?) : (Member? | boolean, {any}?)
-
 	local userId = userSnowflake.id
 	local guildId = guildSnowflake.id
-
+	
 	for i,v in Cache.Members:iter() do
 		if v.user_id == userSnowflake and v.guild_id == guildSnowflake then
 			return v
@@ -524,12 +524,26 @@ end
 	Deletes the message.
 ]=]
 function Message:Delete()
-	print(self.channel_id.id, self.id.id)
 	local url = `{Endpoints.DELETE_MESSAGE:format(self.channel_id.id, self.id.id)}`
 
 	return Network.Request({
 		method = "DELETE",
 		endpoint = url
+	})
+end
+
+function Message:Edit(content: string, embeds: {DiscordTypes.EmbedData}?, components: {DiscordTypes.ComponentData}?, flags: number?)
+	local url = `{Endpoints.EDIT_MESSAGE:format(self.channel_id.id, self.id.id)}`
+
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = {
+			content = content,
+			embeds = embeds,
+			components = components,
+			flags = flags
+		}
 	})
 end
 
@@ -875,6 +889,20 @@ function Channel:UnpinMessage(message_id: Snowflake)
 	return Network.Request({
 		method = "DELETE",
 		endpoint = url
+	})
+end
+
+function Channel:Edit(message_id: Snowflake, content: string, embeds: {DiscordTypes.EmbedData}?, components: {DiscordTypes.ComponentData}?, flags: number?)
+	local url = `{Endpoints.EDIT_MESSAGE:format(self.id.id, message_id)}`
+
+	return Network.Request({
+		method = "PATCH",
+		endpoint = url,
+		body = {
+			content = content,
+			embeds = embeds,
+			components = components
+		}
 	})
 end
 
