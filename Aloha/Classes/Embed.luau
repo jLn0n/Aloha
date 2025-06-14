@@ -3,7 +3,7 @@
 	Class to create Discord embeds.
 ]=]
 local Embed = {}
-local Color3 = require("Color3")
+local Color3 = require("./Color3")
 type Color3 = Color3.Color3
 
 local DiscordTypes = require("../Lib/DiscordTypes")

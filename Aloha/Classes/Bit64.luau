@@ -8,7 +8,7 @@ local HEX_TO_BINARY = {
     ["8"] = "1000", ["9"] = "1001", ["a"] = "1010", ["b"] = "1011",
     ["c"] = "1100", ["d"] = "1101", ["e"] = "1110", ["f"] = "1111",
 }
-local Vector3 = require('Vector3')
+local Vector3 = require("./Vector3")
 type Vector3 = Vector3.Vector3
 
 local function u64_from_pair(most: number, least: number): Vector3

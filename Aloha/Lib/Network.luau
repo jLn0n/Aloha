@@ -4,6 +4,7 @@
 ]=]
 local Network = {}
 local net = require("@lune/net")
+local serde = require("@lune/serde")
 local Bot = require("./Bot")
 local Endpoints = require("./Endpoints")
 local Task = require("../Util/Task")
@@ -210,7 +211,7 @@ function Network.Commit(method: string, url: string, headers: {[any]: any}, body
 			url = url,
 			method = method,
 			body = body,
-			headers = headers
+			headers = headers,
 		})
 	end)
 
@@ -218,20 +219,22 @@ function Network.Commit(method: string, url: string, headers: {[any]: any}, body
 		return response, delay
 	end
 
-	for i, v in ipairs(response) do
+	local headers = response.headers
+
+	--[[for i, v in ipairs(response) do
 		response[v[1]:lower()] = v[2]
 		response[i] = nil
+	end--]]
+
+	if headers['x-ratelimit-remaining'] == '0' then
+		delay = math.max(1000 * headers['x-ratelimit-reset-after'], delay)
 	end
 
-	if response['x-ratelimit-remaining'] == '0' then
-		delay = math.max(1000 * response['x-ratelimit-reset-after'], delay)
-	end
-
-	local data = response['content-type'] == 'application/json' and net.jsonDecode(response.body) or response.body
+	local data = headers['content-type'] == 'application/json' and serde.decode("json", response.body) or response.body
 
 	if response.statusCode < 300 then
 		if type(data) == "string" then
-			local s,d = pcall(net.jsonDecode, data)
+			local s,d = pcall(serde.decode, "json", data)
 			if s then
 				data = d
 			end
@@ -276,7 +279,7 @@ function Network.Get(url: string, headers: {[string]: string}?) : (boolean, stri
 		})
 	end)
 
-	return success, response
+	return success, response.body
 end
 
 --[=[
@@ -297,7 +300,7 @@ function Network.Post(url: string, body: string, headers: {[string]: string}) : 
 		})
 	end)
 
-	return success, response
+	return success, response.body
 end
 
 --[=[
@@ -316,7 +319,7 @@ function Network.Delete(url: string, headers: {[string]: string}) : (boolean, st
 		})
 	end)
 
-	return success, response
+	return success, response.body
 end
 
 --[=[
@@ -337,7 +340,7 @@ function Network.Patch(url: string, body: string, headers: {[string]: string}) :
 		})
 	end)
 
-	return success, response
+	return success, response.body
 end
 
 --[=[
@@ -358,7 +361,7 @@ function Network.Put(url: string, body: string, headers: {[string]: string}) : (
 		})
 	end)
 
-	return success, response
+	return success, response.body
 end
 
 --[=[
@@ -371,9 +374,15 @@ function Network.WebSocket(url: string) : WebSocket
 	local newSocket = net.socket(url)
 
 	return {
-		Close = newSocket.close,
-		Next = newSocket.next,
-		Send = newSocket.send,
+		Close = function(code)
+			return newSocket:close(code)
+		end,
+		Next = function()
+			return newSocket:next()
+		end,
+		Send = function(...)
+			return newSocket:send(...)
+		end,
 		getCloseCode = function() return newSocket.closeCode end
 	}
 end
@@ -396,7 +405,7 @@ end
 	@return string -- Returns JSON string
 ]=]
 function Network.JsonEncode(data: any) : string
-	return net.jsonEncode(data)
+	return serde.encode("json", data)
 end
 
 --[=[
@@ -406,7 +415,7 @@ end
 	@return {[any]: any} -- Returns decoded data
 ]=]
 function Network.JsonDecode(data: string) : {[any]: any}
-	return net.jsonDecode(data)
+	return serde.decode("json", data)
 end
 
 --[=[

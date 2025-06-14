@@ -4,11 +4,11 @@
 ]=]
 local Commands = {}
 local net = require("@lune/net")
-local Endpoints = require("Endpoints")
-local Enum = require("Enum")
-local DiscordTypes = require("DiscordTypes")
+local Endpoints = require("./Endpoints")
+local Enum = require("./Enum")
+local DiscordTypes = require("./DiscordTypes")
 local Event = require("../Classes/Event")
-local Bot = require("Bot")
+local Bot = require("./Bot")
 local Task = require("../Util/Task")
 local Objects = require("../Classes/Objects")
 local Network = require("./Network")

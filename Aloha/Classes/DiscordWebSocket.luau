@@ -59,13 +59,13 @@ function DiscordWebSocket.new(url: string, token: string, shard_id: number, shar
 			local success, message = xpcall(function()
 				return self._socket.Next()
 			end, function(err)
-				print("[WebSocket] Error retrieving next message: " .. err)
+				print("[WebSocket] 1@Error retrieving next message: " .. err)
 				self._socket.Close(4000)
 				self.Closed = true
 			end)
 
 			if not success then
-				print("[WebSocket] Error retrieving next message: " .. message)
+				print("[WebSocket] 2@Error retrieving next message: " .. message)
 				Task.Wait()
 				continue
 			end
@@ -237,7 +237,14 @@ end
 	@within DiscordWebSocket
 ]=]
 function DiscordWebSocket:Send(data: Payload) : ()
-	print("[WebSocket] Sending payload: ", data)
+	-- jLn0n start: redacts the token because why the fuck are u printing it on console
+	local bogos_binted = table.clone(data)
+	local bogos_binted_d = table.clone(bogos_binted.d)
+	bogos_binted_d.token = "[REDACTED]"
+	bogos_binted.d = bogos_binted_d
+
+	print("[WebSocket] Sending payload: ", bogos_binted)
+	-- jLn0n end
 	self._socket.Send(Network.JsonEncode(data))
 end
 return DiscordWebSocket

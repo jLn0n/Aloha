@@ -4,35 +4,35 @@
 ]=]
 local Aloha = {
 	Lib = {
-		Bot = require("./Lib/Bot"),
-		Client = require("./Lib/Client"),
-		Commands = require("./Lib/Commands"),
-		Endpoints = require("./Lib/Endpoints"),
-		Enum = require("./Lib/Enum"),
-		Network = require("./Lib/Network"),
-		Components = require("./Lib/Components"),
-		Debug = require("./Lib/Debug"),
-		DiscordTypes = require("./Lib/DiscordTypes")
+		Bot = require("@self/Lib/Bot"),
+		Client = require("@self/Lib/Client"),
+		Commands = require("@self/Lib/Commands"),
+		Endpoints = require("@self/Lib/Endpoints"),
+		Enum = require("@self/Lib/Enum"),
+		Network = require("@self/Lib/Network"),
+		Components = require("@self/Lib/Components"),
+		Debug = require("@self/Lib/Debug"),
+		DiscordTypes = require("@self/Lib/DiscordTypes")
 	},
 
 	Classes = {
-		Embed = require("./Classes/Embed"),
-		Color3 = require("./Classes/Color3"),
-		DiscordWebSocket = require("./Classes/DiscordWebSocket"),
-		LinkedList = require("./Classes/LinkedList"),
-		Objects = require("./Classes/Objects"),
-		Sweeper = require("./Classes/Sweeper"),
-		Timer = require("./Classes/Timer"),
-		Snowflake = require("./Classes/Snowflake")
+		Embed = require("@self/Classes/Embed"),
+		Color3 = require("@self/Classes/Color3"),
+		DiscordWebSocket = require("@self/Classes/DiscordWebSocket"),
+		LinkedList = require("@self/Classes/LinkedList"),
+		Objects = require("@self/Classes/Objects"),
+		Sweeper = require("@self/Classes/Sweeper"),
+		Timer = require("@self/Classes/Timer"),
+		Snowflake = require("@self/Classes/Snowflake")
 	},
 
 	Util = {
-		Base64 = require("./Util/Base64"),
-		Cache = require("./Util/Cache"),
-		Misc = require("./Util/Misc"),
-		Mutex = require("./Util/Mutex"),
-		Sha1 = require("./Util/Sha1"),
-		Task = require("./Util/Task")
+		Base64 = require("@self/Util/Base64"),
+		Cache = require("@self/Util/Cache"),
+		Misc = require("@self/Util/Misc"),
+		Mutex = require("@self/Util/Mutex"),
+		Sha1 = require("@self/Util/Sha1"),
+		Task = require("@self/Util/Task")
 	}
 }
 
@@ -75,8 +75,8 @@ function Aloha.Run(token: string, intents: number?)
 	Bot.INTENTS = intents or Enum.INTENTS.DEFAULT
 	Bot.TOKEN = token
 
-	local pid_process = process.spawn([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
-	Bot.PROCESS_ID = pid_process.stdout:match("%d+")
+	local pid_process = process.create([[wmic process where "name='lune.exe'" get processid]], {}, { shell = true })
+	Bot.PROCESS_ID = pid_process.stdout:readToEnd():match("%d+")
 
 	local _, response = Network.Request({
 		method = "GET",

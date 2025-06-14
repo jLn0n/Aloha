@@ -13,7 +13,7 @@ export type Snowflake = {
 	increment: string,
 }
 
-local bit64 = require('Bit64')
+local bit64 = require("./Bit64")
 
 --[=[
 	@private
