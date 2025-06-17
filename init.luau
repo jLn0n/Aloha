@@ -1,1 +1,1 @@
-return require("./Aloha")
+return require("@self/Aloha")
